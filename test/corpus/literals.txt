@@ -1,0 +1,542 @@
+==================
+integer literal decimal
+==================
+
+discard 123
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+integer literal with underscores
+==================
+
+discard 1_000_000
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+integer literal hex
+==================
+
+discard 0xFF
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+integer literal binary
+==================
+
+discard 0b1010
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+integer literal octal
+==================
+
+discard 0o755
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+float literal simple
+==================
+
+discard 3.14
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (float_literal))))))))))))))))
+
+==================
+float literal with exponent
+==================
+
+discard 1.5e10
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (float_literal))))))))))))))))
+
+==================
+float literal negative exponent
+==================
+
+discard 2.5e-3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (float_literal))))))))))))))))
+
+==================
+string literal simple
+==================
+
+discard "hello"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (string_literal))))))))))))))))
+
+==================
+string literal with escapes
+==================
+
+discard "hello\nworld"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (string_literal))))))))))))))))
+
+==================
+raw string literal
+==================
+
+discard r"hello\nworld"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (raw_string_literal))))))))))))))))
+
+==================
+triple string literal
+==================
+
+discard """multi
+line"""
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (triple_string_literal))))))))))))))))
+
+==================
+char literal
+==================
+
+discard 'a'
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (char_literal))))))))))))))))
+
+==================
+char literal escaped
+==================
+
+discard '\n'
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (char_literal))))))))))))))))
+
+==================
+nil literal
+==================
+
+discard nil
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal)))))))))))))))
+
+==================
+array literal empty
+==================
+
+discard []
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (array_expr)))))))))))))))
+
+==================
+array literal with elements
+==================
+
+discard [1, 2, 3]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (array_expr
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))))))))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))))))))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))))))))))))))))
+
+==================
+set literal empty
+==================
+
+discard {}
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (set_expr)))))))))))))))
+
+==================
+set literal with elements
+==================
+
+discard {1, 2, 3}
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (set_expr
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))))))))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))))))))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))))))))))))))))

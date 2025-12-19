@@ -1,0 +1,378 @@
+==================
+return empty
+==================
+
+return
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (return_stmt))))
+
+==================
+return with expression
+==================
+
+return 42
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (return_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+yield empty
+==================
+
+yield
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (yield_stmt))))
+
+==================
+yield with expression
+==================
+
+yield x
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (yield_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+raise empty
+==================
+
+raise
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (raise_stmt))))
+
+==================
+raise with expression
+==================
+
+raise newException(ValueError, "error")
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (raise_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (call_suffix
+                            (argument
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (qualified_identifier
+                                                    (symbol
+                                                      (identifier))))))))))))))
+                            (argument
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (string_literal)))))))))))))))))))))))))))
+
+==================
+discard empty
+==================
+
+discard
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt))))
+
+==================
+break empty
+==================
+
+break
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (break_stmt))))
+
+==================
+break with label
+==================
+
+break myLabel
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (break_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+continue empty
+==================
+
+continue
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (continue_stmt))))
+
+==================
+assignment
+==================
+
+x = 5
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (assignment_stmt
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal)))))))))))))))))
+
+==================
+multiple statements with semicolon
+==================
+
+x = 1; y = 2
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (assignment_stmt
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal)))))))))))))))
+    (simple_stmt
+      (expr_stmt
+        (assignment_stmt
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal)))))))))))))))))
+
+==================
+bind single
+==================
+
+bind foo
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (bind_stmt
+        (symbol
+          (identifier))))))
+
+==================
+bind multiple
+==================
+
+bind foo, bar
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (bind_stmt
+        (symbol
+          (identifier))
+        (symbol
+          (identifier))))))
+
+==================
+mixin single
+==================
+
+mixin foo
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (mixin_stmt
+        (symbol
+          (identifier))))))
+
+==================
+mixin multiple
+==================
+
+mixin foo, bar
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (mixin_stmt
+        (symbol
+          (identifier))
+        (symbol
+          (identifier))))))

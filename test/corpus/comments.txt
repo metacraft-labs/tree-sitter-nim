@@ -1,0 +1,32 @@
+==================
+line comment
+==================
+
+# this is a comment
+discard
+
+---
+
+(source_file
+  (comment)
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt))))
+
+
+==================
+nested comments
+==================
+
+#[ outer
+  #[ inner ]#
+]#
+discard
+
+---
+
+(source_file
+  (comment)
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt))))

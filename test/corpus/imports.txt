@@ -1,0 +1,206 @@
+==================
+import single module
+==================
+
+import os
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+import multiple modules
+==================
+
+import os, strutils
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+import qualified path
+==================
+
+import std.os
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))))))))
+
+==================
+import string path
+==================
+
+import "path/to/module"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_path
+          (string_literal))))))
+
+==================
+from import
+==================
+
+from os import walkDir
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (from_import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (symbol
+          (identifier))))))
+
+==================
+from import multiple
+==================
+
+from os import walkDir, walkFiles
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (from_import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (symbol
+          (identifier))
+        (symbol
+          (identifier))))))
+
+==================
+from import except
+==================
+
+from os import except walkDir
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (from_import_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (symbol
+          (identifier))))))
+
+==================
+export single
+==================
+
+export mySymbol
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (export_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+export multiple
+==================
+
+export foo, bar
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (export_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+include single
+==================
+
+include helper
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (include_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+include multiple
+==================
+
+include helper1, helper2
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (include_stmt
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))
+        (import_path
+          (qualified_identifier
+            (symbol
+              (identifier))))))))

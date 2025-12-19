@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Nim grammar for tree-sitter",
+    "authors": [],
+    "links": {
+      "repository": "https://github.com/example/tree-sitter-nim"
+    }
+  },
+  "grammars": [
+    {
+      "name": "nim",
+      "camelcase": "Nim",
+      "scope": "source.nim",
+      "file-types": ["nim", "nims", "nimble"],
+      "highlights": "queries/highlights.scm"
+    }
+  ]
+}

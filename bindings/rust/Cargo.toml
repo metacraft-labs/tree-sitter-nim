@@ -1,0 +1,16 @@
+[package]
+name = "tree-sitter-nim"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Nim grammar for tree-sitter"
+build = "build.rs"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+tree-sitter = "0.22"
+
+[build-dependencies]
+cc = "1.0"

@@ -1,0 +1,27 @@
+{
+  "name": "tree-sitter-nim",
+  "version": "0.1.0",
+  "description": "Nim grammar for tree-sitter",
+  "repository": "https://example.invalid/tree-sitter-nim",
+  "license": "MIT",
+  "main": "bindings/node",
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "src/**",
+    "bindings/**",
+    "queries/**"
+  ],
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test",
+    "build": "node-gyp rebuild"
+  },
+  "dependencies": {
+    "node-addon-api": "^8.0.0",
+    "node-gyp-build": "^4.8.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.25.10"
+  }
+}

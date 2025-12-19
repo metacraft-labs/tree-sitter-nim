@@ -1,0 +1,464 @@
+==================
+simple proc
+==================
+
+proc hello(): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with return type
+==================
+
+proc hello(): int: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with parameters
+==================
+
+proc add(a: int, b: int): int: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier)))))
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with default parameter
+==================
+
+proc foo(x: int = 10): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with multiple params same type
+==================
+
+proc foo(a, b, c: int): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (symbol
+            (identifier))
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with pragma
+==================
+
+proc foo() {.inline.}: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (pragma
+        (pragma_item
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+func definition
+==================
+
+func double(x: int): int: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+iterator definition
+==================
+
+iterator items(a: seq): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+method definition
+==================
+
+method foo(o: Object): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+template definition
+==================
+
+template foo(x: untyped): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+macro definition
+==================
+
+macro foo(x: untyped): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+converter definition
+==================
+
+converter toInt(x: bool): int: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with generic params
+==================
+
+proc foo[T](x: T): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (generic_params
+        (generic_param
+          (symbol
+            (identifier))))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with constrained generic
+==================
+
+proc foo[T: SomeInteger](x: T): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (generic_params
+        (generic_param
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+proc with expression body
+==================
+
+proc square(x: int): int = x * x
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (expr_stmt
+            (assignment_stmt
+              (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier)))))))))))))
+              (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))
+
+==================
+anonymous proc
+==================
+
+proc (x: int): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))

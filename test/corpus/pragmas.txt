@@ -1,0 +1,113 @@
+==================
+single pragma
+==================
+
+proc foo() {.inline.}: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (pragma
+        (pragma_item
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+multiple pragmas
+==================
+
+proc foo() {.inline, noSideEffect.}: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (pragma
+        (pragma_item
+          (symbol
+            (identifier)))
+        (pragma_item
+          (symbol
+            (identifier))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+pragma with value
+==================
+
+proc foo() {.raises: [].}: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (pragma
+        (pragma_item
+          (symbol
+            (identifier))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (array_expr)))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+pragma with string value
+==================
+
+proc foo() {.exportc: "c_foo".}: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      (symbol
+        (identifier))
+      (param_list)
+      (pragma
+        (pragma_item
+          (symbol
+            (identifier))
+          (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (string_literal))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))

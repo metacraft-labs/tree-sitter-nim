@@ -1,0 +1,1299 @@
+==================
+basic precedence mul over add
+==================
+
+discard 1 + 2 * 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+subtraction
+==================
+
+discard 5 - 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+division
+==================
+
+discard 10 / 2
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+modulo
+==================
+
+discard 10 mod 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+integer division
+==================
+
+discard 10 div 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+shift left
+==================
+
+discard 1 shl 4
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+shift right
+==================
+
+discard 16 shr 2
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+unary minus
+==================
+
+discard -5
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal)))))))))))))))))
+
+==================
+unary plus
+==================
+
+discard +5
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal)))))))))))))))))
+
+==================
+not operator
+==================
+
+discard not true
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier))))))))))))))))))
+
+==================
+and operator
+==================
+
+discard true and false
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))))))
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+or operator
+==================
+
+discard true or false
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+xor operator
+==================
+
+discard true xor false
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+equality
+==================
+
+discard x == y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+inequality
+==================
+
+discard x != y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+less than
+==================
+
+discard x < y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+greater than
+==================
+
+discard x > y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+less than or equal
+==================
+
+discard x <= y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+greater than or equal
+==================
+
+discard x >= y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+in operator
+==================
+
+discard x in y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+notin operator
+==================
+
+discard x notin y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+is operator
+==================
+
+discard x is int
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+isnot operator
+==================
+
+discard x isnot int
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+as operator
+==================
+
+discard x as int
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+range operator
+==================
+
+discard 1..10
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))))
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+exclusive range operator
+==================
+
+discard 1..<10
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal)))))))
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
+
+==================
+bitwise or
+==================
+
+discard a | b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+bitwise and
+==================
+
+discard a & b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+function call no args
+==================
+
+discard foo()
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (call_suffix))))))))))))))
+
+==================
+function call with args
+==================
+
+discard foo(1, 2, 3)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (call_suffix
+                            (argument
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))
+                            (argument
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))
+                            (argument
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))))))))))))))))
+
+==================
+named argument
+==================
+
+discard foo(x: 1)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (call_suffix
+                            (argument
+                              (symbol
+                                (identifier))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal)))))))))))))))))))))))))))
+
+==================
+index access
+==================
+
+discard arr[0]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (index_suffix
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (range_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (prefix_expr
+                                            (postfix_expr
+                                              (primary
+                                                (literal
+                                                  (integer_literal))))))))))))))))))))))))))
+
+==================
+dot access
+==================
+
+discard obj.field
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+brace suffix
+==================
+
+discard foo{1}
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (brace_suffix
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (range_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (prefix_expr
+                                            (postfix_expr
+                                              (primary
+                                                (literal
+                                                  (integer_literal))))))))))))))))))))))))))
+
+==================
+parenthesized expression
+==================
+
+discard (1 + 2) * 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (paren_expr
+                              (expression_list
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal))))))
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal)))))))))))))))))
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (literal
+                                  (integer_literal))))))))))))))))
+
+==================
+chained method calls
+==================
+
+discard a.b().c()
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (dot_suffix
+                            (symbol
+                              (identifier)))
+                          (call_suffix)
+                          (dot_suffix
+                            (symbol
+                              (identifier)))
+                          (call_suffix))))))))))))))
+
+==================
+qualified identifier
+==================
+
+discard foo.bar.baz
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))
+                              (symbol
+                                (identifier))
+                              (symbol
+                                (identifier)))))))))))))))))
+
+==================
+quoted identifier
+==================
+
+discard `hello world`
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (quoted_identifier)))))))))))))))))
