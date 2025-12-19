@@ -92,3 +92,19 @@ flake-update:
 # Check flake outputs
 flake-check:
     nix flake check
+
+# Get current version
+@current-version:
+    python scripts/bump-version.py current
+
+# Bump patch version (0.1.0 -> 0.1.1), commit and tag
+bump-patch-version:
+    python scripts/bump-version.py patch
+
+# Bump minor version (0.1.0 -> 0.2.0), commit and tag
+bump-minor-version:
+    python scripts/bump-version.py minor
+
+# Bump major version (0.1.0 -> 1.0.0), commit and tag
+bump-major-version:
+    python scripts/bump-version.py major

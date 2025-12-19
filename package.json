@@ -2,7 +2,7 @@
   "name": "tree-sitter-nim",
   "version": "0.1.0",
   "description": "Nim grammar for tree-sitter",
-  "repository": "https://example.invalid/tree-sitter-nim",
+  "repository": "https://github.com/metacraft-labs/tree-sitter-nim",
   "license": "MIT",
   "main": "bindings/node",
   "files": [

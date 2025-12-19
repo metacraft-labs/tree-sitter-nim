@@ -18,3 +18,4 @@ Cargo.lock
 result
 result-*
 .direnv/
+.pre-commit-config.yaml

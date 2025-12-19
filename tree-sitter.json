@@ -5,7 +5,7 @@
     "description": "Nim grammar for tree-sitter",
     "authors": [],
     "links": {
-      "repository": "https://github.com/example/tree-sitter-nim"
+      "repository": "https://github.com/metacraft-labs/tree-sitter-nim"
     }
   },
   "grammars": [

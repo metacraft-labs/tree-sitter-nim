@@ -1,11 +1,18 @@
-use tree_sitter::Language;
+//! Nim grammar for tree-sitter.
+
+use tree_sitter_language::LanguageFn;
 
 extern "C" {
-    fn tree_sitter_nim() -> Language;
+    fn tree_sitter_nim() -> *const ();
 }
 
-pub fn language() -> Language {
-    unsafe { tree_sitter_nim() }
+/// The tree-sitter [`LanguageFn`] for Nim.
+pub const LANGUAGE: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_nim) };
+
+/// Returns the tree-sitter Language for Nim.
+#[must_use]
+pub fn language() -> tree_sitter::Language {
+    LANGUAGE.into()
 }
 
 #[cfg(test)]
