@@ -7,7 +7,9 @@
   "import" "export" "include" "from" "bind" "mixin"
   "type" "const" "let" "var" "using"
   "proc" "func" "iterator" "method" "macro" "template" "converter"
-  "ref" "ptr" "distinct" "tuple" "object" "nil"
+  "ref" "ptr" "distinct" "tuple" "object"
+  "and" "or" "xor" "not" "div" "mod" "shl" "shr"
+  "is" "isnot" "as" "notin"
 ] @keyword
 
 (comment) @comment
@@ -19,6 +21,9 @@
 
 (integer_literal) @number
 (float_literal) @number
+
+(boolean_literal) @constant.builtin
+(nil_literal) @constant.builtin
 
 (symbol) @variable
 (quoted_identifier) @variable

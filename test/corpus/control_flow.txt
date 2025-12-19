@@ -47,9 +47,8 @@ when true: discard
                     (prefix_expr
                       (postfix_expr
                         (primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
+                          (literal
+                            (boolean_literal))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -75,9 +74,8 @@ while true: discard
                     (prefix_expr
                       (postfix_expr
                         (primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
+                          (literal
+                            (boolean_literal))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -205,7 +203,6 @@ defer: discard
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
-
 
 ==================
 asm with string

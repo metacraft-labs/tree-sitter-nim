@@ -215,39 +215,41 @@ when isMainModule:
 ]#
 
 ---
+
 (source_file
   (comment)
   (simple_stmt_line
     (simple_stmt
       (import_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier)))))))
   (simple_stmt_line
     (simple_stmt
       (from_import_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))
-        (symbol
-          (identifier))
-        (symbol
-          (identifier)))))
+          (symbol
+            (identifier)))
+        (import_symbol
+          (symbol
+            (identifier)))
+        (import_symbol
+          (symbol
+            (identifier))))))
   (simple_stmt_line
     (simple_stmt
       (export_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier)))))))
   (section_stmt
@@ -256,16 +258,13 @@ when isMainModule:
         (type_def
           name: (symbol
             (identifier))
-          value: (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
+          value: (enum_def)))
       (section_item
         (type_def
           name: (symbol
             (identifier))
-          value: (type_expr
-            (type_expr
+          value: (object_def
+            parent: (type_expr
               (qualified_identifier
                 (symbol
                   (identifier)))))))
@@ -273,12 +272,11 @@ when isMainModule:
         (type_def
           name: (symbol
             (identifier))
-          value: (type_expr
-            (type_expr
-              (type_expr
-                (qualified_identifier
-                  (symbol
-                    (identifier))))))))
+          value: (object_def
+            parent: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
       (section_item
         (type_def
           name: (symbol
@@ -417,7 +415,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -427,15 +425,15 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (pragma
+      pragmas: (pragma
         (pragma_item
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (assignment_stmt
@@ -476,7 +474,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -484,11 +482,11 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -513,11 +511,11 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (generic_params
+      generic_params: (generic_params
         (generic_param
           (symbol
             (identifier))))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -541,11 +539,11 @@ when isMainModule:
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (assignment_stmt
@@ -594,11 +592,11 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (generic_params
+      generic_params: (generic_params
         (generic_param
           (symbol
             (identifier))))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -606,15 +604,15 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (compound_stmt
+      body: (compound_stmt
         (for_stmt
-          (symbol
+          variables: (symbol
             (identifier))
-          (expression
+          iterable: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -636,7 +634,7 @@ when isMainModule:
                                   (identifier))
                                 (symbol
                                   (identifier)))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (yield_stmt
                 (expression
@@ -656,11 +654,11 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (generic_params
+      generic_params: (generic_params
         (generic_param
           (symbol
             (identifier))))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -668,15 +666,15 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (compound_stmt
+      body: (compound_stmt
         (for_stmt
-          (symbol
+          variables: (symbol
             (identifier))
-          (expression
+          iterable: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -698,7 +696,7 @@ when isMainModule:
                                   (identifier))
                                 (symbol
                                   (identifier)))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (yield_stmt
                 (expression
@@ -718,7 +716,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -726,15 +724,15 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (pragma
+      pragmas: (pragma
         (pragma_item
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -753,7 +751,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -761,11 +759,11 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -784,7 +782,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -799,11 +797,11 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -834,7 +832,7 @@ when isMainModule:
                                                       (qualified_identifier
                                                         (symbol
                                                           (identifier)))))))))))))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -850,7 +848,7 @@ when isMainModule:
                                 (qualified_identifier
                                   (symbol
                                     (identifier))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (expression
@@ -885,7 +883,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -893,11 +891,11 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (assignment_stmt
@@ -931,7 +929,7 @@ when isMainModule:
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -939,19 +937,19 @@ when isMainModule:
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt)))))
   (compound_stmt
     (routine_definition
       name: (symbol
         (identifier))
-      (param_list)
-      (section_stmt
+      params: (param_list)
+      body: (section_stmt
         (var_section
           (section_item
             (decl_def
@@ -1064,7 +1062,7 @@ when isMainModule:
                                                       (primary
                                                         (literal
                                                           (integer_literal)))))))))))))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -1127,9 +1125,45 @@ when isMainModule:
                                                           (symbol
                                                             (identifier))))
                                                       (call_suffix)))))))))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (if_stmt
-          (expression
+          condition: (expression
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (literal
+                                (integer_literal))))))))))))
+          consequence: (simple_stmt_line
+            (simple_stmt
+              (discard_stmt
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (add_expr
+                            (mul_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (string_literal)))))))))))))))
+          condition: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1165,43 +1199,7 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))
-          (expression
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (add_expr
-                      (mul_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier)))))))))
-                  (range_expr
-                    (add_expr
-                      (mul_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (primary
-                              (literal
-                                (integer_literal))))))))))))
-          (simple_stmt_line
-            (simple_stmt
-              (discard_stmt
-                (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (add_expr
-                            (mul_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (literal
-                                      (string_literal)))))))))))))))
-          (simple_stmt_line
+          alternative: (simple_stmt_line
             (simple_stmt
               (discard_stmt
                 (expression
@@ -1216,9 +1214,9 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (case_stmt
-          (expression
+          expression: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1320,9 +1318,9 @@ when isMainModule:
                                       (primary
                                         (literal
                                           (string_literal)))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (while_stmt
-          (expression
+          condition: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1343,7 +1341,7 @@ when isMainModule:
                             (primary
                               (literal
                                 (integer_literal))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (expr_stmt
                 (assignment_stmt
@@ -1379,9 +1377,9 @@ when isMainModule:
                                     (primary
                                       (literal
                                         (integer_literal))))))))))))))))
-          (compound_stmt
+          body: (compound_stmt
             (if_stmt
-              (expression
+              condition: (expression
                 (or_expr
                   (and_expr
                     (cmp_expr
@@ -1402,12 +1400,12 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))
-              (simple_stmt_line
+              consequence: (simple_stmt_line
                 (simple_stmt
                   (continue_stmt)))))
-          (compound_stmt
+          body: (compound_stmt
             (if_stmt
-              (expression
+              condition: (expression
                 (or_expr
                   (and_expr
                     (cmp_expr
@@ -1428,14 +1426,14 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))
-              (simple_stmt_line
+              consequence: (simple_stmt_line
                 (simple_stmt
                   (break_stmt)))))))
-      (compound_stmt
+      body: (compound_stmt
         (for_stmt
-          (symbol
+          variables: (symbol
             (identifier))
-          (expression
+          iterable: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1448,7 +1446,7 @@ when isMainModule:
                               (qualified_identifier
                                 (symbol
                                   (identifier)))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (discard_stmt
                 (expression
@@ -1469,11 +1467,11 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (integer_literal)))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (for_stmt
-          (symbol
+          variables: (symbol
             (identifier))
-          (expression
+          iterable: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1492,7 +1490,7 @@ when isMainModule:
                             (primary
                               (literal
                                 (integer_literal))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (discard_stmt
                 (expression
@@ -1508,15 +1506,15 @@ when isMainModule:
                                     (qualified_identifier
                                       (symbol
                                         (identifier))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (block_stmt
-          (symbol
+          name: (symbol
             (identifier))
-          (compound_stmt
+          body: (compound_stmt
             (for_stmt
-              (symbol
+              variables: (symbol
                 (identifier))
-              (expression
+              iterable: (expression
                 (or_expr
                   (and_expr
                     (cmp_expr
@@ -1535,13 +1533,13 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))
-              (compound_stmt
+              body: (compound_stmt
                 (block_stmt
-                  (symbol
+                  name: (symbol
                     (identifier))
-                  (compound_stmt
+                  body: (compound_stmt
                     (if_stmt
-                      (expression
+                      condition: (expression
                         (or_expr
                           (and_expr
                             (cmp_expr
@@ -1562,7 +1560,7 @@ when isMainModule:
                                         (primary
                                           (literal
                                             (integer_literal))))))))))))
-                      (simple_stmt_line
+                      consequence: (simple_stmt_line
                         (simple_stmt
                           (break_stmt
                             (expression
@@ -1578,7 +1576,7 @@ when isMainModule:
                                                 (qualified_identifier
                                                   (symbol
                                                     (identifier))))))))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (try_stmt
           (simple_stmt_line
             (simple_stmt
@@ -1677,7 +1675,7 @@ when isMainModule:
                                     (primary
                                       (literal
                                         (string_literal))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (defer_stmt
           (simple_stmt_line
             (simple_stmt
@@ -1694,9 +1692,9 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (when_stmt
-          (expression
+          condition: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1706,9 +1704,8 @@ when isMainModule:
                         (prefix_expr
                           (postfix_expr
                             (primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier)))))))))))))
+                              (literal
+                                (boolean_literal))))))))))))
           (simple_stmt_line
             (simple_stmt
               (discard_stmt
@@ -1724,7 +1721,7 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))
-          (expression
+          condition: (expression
             (or_expr
               (and_expr
                 (cmp_expr
@@ -1734,9 +1731,8 @@ when isMainModule:
                         (prefix_expr
                           (postfix_expr
                             (primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier)))))))))))))
+                              (literal
+                                (boolean_literal))))))))))))
           (simple_stmt_line
             (simple_stmt
               (discard_stmt
@@ -1767,7 +1763,7 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (static_stmt
           (simple_stmt_line
             (simple_stmt
@@ -1784,7 +1780,7 @@ when isMainModule:
                                   (primary
                                     (literal
                                       (string_literal)))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2065,7 +2061,7 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2240,7 +2236,7 @@ when isMainModule:
                                   (qualified_identifier
                                     (symbol
                                       (identifier)))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2312,7 +2308,7 @@ when isMainModule:
                                                         (qualified_identifier
                                                           (symbol
                                                             (identifier))))))))))))))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (var_section
           (section_item
             (decl_def
@@ -2404,36 +2400,31 @@ when isMainModule:
                               (postfix_expr
                                 (primary
                                   (array_expr)))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (expr_stmt
             (assignment_stmt
               left: (expression
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (add_expr
-                          (mul_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))
-                                (index_suffix
-                                  (expression
-                                    (or_expr
-                                      (and_expr
-                                        (cmp_expr
-                                          (range_expr
-                                            (add_expr
-                                              (mul_expr
-                                                (prefix_expr
-                                                  (postfix_expr
-                                                    (primary
-                                                      (literal
-                                                        (integer_literal))))))))))))))))))))))
+                (command_expr
+                  (postfix_expr
+                    (primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier)))))
+                  (command_first_arg
+                    (array_expr
+                      (expression
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (add_expr
+                                  (mul_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (literal
+                                            (integer_literal))))))))))))))))
               right: (expression
                 (or_expr
                   (and_expr
@@ -2446,36 +2437,31 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (add_expr
-                        (mul_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))
-                              (index_suffix
-                                (expression
-                                  (or_expr
-                                    (and_expr
-                                      (cmp_expr
-                                        (range_expr
-                                          (add_expr
-                                            (mul_expr
-                                              (prefix_expr
-                                                (postfix_expr
-                                                  (primary
-                                                    (literal
-                                                      (integer_literal)))))))))))))))))))))))))
-      (section_stmt
+              (command_expr
+                (postfix_expr
+                  (primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (array_expr
+                    (expression
+                      (or_expr
+                        (and_expr
+                          (cmp_expr
+                            (range_expr
+                              (add_expr
+                                (mul_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (literal
+                                          (integer_literal)))))))))))))))))))
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2491,8 +2477,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (paren_expr
-                                    (expression_list
+                                  (tuple_expr
+                                    (tuple_element
                                       (expression
                                         (or_expr
                                           (and_expr
@@ -2504,7 +2490,8 @@ when isMainModule:
                                                       (postfix_expr
                                                         (primary
                                                           (literal
-                                                            (integer_literal))))))))))))
+                                                            (integer_literal)))))))))))))
+                                    (tuple_element
                                       (expression
                                         (or_expr
                                           (and_expr
@@ -2531,8 +2518,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (paren_expr
-                                    (expression_list
+                                  (tuple_expr
+                                    (tuple_element
                                       (expression
                                         (or_expr
                                           (and_expr
@@ -2544,7 +2531,8 @@ when isMainModule:
                                                       (postfix_expr
                                                         (primary
                                                           (literal
-                                                            (integer_literal))))))))))))
+                                                            (integer_literal)))))))))))))
+                                    (tuple_element
                                       (expression
                                         (or_expr
                                           (and_expr
@@ -2556,7 +2544,8 @@ when isMainModule:
                                                       (postfix_expr
                                                         (primary
                                                           (literal
-                                                            (integer_literal))))))))))))
+                                                            (integer_literal)))))))))))))
+                                    (tuple_element
                                       (expression
                                         (or_expr
                                           (and_expr
@@ -2569,65 +2558,55 @@ when isMainModule:
                                                         (primary
                                                           (literal
                                                             (integer_literal))))))))))))))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (add_expr
-                        (mul_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))
-                              (index_suffix
-                                (expression
-                                  (or_expr
-                                    (and_expr
-                                      (cmp_expr
-                                        (range_expr
-                                          (add_expr
-                                            (mul_expr
-                                              (prefix_expr
-                                                (postfix_expr
-                                                  (primary
-                                                    (literal
-                                                      (integer_literal)))))))))))))))))))))))))
-      (simple_stmt_line
+              (command_expr
+                (postfix_expr
+                  (primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (array_expr
+                    (expression
+                      (or_expr
+                        (and_expr
+                          (cmp_expr
+                            (range_expr
+                              (add_expr
+                                (mul_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (literal
+                                          (integer_literal)))))))))))))))))))
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (add_expr
-                        (mul_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))
-                              (index_suffix
-                                (expression
-                                  (or_expr
-                                    (and_expr
-                                      (cmp_expr
-                                        (range_expr
-                                          (add_expr
-                                            (mul_expr
-                                              (prefix_expr
-                                                (postfix_expr
-                                                  (primary
-                                                    (literal
-                                                      (integer_literal)))))))))))))))))))))))))
-      (simple_stmt_line
+              (command_expr
+                (postfix_expr
+                  (primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (array_expr
+                    (expression
+                      (or_expr
+                        (and_expr
+                          (cmp_expr
+                            (range_expr
+                              (add_expr
+                                (mul_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (literal
+                                          (integer_literal)))))))))))))))))))
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
@@ -2670,7 +2649,7 @@ when isMainModule:
                                                     (primary
                                                       (literal
                                                         (integer_literal))))))))))))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
@@ -2702,9 +2681,9 @@ when isMainModule:
                                                     (primary
                                                       (literal
                                                         (string_literal))))))))))))))))))))))))))
-      (compound_stmt
+      body: (compound_stmt
         (block_stmt
-          (section_stmt
+          body: (section_stmt
             (var_section
               (section_item
                 (decl_def
@@ -2722,11 +2701,11 @@ when isMainModule:
                                     (primary
                                       (literal
                                         (integer_literal))))))))))))))))
-          (compound_stmt
+          body: (compound_stmt
             (for_stmt
-              (symbol
+              variables: (symbol
                 (identifier))
-              (expression
+              iterable: (expression
                 (or_expr
                   (and_expr
                     (cmp_expr
@@ -2745,7 +2724,7 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))
-              (simple_stmt_line
+              body: (simple_stmt_line
                 (simple_stmt
                   (expr_stmt
                     (assignment_stmt
@@ -2782,7 +2761,7 @@ when isMainModule:
                                           (qualified_identifier
                                             (symbol
                                               (identifier)))))))))))))))))))
-          (simple_stmt_line
+          body: (simple_stmt_line
             (simple_stmt
               (discard_stmt
                 (expression
@@ -2798,7 +2777,7 @@ when isMainModule:
                                     (qualified_identifier
                                       (symbol
                                         (identifier))))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2849,10 +2828,9 @@ when isMainModule:
                               (prefix_expr
                                 (postfix_expr
                                   (primary
-                                    (qualified_identifier
-                                      (symbol
-                                        (identifier))))))))))))))))))
-      (section_stmt
+                                    (literal
+                                      (boolean_literal)))))))))))))))))
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -2998,7 +2976,7 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -3014,9 +2992,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))
+                                  (literal
+                                    (boolean_literal)))))))))
                     (cmp_expr
                       (range_expr
                         (add_expr
@@ -3024,9 +3001,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))))))
+                                  (literal
+                                    (boolean_literal))))))))))))))
           (section_item
             (decl_def
               (symbol
@@ -3041,9 +3017,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))
+                                  (literal
+                                    (boolean_literal))))))))))
                   (and_expr
                     (cmp_expr
                       (range_expr
@@ -3052,9 +3027,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))))))
+                                  (literal
+                                    (boolean_literal))))))))))))))
           (section_item
             (decl_def
               (symbol
@@ -3069,9 +3043,8 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))
+                                  (literal
+                                    (boolean_literal))))))))))
                   (and_expr
                     (cmp_expr
                       (range_expr
@@ -3080,10 +3053,9 @@ when isMainModule:
                             (prefix_expr
                               (postfix_expr
                                 (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))))))))
-      (section_stmt
+                                  (literal
+                                    (boolean_literal))))))))))))))))
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -3171,7 +3143,7 @@ when isMainModule:
                                 (primary
                                   (literal
                                     (integer_literal))))))))))))))))
-      (section_stmt
+      body: (section_stmt
         (let_section
           (section_item
             (decl_def
@@ -3225,7 +3197,7 @@ when isMainModule:
                                   (qualified_identifier
                                     (symbol
                                       (identifier)))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (discard_stmt
             (expression
@@ -3240,7 +3212,7 @@ when isMainModule:
                               (primary
                                 (literal
                                   (string_literal)))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (raise_stmt
             (expression
@@ -3284,12 +3256,12 @@ when isMainModule:
                                                     (primary
                                                       (literal
                                                         (string_literal))))))))))))))))))))))))))
-      (simple_stmt_line
+      body: (simple_stmt_line
         (simple_stmt
           (return_stmt)))))
   (compound_stmt
     (when_stmt
-      (expression
+      condition: (expression
         (or_expr
           (and_expr
             (cmp_expr
@@ -3320,4 +3292,3 @@ when isMainModule:
                                     (identifier))))
                               (call_suffix)))))))))))))
       (comment))))
-

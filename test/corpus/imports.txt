@@ -10,8 +10,8 @@ import os
   (simple_stmt_line
     (simple_stmt
       (import_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))))))
 
@@ -27,12 +27,12 @@ import os, strutils
   (simple_stmt_line
     (simple_stmt
       (import_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))))))
 
@@ -48,8 +48,8 @@ import std.os
   (simple_stmt_line
     (simple_stmt
       (import_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))
             (symbol
@@ -67,8 +67,9 @@ import "path/to/module"
   (simple_stmt_line
     (simple_stmt
       (import_stmt
-        (import_path
-          (string_literal))))))
+        (import_expr
+          (import_path
+            (string_literal)))))))
 
 ==================
 from import
@@ -83,11 +84,11 @@ from os import walkDir
     (simple_stmt
       (from_import_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))
-        (symbol
-          (identifier))))))
+          (symbol
+            (identifier)))
+        (import_symbol
+          (symbol
+            (identifier)))))))
 
 ==================
 from import multiple
@@ -102,13 +103,14 @@ from os import walkDir, walkFiles
     (simple_stmt
       (from_import_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))
-        (symbol
-          (identifier))
-        (symbol
-          (identifier))))))
+          (symbol
+            (identifier)))
+        (import_symbol
+          (symbol
+            (identifier)))
+        (import_symbol
+          (symbol
+            (identifier)))))))
 
 ==================
 from import except
@@ -123,9 +125,8 @@ from os import except walkDir
     (simple_stmt
       (from_import_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))
+          (symbol
+            (identifier)))
         (symbol
           (identifier))))))
 
@@ -141,8 +142,8 @@ export mySymbol
   (simple_stmt_line
     (simple_stmt
       (export_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))))))
 
@@ -158,12 +159,12 @@ export foo, bar
   (simple_stmt_line
     (simple_stmt
       (export_stmt
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))
-        (import_path
-          (qualified_identifier
+        (import_expr
+          (import_path
             (symbol
               (identifier))))))))
 
@@ -180,9 +181,8 @@ include helper
     (simple_stmt
       (include_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))))))
+          (symbol
+            (identifier)))))))
 
 ==================
 include multiple
@@ -197,10 +197,52 @@ include helper1, helper2
     (simple_stmt
       (include_stmt
         (import_path
-          (qualified_identifier
-            (symbol
-              (identifier))))
+          (symbol
+            (identifier)))
         (import_path
-          (qualified_identifier
+          (symbol
+            (identifier)))))))
+
+==================
+import bracket syntax
+==================
+
+import std/[os, strutils]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_expr
+          (import_path
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))))))))
+
+==================
+import nested bracket syntax
+==================
+
+import foo/bar/[baz, qux]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_expr
+          (import_path
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))
             (symbol
               (identifier))))))))

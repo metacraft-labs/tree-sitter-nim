@@ -290,9 +290,8 @@ discard not true
                         (prefix_expr
                           (postfix_expr
                             (primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))))))))))))))
+                              (literal
+                                (boolean_literal)))))))))))))))))
 
 ==================
 and operator
@@ -316,9 +315,8 @@ discard true and false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier))))))))))
+                            (literal
+                              (boolean_literal)))))))))
               (cmp_expr
                 (range_expr
                   (add_expr
@@ -326,9 +324,8 @@ discard true and false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))))))))
+                            (literal
+                              (boolean_literal))))))))))))))))
 
 ==================
 or operator
@@ -352,9 +349,8 @@ discard true or false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))
+                            (literal
+                              (boolean_literal))))))))))
             (and_expr
               (cmp_expr
                 (range_expr
@@ -363,9 +359,8 @@ discard true or false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))))))))
+                            (literal
+                              (boolean_literal))))))))))))))))
 
 ==================
 xor operator
@@ -389,9 +384,8 @@ discard true xor false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))
+                            (literal
+                              (boolean_literal))))))))))
             (and_expr
               (cmp_expr
                 (range_expr
@@ -400,9 +394,8 @@ discard true xor false
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))))))))
+                            (literal
+                              (boolean_literal))))))))))))))))
 
 ==================
 equality
@@ -1067,31 +1060,26 @@ discard arr[0]
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (add_expr
-                    (mul_expr
-                      (prefix_expr
-                        (postfix_expr
-                          (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier))))
-                          (index_suffix
-                            (expression
-                              (or_expr
-                                (and_expr
-                                  (cmp_expr
-                                    (range_expr
-                                      (add_expr
-                                        (mul_expr
-                                          (prefix_expr
-                                            (postfix_expr
-                                              (primary
-                                                (literal
-                                                  (integer_literal))))))))))))))))))))))))))
+          (command_expr
+            (postfix_expr
+              (primary
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))
+            (command_first_arg
+              (array_expr
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (add_expr
+                            (mul_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (integer_literal))))))))))))))))))))
 
 ==================
 dot access
@@ -1134,31 +1122,26 @@ discard foo{1}
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (add_expr
-                    (mul_expr
-                      (prefix_expr
-                        (postfix_expr
-                          (primary
-                            (qualified_identifier
-                              (symbol
-                                (identifier))))
-                          (brace_suffix
-                            (expression
-                              (or_expr
-                                (and_expr
-                                  (cmp_expr
-                                    (range_expr
-                                      (add_expr
-                                        (mul_expr
-                                          (prefix_expr
-                                            (postfix_expr
-                                              (primary
-                                                (literal
-                                                  (integer_literal))))))))))))))))))))))))))
+          (command_expr
+            (postfix_expr
+              (primary
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))
+            (command_first_arg
+              (set_expr
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (add_expr
+                            (mul_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (integer_literal))))))))))))))))))))
 
 ==================
 parenthesized expression
@@ -1183,30 +1166,29 @@ discard (1 + 2) * 3
                         (postfix_expr
                           (primary
                             (paren_expr
-                              (expression_list
-                                (expression
-                                  (or_expr
-                                    (and_expr
-                                      (cmp_expr
-                                        (range_expr
-                                          (add_expr
-                                            (mul_expr
-                                              (prefix_expr
-                                                (postfix_expr
-                                                  (primary
-                                                    (literal
-                                                      (integer_literal))))))
-                                            (mul_expr
-                                              (prefix_expr
-                                                (postfix_expr
-                                                  (primary
-                                                    (literal
-                                                      (integer_literal)))))))))))))))))
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (literal
-                                  (integer_literal))))))))))))))))
+                              (expression
+                                (or_expr
+                                  (and_expr
+                                    (cmp_expr
+                                      (range_expr
+                                        (add_expr
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))
+                                          (mul_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (primary
+                                                  (literal
+                                                    (integer_literal))))))))))))))))
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (integer_literal))))))))))))))))
 
 ==================
 chained method calls
@@ -1297,3 +1279,76 @@ discard `hello world`
                             (qualified_identifier
                               (symbol
                                 (quoted_identifier)))))))))))))))))
+
+==================
+command call with string
+==================
+
+echo "hello"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (command_expr
+            (postfix_expr
+              (primary
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))
+            (command_first_arg
+              (literal
+                (string_literal)))))))))
+
+==================
+command call with multiple args
+==================
+
+foo a, b, c
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (command_expr
+            (postfix_expr
+              (primary
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))
+            (command_first_arg
+              (qualified_identifier
+                (symbol
+                  (identifier))))
+            (command_arg
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (add_expr
+                        (mul_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier)))))))))))))
+            (command_arg
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (add_expr
+                        (mul_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier)))))))))))))))))))

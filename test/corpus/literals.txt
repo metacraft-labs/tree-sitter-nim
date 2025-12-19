@@ -371,7 +371,8 @@ discard nil
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (literal)))))))))))))))
+                            (literal
+                              (nil_literal))))))))))))))))
 
 ==================
 array literal empty
@@ -540,3 +541,114 @@ discard {1, 2, 3}
                                                 (primary
                                                   (literal
                                                     (integer_literal)))))))))))))))))))))))))))
+
+==================
+boolean literal true
+==================
+
+discard true
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (boolean_literal))))))))))))))))
+
+==================
+boolean literal false
+==================
+
+discard false
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (literal
+                              (boolean_literal))))))))))))))))
+
+==================
+seq literal
+==================
+
+discard @[1, 2, 3]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (primary
+                              (array_expr
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal))))))))))))
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal))))))))))))
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal))))))))))))))))))))))))))))

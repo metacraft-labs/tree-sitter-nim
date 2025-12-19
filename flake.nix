@@ -4,9 +4,14 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs =
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -15,56 +20,65 @@
         "aarch64-darwin"
       ];
 
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        devShells.default = pkgs.mkShell {
-          name = "tree-sitter-nim-dev";
+      imports = [ ./nix/pre-commit.nix ];
 
-          buildInputs = with pkgs; [
-            # Node.js for the Node bindings and dev workflow
-            nodejs_20
+      perSystem =
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          devShells.default = pkgs.mkShell {
+            name = "tree-sitter-nim-dev";
 
-            # tree-sitter CLI
-            tree-sitter
+            buildInputs = [
+              # Node.js for the Node bindings and dev workflow
+              pkgs.nodejs_20
 
-            # For building native Node modules
-            python3
+              # tree-sitter CLI
+              pkgs.tree-sitter
 
-            # Rust toolchain for the Rust bindings
-            rustc
-            cargo
-            rustfmt
-            clippy
+              # For building native Node modules
+              pkgs.python3
 
-          ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-            # C compiler for Linux
-            pkgs.gcc
-          ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
-            # libiconv needed for tree-sitter on macOS
-            pkgs.libiconv
-          ];
+              # Development tools
+              pkgs.just
+              pkgs.nodePackages.prettier
 
-          shellHook = ''
-            echo "tree-sitter-nim development environment"
-            echo ""
-            echo "Available commands:"
-            echo "  npm install      - Install Node dependencies"
-            echo "  npm run generate - Generate parser from grammar.js"
-            echo "  npm test         - Run tree-sitter tests"
-            echo "  npm run build    - Build Node native module"
-            echo ""
-            echo "Rust bindings (from bindings/rust):"
-            echo "  cargo test       - Run Rust tests"
-            echo ""
-          '';
-        };
+              # Pre-commit
+              pkgs.pre-commit
+            ]
+            ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+              # C compiler for Linux
+              pkgs.gcc
+            ]
+            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              # libiconv needed for tree-sitter on macOS
+              pkgs.libiconv
+            ]
+            ++ config.pre-commit.settings.enabledPackages;
 
-        packages = {
-          default = pkgs.tree-sitter.buildGrammar {
-            language = "nim";
-            version = "0.1.0";
-            src = ./.;
+            shellHook = ''
+              # Install git pre-commit hooks
+              ${config.pre-commit.settings.installationScript}
+
+              echo "tree-sitter-nim development environment"
+              echo ""
+              echo "Available commands (via just):"
+              just --list
+              echo ""
+            '';
+          };
+
+          packages = {
+            default = pkgs.tree-sitter.buildGrammar {
+              language = "nim";
+              version = "0.1.0";
+              src = ./.;
+            };
           };
         };
-      };
     };
 }

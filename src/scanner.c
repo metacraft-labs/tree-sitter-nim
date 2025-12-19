@@ -206,29 +206,34 @@ bool tree_sitter_nim_external_scanner_scan(void *payload, TSLexer *lexer, const 
     uint32_t indent = consume_indent(lexer);
     int32_t next = lexer->lookahead;
 
-    // Blank or comment-only lines should not affect indentation stack.
-    bool blank = is_newline(next) || next == 0;
-    bool comment_only = (next == '#');
+    bool hard_newline = valid[NEWLINE];
 
-    uint32_t current = s->indents[s->indent_len - 1];
+    // Only update indentation stack on hard newlines.
+    // Soft newlines are used for line continuation contexts where indentation
+    // must not affect the layout stack.
+    if (hard_newline) {
+      // Blank or comment-only lines should not affect indentation stack.
+      bool blank = is_newline(next) || next == 0;
+      bool comment_only = (next == '#');
 
-    if (!blank && !comment_only) {
-      if (indent > current) {
-        s->indents[s->indent_len++] = (uint16_t)indent;
-        s->pending_indent = true;
-      } else if (indent < current) {
-        while (s->indent_len > 1 && indent < s->indents[s->indent_len - 1]) {
-          s->indent_len--;
-          s->pending_dedents++;
+      uint32_t current = s->indents[s->indent_len - 1];
+
+      if (!blank && !comment_only) {
+        if (indent > current) {
+          if (s->indent_len < 256) {
+            s->indents[s->indent_len++] = (uint16_t)indent;
+            s->pending_indent = true;
+          }
+        } else if (indent < current) {
+          while (s->indent_len > 1 && indent < s->indents[s->indent_len - 1]) {
+            s->indent_len--;
+            s->pending_dedents++;
+          }
         }
       }
     }
 
-    if (valid[NEWLINE]) {
-      lexer->result_symbol = NEWLINE;
-    } else {
-      lexer->result_symbol = SOFT_NEWLINE;
-    }
+    lexer->result_symbol = hard_newline ? NEWLINE : SOFT_NEWLINE;
     return true;
   }
 
