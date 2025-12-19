@@ -31,7 +31,7 @@ module.exports = grammar({
     $.comment,
   ],
 
-  extras: ($) => [/[ \t\f\r]+/, $._soft_newline, $.comment],
+  extras: ($) => [$._ws, $._soft_newline, $.comment],
 
   conflicts: ($) => [
     [$.routine_definition],
@@ -55,6 +55,9 @@ module.exports = grammar({
   rules: {
     source_file: ($) => repeat($._statement),
 
+    // Whitespace token for extras and explicit whitespace requirements
+    _ws: (_) => token(/[ \t\f\r]+/),
+
     _statement: ($) =>
       choice($.simple_stmt_line, $.compound_stmt, $.section_stmt, $._newline),
 
@@ -77,8 +80,12 @@ module.exports = grammar({
         $.from_import_stmt,
         $.bind_stmt,
         $.mixin_stmt,
+        $.pragma_stmt,
         $.expr_stmt,
       ),
+
+    // Standalone pragma statement: {.push warnings: off.}, {.pop.}
+    pragma_stmt: ($) => $.pragma,
 
     return_stmt: ($) => seq("return", optional($.expression)),
     raise_stmt: ($) => seq("raise", optional($.expression)),
@@ -87,21 +94,27 @@ module.exports = grammar({
     break_stmt: ($) => seq("break", optional($.expression)),
     continue_stmt: ($) => seq("continue", optional($.expression)),
 
-    // Import statements with optional rename (as)
-    import_stmt: ($) => seq("import", sep1($.import_expr, ",")),
-    export_stmt: ($) => seq("export", sep1($.import_expr, ",")),
+    // Import statements with optional rename (as) and optional except clause
+    import_stmt: ($) =>
+      seq(
+        "import",
+        sep1($.import_expr, ","),
+        optional(seq("except", sep1($.symbol, ","))),
+      ),
+    export_stmt: ($) =>
+      seq(
+        "export",
+        sep1($.import_expr, ","),
+        optional(seq("except", sep1($.symbol, ","))),
+      ),
     include_stmt: ($) => seq("include", sep1($.import_path, ",")),
 
     import_expr: ($) =>
       seq($.import_path, optional(seq("as", field("alias", $.symbol)))),
 
+    // from X import Y - does NOT support except (that's only on import/export)
     from_import_stmt: ($) =>
-      seq(
-        "from",
-        $.import_path,
-        "import",
-        choice(seq("except", sep1($.symbol, ",")), sep1($.import_symbol, ",")),
-      ),
+      seq("from", $.import_path, "import", sep1($.import_symbol, ",")),
 
     import_symbol: ($) =>
       seq(
@@ -208,12 +221,15 @@ module.exports = grammar({
         field("body", $._colon_suite),
       ),
 
+    // try can have: (1) except branches + optional finally, or (2) finally only
     try_stmt: ($) =>
       seq(
         "try",
         $._colon_suite,
-        repeat1($.except_branch),
-        optional($.finally_branch),
+        choice(
+          seq(repeat1($.except_branch), optional($.finally_branch)),
+          $.finally_branch,
+        ),
       ),
 
     except_branch: ($) =>
@@ -284,7 +300,7 @@ module.exports = grammar({
 
     type_def: ($) =>
       seq(
-        field("name", $.symbol),
+        field("name", $.exported_symbol),
         optional($.generic_params),
         optional($.pragma),
         "=",
@@ -316,7 +332,7 @@ module.exports = grammar({
 
     enum_field_def: ($) =>
       seq(
-        field("name", $.symbol),
+        field("name", $.exported_symbol),
         optional($.pragma),
         optional(seq("=", field("value", $.expression))),
         optional(","),
@@ -341,7 +357,7 @@ module.exports = grammar({
 
     object_field: ($) =>
       seq(
-        sep1(field("name", $.symbol), ","),
+        sep1(field("name", $.exported_symbol), ","),
         optional($.pragma),
         ":",
         field("type", $.type_expr),
@@ -386,7 +402,7 @@ module.exports = grammar({
 
     decl_def: ($) =>
       seq(
-        sep1($.symbol, ","),
+        sep1($.exported_symbol, ","),
         optional(seq(":", $.type_expr)),
         optional(seq("=", $.expression)),
       ),
@@ -408,14 +424,13 @@ module.exports = grammar({
             "converter",
           ),
         ),
-        optional(field("name", $.symbol)),
+        optional(field("name", $.exported_symbol)),
         optional(field("generic_params", $.generic_params)),
         optional(field("params", $.param_list)),
         optional(seq(":", field("return_type", $.type_expr))),
         optional(field("pragmas", $.pragma)),
-        optional(
-          choice(field("body", $._equals_suite), field("body", $._colon_suite)),
-        ),
+        // Nim routines only use = for body, not :
+        optional(field("body", $._equals_suite)),
       ),
 
     generic_params: ($) =>
@@ -441,25 +456,29 @@ module.exports = grammar({
     expression: ($) => choice($.command_expr, prec(PREC.CALL, $.or_expr)),
 
     // Command call syntax: echo "hello", foo a, b
-    // Only valid when followed by arguments without parentheses
-    // The first argument must not start with '(' to distinguish from function calls
+    // Strong spaces: suffix openers ([, {, () use token.immediate so they bind
+    // tightly without preceding whitespace, while command syntax naturally
+    // requires whitespace to separate function from arguments
     command_expr: ($) =>
       prec.left(
         PREC.COMMAND,
         seq(
-          $.postfix_expr,
+          field("function", $.postfix_expr),
           $.command_first_arg,
           repeat(seq(",", $.command_arg)),
           optional($._block_arg),
         ),
       ),
 
-    // First command arg cannot start with '(' to avoid ambiguity with call syntax
+    // First command arg - with strong spaces (token.immediate on suffixes),
+    // we can now allow parenthesized expressions like: echo (1, 2)
     command_first_arg: ($) =>
       choice(
         $.literal, // String, number, etc.
         $.array_expr, // [1, 2, 3]
         $.set_expr, // {1, 2, 3}
+        $.paren_expr, // (expr) - now allowed with strong spaces
+        $.tuple_expr, // (a, b, c)
         seq("@", $.array_expr), // @[1, 2, 3]
         seq(choice("-", "+", "@", "$", "not"), $.prefix_expr), // Prefix operators
         $.qualified_identifier, // Bare identifier
@@ -570,7 +589,8 @@ module.exports = grammar({
         ),
       ),
 
-    call_suffix: ($) => seq("(", commaSep($.argument), optional(","), ")"),
+    call_suffix: ($) =>
+      seq(token.immediate("("), commaSep($.argument), optional(","), ")"),
     argument: ($) =>
       choice(
         $.expression,
@@ -578,8 +598,10 @@ module.exports = grammar({
         seq($.symbol, "=", $.expression),
       ),
 
-    index_suffix: ($) => seq("[", commaSep($.expression), optional(","), "]"),
-    brace_suffix: ($) => seq("{", commaSep($.expression), optional(","), "}"),
+    index_suffix: ($) =>
+      seq(token.immediate("["), commaSep($.expression), optional(","), "]"),
+    brace_suffix: ($) =>
+      seq(token.immediate("{"), commaSep($.expression), optional(","), "}"),
     dot_suffix: ($) => seq(".", $.symbol),
     pragma_suffix: ($) => $.pragma,
 
@@ -650,17 +672,21 @@ module.exports = grammar({
         ),
         // Object type (inline, without fields)
         seq("object", optional(seq("of", $.type_expr))),
-        // Generic type instantiation: Foo[T, U]
+        // Generic type instantiation: Foo[T, U] or array[0..10, int]
+        // Type arguments can be types or expressions (e.g., range literals)
         seq(
           $.qualified_identifier,
           "[",
-          commaSep1($.type_expr),
+          commaSep1($.type_arg),
           optional(","),
           "]",
         ),
       ),
 
     tuple_field: ($) => seq($.symbol, ":", $.type_expr),
+
+    // Type arguments can be types or expressions (for array[0..10, int] etc.)
+    type_arg: ($) => choice($.type_expr, $.expression),
 
     // -------------------------------
     // Pragmas
@@ -678,6 +704,8 @@ module.exports = grammar({
     identifier: (_) => /[A-Za-z\u0080-\u00FF][A-Za-z0-9\u0080-\u00FF_]*/,
     quoted_identifier: (_) => /`[^`\r\n]+`/,
     symbol: ($) => choice($.identifier, $.quoted_identifier),
+    // Exported symbol with visibility marker * (e.g., proc foo*(), type Bar*)
+    exported_symbol: ($) => seq($.symbol, optional(field("exported", "*"))),
     qualified_identifier: ($) => seq($.symbol, repeat(seq(".", $.symbol))),
 
     literal: ($) =>

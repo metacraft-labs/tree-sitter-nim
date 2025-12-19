@@ -1060,26 +1060,31 @@ discard arr[0]
     (simple_stmt
       (discard_stmt
         (expression
-          (command_expr
-            (postfix_expr
-              (primary
-                (qualified_identifier
-                  (symbol
-                    (identifier)))))
-            (command_first_arg
-              (array_expr
-                (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (add_expr
-                            (mul_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (literal
-                                      (integer_literal))))))))))))))))))))
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (index_suffix
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (range_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (prefix_expr
+                                            (postfix_expr
+                                              (primary
+                                                (literal
+                                                  (integer_literal))))))))))))))))))))))))))
 
 ==================
 dot access
@@ -1122,26 +1127,31 @@ discard foo{1}
     (simple_stmt
       (discard_stmt
         (expression
-          (command_expr
-            (postfix_expr
-              (primary
-                (qualified_identifier
-                  (symbol
-                    (identifier)))))
-            (command_first_arg
-              (set_expr
-                (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (add_expr
-                            (mul_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (literal
-                                      (integer_literal))))))))))))))))))))
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (brace_suffix
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (range_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (prefix_expr
+                                            (postfix_expr
+                                              (primary
+                                                (literal
+                                                  (integer_literal))))))))))))))))))))))))))
 
 ==================
 parenthesized expression

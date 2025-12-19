@@ -2,15 +2,16 @@
 simple proc
 ==================
 
-proc hello(): discard
+proc hello() = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (inline_stmt_list
         (simple_stmt
@@ -20,15 +21,16 @@ proc hello(): discard
 proc with return type
 ==================
 
-proc hello(): int: discard
+proc hello(): int = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (type_expr
         (qualified_identifier
@@ -42,15 +44,16 @@ proc hello(): int: discard
 proc with parameters
 ==================
 
-proc add(a: int, b: int): int: discard
+proc add(a: int, b: int): int = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -78,15 +81,16 @@ proc add(a: int, b: int): int: discard
 proc with default parameter
 ==================
 
-proc foo(x: int = 10): discard
+proc foo(x: int = 10) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -115,15 +119,16 @@ proc foo(x: int = 10): discard
 proc with multiple params same type
 ==================
 
-proc foo(a, b, c: int): discard
+proc foo(a, b, c: int) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -144,15 +149,16 @@ proc foo(a, b, c: int): discard
 proc with pragma
 ==================
 
-proc foo() {.inline.}: discard
+proc foo() {.inline.} = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (pragma
         (pragma_item
@@ -166,15 +172,16 @@ proc foo() {.inline.}: discard
 func definition
 ==================
 
-func double(x: int): int: discard
+func double(x: int): int = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -195,15 +202,16 @@ func double(x: int): int: discard
 iterator definition
 ==================
 
-iterator items(a: seq): discard
+iterator items(a: seq) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -220,15 +228,16 @@ iterator items(a: seq): discard
 method definition
 ==================
 
-method foo(o: Object): discard
+method foo(o: Object) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -245,15 +254,16 @@ method foo(o: Object): discard
 template definition
 ==================
 
-template foo(x: untyped): discard
+template foo(x: untyped) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -270,15 +280,16 @@ template foo(x: untyped): discard
 macro definition
 ==================
 
-macro foo(x: untyped): discard
+macro foo(x: untyped) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -295,15 +306,16 @@ macro foo(x: untyped): discard
 converter definition
 ==================
 
-converter toInt(x: bool): int: discard
+converter toInt(x: bool): int = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -324,15 +336,16 @@ converter toInt(x: bool): int: discard
 proc with generic params
 ==================
 
-proc foo[T](x: T): discard
+proc foo[T](x: T) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (generic_params
         (generic_param
           (symbol
@@ -353,15 +366,16 @@ proc foo[T](x: T): discard
 proc with constrained generic
 ==================
 
-proc foo[T: SomeInteger](x: T): discard
+proc foo[T: SomeInteger](x: T) = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (generic_params
         (generic_param
           (symbol
@@ -393,8 +407,9 @@ proc square(x: int): int = x * x
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -403,48 +418,38 @@ proc square(x: int): int = x * x
             (qualified_identifier
               (symbol
                 (identifier))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
       (inline_stmt_list
         (simple_stmt
           (expr_stmt
-            (assignment_stmt
-              (expression
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (add_expr
-                          (mul_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))))))
-              (expression
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (add_expr
-                          (mul_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))
-                                (prefix_expr
-                                  (postfix_expr
-                                    (primary
-                                      (qualified_identifier
-                                        (symbol
-                                          (identifier))))))))))))))))))))
+            (expression
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (add_expr
+                        (mul_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier))))))
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier)))))))))))))))))))
 
 ==================
 anonymous proc
 ==================
 
-proc (x: int): discard
+proc (x: int) = discard
 
 ---
 

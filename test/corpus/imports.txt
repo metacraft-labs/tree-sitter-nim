@@ -113,20 +113,21 @@ from os import walkDir, walkFiles
             (identifier)))))))
 
 ==================
-from import except
+import with except
 ==================
 
-from os import except walkDir
+import os except walkDir
 
 ---
 
 (source_file
   (simple_stmt_line
     (simple_stmt
-      (from_import_stmt
-        (import_path
-          (symbol
-            (identifier)))
+      (import_stmt
+        (import_expr
+          (import_path
+            (symbol
+              (identifier))))
         (symbol
           (identifier))))))
 

@@ -9,8 +9,9 @@ proc foo(x: ref int): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -20,9 +21,10 @@ proc foo(x: ref int): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 ptr type
@@ -35,8 +37,9 @@ proc foo(x: ptr int): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -46,9 +49,10 @@ proc foo(x: ptr int): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 var type
@@ -61,8 +65,9 @@ proc foo(x: var int): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -72,9 +77,10 @@ proc foo(x: var int): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 distinct type
@@ -87,8 +93,9 @@ proc foo(x: distinct int): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -98,9 +105,10 @@ proc foo(x: distinct int): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 tuple type
@@ -113,8 +121,9 @@ proc foo(x: tuple[a: int, b: string]): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -134,9 +143,10 @@ proc foo(x: tuple[a: int, b: string]): discard
                 (qualified_identifier
                   (symbol
                     (identifier))))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 proc type
@@ -149,17 +159,19 @@ proc foo(x: proc ()): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
             (identifier))
           (type_expr
             (param_list))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 proc type with return
@@ -172,8 +184,9 @@ proc foo(x: proc (): int): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -184,9 +197,10 @@ proc foo(x: proc (): int): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 object type
@@ -199,16 +213,18 @@ proc foo(x: object): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
             (identifier))
           (type_expr)))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))
 
 ==================
 object with inheritance
@@ -221,8 +237,9 @@ proc foo(x: object of RootObj): discard
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list
         (param_decl
           (symbol
@@ -232,6 +249,7 @@ proc foo(x: object of RootObj): discard
               (qualified_identifier
                 (symbol
                   (identifier)))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+      (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier)))))))

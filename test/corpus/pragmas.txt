@@ -2,15 +2,16 @@
 single pragma
 ==================
 
-proc foo() {.inline.}: discard
+proc foo() {.inline.} = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (pragma
         (pragma_item
@@ -24,15 +25,16 @@ proc foo() {.inline.}: discard
 multiple pragmas
 ==================
 
-proc foo() {.inline, noSideEffect.}: discard
+proc foo() {.inline, noSideEffect.} = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (pragma
         (pragma_item
@@ -49,15 +51,16 @@ proc foo() {.inline, noSideEffect.}: discard
 pragma with value
 ==================
 
-proc foo() {.raises: [].}: discard
+proc foo() {.raises: [].} = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (pragma
         (pragma_item
@@ -82,15 +85,16 @@ proc foo() {.raises: [].}: discard
 pragma with string value
 ==================
 
-proc foo() {.exportc: "c_foo".}: discard
+proc foo() {.exportc: "c_foo".} = discard
 
 ---
 
 (source_file
   (compound_stmt
     (routine_definition
-      (symbol
-        (identifier))
+      (exported_symbol
+        (symbol
+          (identifier)))
       (param_list)
       (pragma
         (pragma_item
