@@ -52,8 +52,10 @@ module.exports = grammar({
     [$.routine_definition],
     [$.qualified_identifier],
     [$.type_expr, $.generic_type],
+    [$.type_expr, $.type_call],
     [$.primary, $.type_expr],
     [$.primary, $.generic_type],
+    [$.primary, $.type_call],
     [$.param_decl],
     [$.enum_def],
     [$.enum_field_def],
@@ -65,7 +67,11 @@ module.exports = grammar({
     [$.proc_type],
     [$.iterator_type],
     [$.object_case],
+    [$.object_type],
     [$.concept_def],
+    [$.expr_stmt, $._expr_body],
+    [$.assignment_stmt, $._expr_body],
+    [$._suite, $._expr_body],
   ],
 
   word: ($) => $.identifier,
@@ -245,10 +251,18 @@ module.exports = grammar({
     for_stmt: ($) =>
       seq(
         "for",
-        field("variables", sep1($.symbol, ",")),
+        field("variables", $.for_pattern),
         "in",
         field("iterable", $.expression),
         field("body", $._colon_suite),
+      ),
+
+    // For loop pattern: single variable, multiple variables, or tuple destructuring
+    // Examples: for x in ..., for x, y in ..., for (a, b) in ...
+    for_pattern: ($) =>
+      choice(
+        sep1($.symbol, ","), // x or x, y
+        $.tuple_expr, // (a, b) destructuring
       ),
 
     // try can have: (1) except branches + optional finally, or (2) finally only
@@ -268,7 +282,8 @@ module.exports = grammar({
     finally_branch: ($) => seq("finally", $._colon_suite),
 
     // case statement with proper ordering: of branches first, then optional else at end
-    // Nim's structure: case expr: (of expr: suite)* (else: suite)?
+    // Nim's structure: case expr: (of expr: suite)+ (else: suite)?
+    // At least one of branch is required
     case_stmt: ($) =>
       seq(
         "case",
@@ -277,6 +292,9 @@ module.exports = grammar({
         $._newline,
         repeat($._newline),
         $._indent,
+        // Require at least one of_branch
+        repeat($._newline),
+        $.of_branch,
         repeat(choice($.of_branch, $._newline)),
         optional(seq($.else_branch, repeat($._newline))),
         $._dedent,
@@ -433,6 +451,7 @@ module.exports = grammar({
 
     // Object definition with fields
     // Uses seq("ref", "object") instead of "ref object" to handle whitespace properly
+    // Supports: fields, case branches, when branches, nil, discard
     object_def: ($) =>
       seq(
         choice("object", seq("ref", "object"), seq("ptr", "object")),
@@ -443,10 +462,20 @@ module.exports = grammar({
             $._newline,
             repeat($._newline),
             $._indent,
-            repeat(choice($.object_field, $.object_case, $._newline)),
+            repeat(choice($._object_part, $._newline)),
             $._dedent,
           ),
         ),
+      ),
+
+    // Object parts: fields, case variants, when branches, nil, discard
+    _object_part: ($) =>
+      choice(
+        $.object_field,
+        $.object_case,
+        $.object_when,
+        $.object_nil,
+        $.object_discard,
       ),
 
     object_field: ($) =>
@@ -458,6 +487,52 @@ module.exports = grammar({
         optional(seq("=", field("default", $.expression))),
         $._newline,
       ),
+
+    // When branch inside object (compile-time conditional fields)
+    // when defined(windows):
+    //   handle: HANDLE
+    // else:
+    //   fd: cint
+    object_when: ($) =>
+      seq(
+        "when",
+        field("condition", $.expression),
+        ":",
+        $._newline,
+        repeat($._newline),
+        $._indent,
+        repeat(choice($._object_part, $._newline)),
+        $._dedent,
+        repeat(
+          seq(
+            "elif",
+            field("condition", $.expression),
+            ":",
+            $._newline,
+            repeat($._newline),
+            $._indent,
+            repeat(choice($._object_part, $._newline)),
+            $._dedent,
+          ),
+        ),
+        optional(
+          seq(
+            "else",
+            ":",
+            $._newline,
+            repeat($._newline),
+            $._indent,
+            repeat(choice($._object_part, $._newline)),
+            $._dedent,
+          ),
+        ),
+      ),
+
+    // nil part in object - indicates no fields (used in variant objects)
+    object_nil: ($) => seq("nil", $._newline),
+
+    // discard part in object - similar to nil
+    object_discard: ($) => seq("discard", $._newline),
 
     // Variant object (case inside object)
     // In Nim, the of/else branches are at the same indentation level as the case,
@@ -484,7 +559,7 @@ module.exports = grammar({
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.object_field, $._newline)),
+        repeat(choice($._object_part, $._newline)),
         $._dedent,
       ),
 
@@ -495,7 +570,7 @@ module.exports = grammar({
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.object_field, $._newline)),
+        repeat(choice($._object_part, $._newline)),
         $._dedent,
       ),
 
@@ -529,27 +604,49 @@ module.exports = grammar({
     // -------------------------------
     // Routines
     // -------------------------------
+    // Routine definition requires a name (anonymous procs are proc_expr in expressions)
     routine_definition: ($) =>
       seq(
-        field(
-          "kind",
-          choice(
-            "proc",
-            "func",
-            "iterator",
-            "method",
-            "macro",
-            "template",
-            "converter",
-          ),
-        ),
-        optional(field("name", $.exported_symbol)),
+        field("kind", $.routine_kind),
+        field("name", $.exported_symbol),
         optional(field("generic_params", $.generic_params)),
         optional(field("params", $.param_list)),
         optional(seq(":", field("return_type", $.type_expr))),
         optional(field("pragmas", $.pragma)),
         // Nim routines only use = for body, not :
         optional(field("body", $._equals_suite)),
+      ),
+
+    routine_kind: (_) =>
+      prec(
+        1,
+        choice(
+          "proc",
+          "func",
+          "iterator",
+          "method",
+          "macro",
+          "template",
+          "converter",
+        ),
+      ),
+
+    // Anonymous proc/func/iterator expression (lambda)
+    // Can appear in expression contexts: let f = proc(x: int): int = x * 2
+    // Body uses = form (with either suite or inline expression)
+    // Note: proc_expr requires at least parens or a body to distinguish from proc_type
+    proc_expr: ($) =>
+      prec.right(
+        1,
+        seq(
+          field("kind", choice("proc", "func", "iterator")),
+          optional(field("generic_params", $.generic_params)),
+          // Parens are required for proc_expr to distinguish from bare proc type
+          field("params", $.param_list),
+          optional(seq(":", field("return_type", $.type_expr))),
+          optional(field("pragmas", $.pragma)),
+          optional(field("body", $._equals_suite)),
+        ),
       ),
 
     generic_params: ($) =>
@@ -623,7 +720,8 @@ module.exports = grammar({
       ),
 
     // Block argument: foo arg: body
-    _block_arg: ($) => seq(":", $._suite),
+    // Note: _colon_suite already includes the ":", so we use it directly
+    _block_arg: ($) => field("block", $._colon_suite),
 
     // Operator expressions based on Nim's precedence model from lexer.nim:getPrecedence
     // Precedence is determined by the first character of the operator token
@@ -646,9 +744,23 @@ module.exports = grammar({
       prec.left(
         PREC.ARROW,
         seq(
-          $.or_expr,
-          repeat(seq(choice("->", "~>", "=>", $.arrow_operator), $.or_expr)),
+          $.assign_op_expr,
+          repeat(
+            seq(choice("->", "~>", "=>", $.arrow_operator), $.assign_op_expr),
+          ),
         ),
+      ),
+
+    // Assignment-like operators in expression context (precedence 1)
+    // These are operators ending in = (but not ==, !=, <=, >=)
+    // Right-associative like assignment
+    // Examples: +=, -=, *=, &= etc.
+    // Note: In Nim, operators ending in = have assignment precedence (1)
+    // EXCEPT when they start with ~ or ? (those keep their first-char precedence)
+    assign_op_expr: ($) =>
+      prec.right(
+        PREC.ASSIGN_OP,
+        seq($.or_expr, optional(seq($.assignment_operator, $.assign_op_expr))),
       ),
 
     // or/xor operators (precedence 3)
@@ -666,11 +778,13 @@ module.exports = grammar({
     // Comparison operators (precedence 5)
     // User-defined operators starting with = < > ! are also comparison operators
     // Note: Arrow operators are NOT here - they have their own lowest tier
+    // Note: is/isnot/of/as are handled separately in type_relation_expr because
+    // they take a type_expr on the RHS, not a range_expr
     cmp_expr: ($) =>
       prec.left(
         PREC.CMP,
         seq(
-          $.range_expr,
+          $.type_relation_expr,
           repeat(
             seq(
               choice(
@@ -683,17 +797,24 @@ module.exports = grammar({
                 ">",
                 "in",
                 "notin",
-                "is",
-                "isnot",
-                "of",
-                "as",
                 "from",
                 // User-defined comparison operators (start with = < > !)
                 $.cmp_operator,
               ),
-              $.range_expr,
+              $.type_relation_expr,
             ),
           ),
+        ),
+      ),
+
+    // Type relation operators: is, isnot, of, as
+    // These take a type_expr on the RHS (e.g., x as ptr int, x of SomeType)
+    type_relation_expr: ($) =>
+      prec.left(
+        PREC.CMP,
+        seq(
+          $.range_expr,
+          optional(seq(choice("is", "isnot", "of", "as"), $.type_expr)),
         ),
       ),
 
@@ -777,17 +898,48 @@ module.exports = grammar({
 
     // User-defined operator tokens based on first character
     // These match Nim's lexer.nim:getPrecedence character classes
-    // Note: Operators that overlap with built-ins (like ++) require careful precedence
-    // The regex requires at least one additional operator char after the first to avoid
-    // conflicts with single-char built-in operators
+    //
+    // IMPORTANT: Operators ending in = have assignment precedence (1) UNLESS
+    // they start with ~ or ? (those keep their first-char precedence).
+    // So we exclude =$ endings from tier tokens and route them through assignment_operator.
+    //
+    // Pattern breakdown:
+    // - [=+\-*\/<>@$~&%|!?^.:\\]* matches zero or more operator chars
+    // - [+\-*\/<>@$~&%|!?^.:\\] (no =) at the end ensures no = ending
+    // - OR match single additional char if not =
     arrow_operator: (_) => token(/->|~>|=>|[\-~=][=+\-*\/<>@$~&%|!?^.:\\]*>/),
-    dollar_operator: (_) => token(/\$[=+\-*\/<>@$~&%|!?^.:\\]+/),
-    hat_operator: (_) => token(/\^[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    // $ operators: $+ $* etc, but NOT $= (assignment-like) unless starts with ~ or ?
+    dollar_operator: (_) =>
+      token(
+        /\$[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\$[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
+    // ^ operators: ^+ ^* etc, but NOT ^= (assignment-like) unless starts with ~ or ?
+    hat_operator: (_) =>
+      token(
+        /\^[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\^[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
+    // * / % \ operators, but NOT *= /= etc (assignment-like) unless starts with ~ or ?
     mul_operator: (_) =>
-      token(/[*%\\][=+\-*\/<>@$~&%|!?^.:\\]+|\/[=+\-*\/<>@$~&%|!?^.:\\]+/),
-    add_operator: (_) => token(/[+\-~|][=+\-*\/<>@$~&%|!?^.:\\]+/),
-    amp_operator: (_) => token(/&[=+\-*\/<>@$~&%|!?^.:\\]+/),
-    range_operator: (_) => token(/\.\.[=+\-*\/<>@$~&%|!?^.:\\]+/),
+      token(
+        /[*%\\/][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[*%\\/][~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
+    // + - ~ | operators, but NOT += -= etc (assignment-like)
+    // Note: ~ and ? starting operators keep their precedence even with = ending
+    add_operator: (_) =>
+      token(
+        /[+\-|][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[+\-|][~?][=+\-*\/<>@$~&%|!?^.:\\]*|~[=+\-*\/<>@$~&%|!?^.:\\]+/,
+      ),
+    // & operators, but NOT &= (assignment-like) unless starts with ~ or ?
+    amp_operator: (_) =>
+      token(
+        /&[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|&[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
+    // .. operators, but NOT ..= (assignment-like) unless starts with ~ or ?
+    range_operator: (_) =>
+      token(
+        /\.\.[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\.\.[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
+    // = ! < > operators (comparison tier) - these can end in = (==, !=, <=, >=)
     cmp_operator: (_) => token(/[=!<>][=+\-*\/<>@$~&%|!?^.:\\]+/),
 
     prefix_expr: ($) =>
@@ -840,12 +992,14 @@ module.exports = grammar({
     dot_suffix: ($) => seq(".", $.symbol_or_keyword),
     pragma_suffix: ($) => $.pragma,
 
-    // Do block: xs.map do (x: int) -> int: x * 2
+    // Do block: xs.map do (x: int) -> int {.gcsafe.}: x * 2
+    // Supports optional params, return type, and pragma
     do_block: ($) =>
       seq(
         "do",
-        optional($.param_list),
-        optional(seq("->", $.type_expr)),
+        optional(field("params", $.param_list)),
+        optional(seq("->", field("return_type", $.type_expr))),
+        optional(field("pragmas", $.pragma)),
         $._colon_suite,
       ),
 
@@ -891,33 +1045,82 @@ module.exports = grammar({
         $.case_expr,
         $.try_expr,
         $.block_expr,
+        // Anonymous proc/func/iterator expressions (lambdas)
+        $.proc_expr,
       ),
 
     // Parenthesized expression: (expr) - just grouping, not a tuple
+    // Also supports statement-list expressions: (discard 1; 2)
     // Note: () is an empty tuple, handled by tuple_expr
-    // Expression forms of statements (if_expr, case_expr, try_expr, block_expr)
-    // are handled through the parenthesized form: (if cond: 1 else: 2)
-    // or through Nim's statement-as-expression in appropriate contexts.
-    paren_expr: ($) => seq("(", $.expression, ")"),
+    paren_expr: ($) =>
+      prec(
+        2,
+        choice(
+          seq("(", $.expression, ")"),
+          // Statement-list expression: (stmt; stmt; expr) or (stmt;)
+          $.stmt_list_expr,
+        ),
+      ),
 
-    // Expression form of if: (if cond: 1 else: 2)
+    // Statement-list expression in parentheses: (discard 1; 2)
+    // Requires at least one semicolon to distinguish from plain paren_expr
+    // Examples: (discard 1; 2), (let x = 1; x), (discard;)
+    stmt_list_expr: ($) =>
+      seq(
+        "(",
+        $.simple_stmt,
+        ";",
+        choice(
+          seq(repeat(seq($.simple_stmt, ";")), optional($.expression)),
+          $.expression,
+        ),
+        ")",
+      ),
+
+    // Expression body - can be inline expression or indented suite
+    // Used for if_expr, case_expr, try_expr, block_expr branches
+    // This allows multi-line expression forms like:
+    //   let x = if cond:
+    //     echo "hi"
+    //     1
+    //   else:
+    //     2
+    _expr_body: ($) =>
+      choice(
+        $.expression,
+        seq(
+          $._newline,
+          repeat($._newline),
+          $._indent,
+          repeat($._statement),
+          $._dedent,
+        ),
+      ),
+
+    // Expression form of if - now supports both inline and multi-line bodies
+    // Inline: if cond: 1 else: 2
+    // Multi-line: if cond:
+    //               echo "hi"
+    //               1
+    //             else:
+    //               2
     if_expr: ($) =>
       prec.right(
         seq(
           "if",
           field("condition", $.expression),
           ":",
-          field("consequence", $.expression),
+          field("consequence", $._expr_body),
           repeat(
-            seq("elif", field("condition", $.expression), ":", $.expression),
+            seq("elif", field("condition", $.expression), ":", $._expr_body),
           ),
           "else",
           ":",
-          field("alternative", $.expression),
+          field("alternative", $._expr_body),
         ),
       ),
 
-    // Expression form of case: (case k of 1: "a" else: "b")
+    // Expression form of case - now supports both inline and multi-line bodies
     case_expr: ($) =>
       prec.left(
         seq(
@@ -929,17 +1132,17 @@ module.exports = grammar({
 
     case_expr_branch: ($) =>
       choice(
-        seq("of", $.expression_list, ":", $.expression),
-        seq("else", ":", $.expression),
+        seq("of", $.expression_list, ":", $._expr_body),
+        seq("else", ":", $._expr_body),
       ),
 
-    // Expression form of try: (try: f() except: g())
+    // Expression form of try - now supports both inline and multi-line bodies
     try_expr: ($) =>
       prec.right(
         seq(
           "try",
           ":",
-          field("body", $.expression),
+          field("body", $._expr_body),
           choice(
             seq(repeat1($.except_expr_branch), optional($.finally_expr_branch)),
             $.finally_expr_branch,
@@ -948,12 +1151,11 @@ module.exports = grammar({
       ),
 
     except_expr_branch: ($) =>
-      seq("except", optional($.expression_list), ":", $.expression),
+      seq("except", optional($.expression_list), ":", $._expr_body),
 
-    finally_expr_branch: ($) => seq("finally", ":", $.expression),
+    finally_expr_branch: ($) => seq("finally", ":", $._expr_body),
 
-    // Expression form of block: (block: computeValue())
-    // Uses high precedence to distinguish from block_stmt in expression context
+    // Expression form of block - now supports both inline and multi-line bodies
     block_expr: ($) =>
       prec.right(
         10,
@@ -961,7 +1163,7 @@ module.exports = grammar({
           "block",
           optional(field("name", $.symbol)),
           ":",
-          field("body", $.expression),
+          field("body", $._expr_body),
         ),
       ),
 
@@ -1040,6 +1242,7 @@ module.exports = grammar({
         $.iterator_type,
         $.object_type,
         $.generic_type,
+        $.type_call, // typeof(x), type(x), etc.
         $.qualified_identifier, // Simple type name (must be last to avoid conflicts)
       ),
 
@@ -1108,6 +1311,17 @@ module.exports = grammar({
         commaSep1($.type_arg),
         optional(","),
         "]",
+      ),
+
+    // Type call: typeof(x), type(x), typedesc(T), etc.
+    // These are type-returning expressions used in type contexts
+    type_call: ($) =>
+      seq(
+        field("name", $.qualified_identifier),
+        token.immediate("("),
+        commaSep($.expression),
+        optional(","),
+        ")",
       ),
 
     tuple_field: ($) => seq($.symbol, ":", $.type_expr),

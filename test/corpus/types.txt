@@ -9,6 +9,7 @@ proc foo(x: ref int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -37,6 +38,7 @@ proc foo(x: ptr int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -65,6 +67,7 @@ proc foo(x: var int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -93,6 +96,7 @@ proc foo(x: distinct int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -121,6 +125,7 @@ proc foo(x: tuple[a: int, b: string]) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -159,6 +164,7 @@ proc foo(x: proc ()) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -184,6 +190,7 @@ proc foo(x: proc (): int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -213,6 +220,7 @@ proc foo(x: object) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -237,6 +245,7 @@ proc foo(x: object of RootObj) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))

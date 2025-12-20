@@ -11,20 +11,22 @@ if x: discard
     (if_stmt
       (expression
         (arrow_expr
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (amp_expr
-                    (add_expr
-                      (mul_expr
-                        (pow_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))))))))))))))
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -42,19 +44,21 @@ when true: discard
     (when_stmt
       (expression
         (arrow_expr
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (amp_expr
-                    (add_expr
-                      (mul_expr
-                        (pow_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (literal
-                                  (boolean_literal)))))))))))))))
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (boolean_literal)))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -72,19 +76,21 @@ while true: discard
     (while_stmt
       (expression
         (arrow_expr
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (amp_expr
-                    (add_expr
-                      (mul_expr
-                        (pow_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (literal
-                                  (boolean_literal)))))))))))))))
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (boolean_literal)))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -100,24 +106,27 @@ for i in items: discard
 (source_file
   (compound_stmt
     (for_stmt
-      (symbol
-        (identifier))
+      (for_pattern
+        (symbol
+          (identifier)))
       (expression
         (arrow_expr
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (amp_expr
-                    (add_expr
-                      (mul_expr
-                        (pow_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))))))))))))))
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -133,26 +142,102 @@ for k, v in pairs: discard
 (source_file
   (compound_stmt
     (for_stmt
-      (symbol
-        (identifier))
-      (symbol
-        (identifier))
+      (for_pattern
+        (symbol
+          (identifier))
+        (symbol
+          (identifier)))
       (expression
         (arrow_expr
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (range_expr
-                  (amp_expr
-                    (add_expr
-                      (mul_expr
-                        (pow_expr
-                          (prefix_expr
-                            (postfix_expr
-                              (primary
-                                (qualified_identifier
-                                  (symbol
-                                    (identifier))))))))))))))))
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+for tuple destructuring
+==================
+
+for (a, b) in items: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (for_stmt
+      (for_pattern
+        (tuple_expr
+          (tuple_element
+            (expression
+              (arrow_expr
+                (assign_op_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (type_relation_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))))
+          (tuple_element
+            (expression
+              (arrow_expr
+                (assign_op_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (type_relation_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))))))
+      (expression
+        (arrow_expr
+          (assign_op_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (type_relation_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

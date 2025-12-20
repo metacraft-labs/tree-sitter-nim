@@ -9,6 +9,7 @@ proc f(var x: int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      kind: (routine_kind)
       name: (exported_symbol
         (symbol
           (identifier)))
@@ -36,6 +37,7 @@ proc g(out y: string) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      kind: (routine_kind)
       name: (exported_symbol
         (symbol
           (identifier)))
@@ -63,6 +65,7 @@ proc h(sink s: seq[int]) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      kind: (routine_kind)
       name: (exported_symbol
         (symbol
           (identifier)))

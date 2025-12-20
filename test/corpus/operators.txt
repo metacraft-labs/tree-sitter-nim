@@ -12,29 +12,31 @@ a +++ b
       (expr_stmt
         (expression
           (arrow_expr
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))
-                        (add_operator)
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))
+                            (add_operator)
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 user-defined mul operator
@@ -50,28 +52,30 @@ a ** b
       (expr_stmt
         (expression
           (arrow_expr
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))
-                          (mul_operator)
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))
+                              (mul_operator)
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 user-defined hat operator
@@ -87,27 +91,29 @@ a ^^ b
       (expr_stmt
         (expression
           (arrow_expr
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))
-                            (hat_operator)
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))
+                                (hat_operator)
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 user-defined cmp operator
@@ -123,35 +129,39 @@ a ==> b
       (expr_stmt
         (expression
           (arrow_expr
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))
             (arrow_operator)
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 user-defined amp operator
@@ -167,27 +177,29 @@ a && b
       (expr_stmt
         (expression
           (arrow_expr
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (range_expr
-                    (amp_expr
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier)))))))))
-                      (amp_operator)
-                      (add_expr
-                        (mul_expr
-                          (pow_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))))))))
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))
+                          (amp_operator)
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))

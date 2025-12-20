@@ -9,6 +9,7 @@ proc foo() {.inline.} = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -32,6 +33,7 @@ proc foo() {.inline, noSideEffect.} = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -58,6 +60,7 @@ proc foo() {.raises: [].} = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -68,18 +71,20 @@ proc foo() {.raises: [].} = discard
             (identifier))
           (expression
             (arrow_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (amp_expr
-                        (add_expr
-                          (mul_expr
-                            (pow_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (array_expr))))))))))))))))
+              (assign_op_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (type_relation_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (array_expr))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -95,6 +100,7 @@ proc foo() {.exportc: "c_foo".} = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -105,19 +111,21 @@ proc foo() {.exportc: "c_foo".} = discard
             (identifier))
           (expression
             (arrow_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (amp_expr
-                        (add_expr
-                          (mul_expr
-                            (pow_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (literal
-                                      (string_literal)))))))))))))))))
+              (assign_op_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (type_relation_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (literal
+                                          (string_literal)))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

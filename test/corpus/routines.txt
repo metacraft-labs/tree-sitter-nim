@@ -9,6 +9,7 @@ proc hello() = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -28,6 +29,7 @@ proc hello(): int = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -51,6 +53,7 @@ proc add(a: int, b: int): int = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -88,6 +91,7 @@ proc foo(x: int = 10) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -101,19 +105,21 @@ proc foo(x: int = 10) = discard
                 (identifier))))
           (expression
             (arrow_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (range_expr
-                      (amp_expr
-                        (add_expr
-                          (mul_expr
-                            (pow_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (primary
-                                    (literal
-                                      (integer_literal)))))))))))))))))
+              (assign_op_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (type_relation_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (literal
+                                          (integer_literal)))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -129,6 +135,7 @@ proc foo(a, b, c: int) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -159,6 +166,7 @@ proc foo() {.inline.} = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -182,6 +190,7 @@ func double(x: int): int = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -212,6 +221,7 @@ iterator items(a: seq) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -238,6 +248,7 @@ method foo(o: Object) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -264,6 +275,7 @@ template foo(x: untyped) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -290,6 +302,7 @@ macro foo(x: untyped) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -316,6 +329,7 @@ converter toInt(x: bool): int = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -346,6 +360,7 @@ proc foo[T](x: T) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -376,6 +391,7 @@ proc foo[T: SomeInteger](x: T) = discard
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -410,6 +426,7 @@ proc square(x: int): int = x * x
 (source_file
   (compound_stmt
     (routine_definition
+      (routine_kind)
       (exported_symbol
         (symbol
           (identifier)))
@@ -430,27 +447,29 @@ proc square(x: int): int = x * x
           (expr_stmt
             (expression
               (arrow_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (amp_expr
-                          (add_expr
-                            (mul_expr
-                              (pow_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (primary
-                                      (qualified_identifier
-                                        (symbol
-                                          (identifier)))))))
-                              (pow_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (primary
-                                      (qualified_identifier
-                                        (symbol
-                                          (identifier))))))))))))))))))))))
+                (assign_op_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (type_relation_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier))))))))))))))))))))))))
 
 ==================
 anonymous proc
@@ -461,16 +480,33 @@ proc (x: int) = discard
 ---
 
 (source_file
-  (compound_stmt
-    (routine_definition
-      (param_list
-        (param_decl
-          (symbol
-            (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
-      (inline_stmt_list
-        (simple_stmt
-          (discard_stmt))))))
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (type_relation_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (proc_expr
+                                        (param_list
+                                          (param_decl
+                                            (symbol
+                                              (identifier))
+                                            (type_expr
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))
+                                        (inline_stmt_list
+                                          (simple_stmt
+                                            (discard_stmt)))))))))))))))))))))))
