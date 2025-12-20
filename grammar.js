@@ -781,6 +781,11 @@ module.exports = grammar({
         $.tuple_expr,
         $.array_expr,
         $.curly_expr,
+        // Expression forms of statements - can appear as primary expressions
+        $.if_expr,
+        $.case_expr,
+        $.try_expr,
+        $.block_expr,
       ),
 
     // Parenthesized expression or tuple with optional named fields
@@ -790,9 +795,8 @@ module.exports = grammar({
     // The compound_stmt forms handle these when used as statements.
     paren_expr: ($) => seq("(", optional($._paren_content), ")"),
 
-    // Inside parens we can have regular expressions or expression forms of statements
-    _paren_content: ($) =>
-      choice($.if_expr, $.case_expr, $.try_expr, $.block_expr, $.expression),
+    // Inside parens we just have regular expressions (expression forms are now in primary)
+    _paren_content: ($) => $.expression,
 
     // Expression form of if: (if cond: 1 else: 2)
     if_expr: ($) =>
@@ -847,8 +851,10 @@ module.exports = grammar({
     finally_expr_branch: ($) => seq("finally", ":", $.expression),
 
     // Expression form of block: (block: computeValue())
+    // Uses high precedence to distinguish from block_stmt in expression context
     block_expr: ($) =>
       prec.right(
+        10,
         seq(
           "block",
           optional(field("name", $.symbol)),
