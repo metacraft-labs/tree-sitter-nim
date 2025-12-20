@@ -61,6 +61,7 @@ module.exports = grammar({
     [$.proc_type],
     [$.iterator_type],
     [$.object_case],
+    [$.concept_def],
   ],
 
   word: ($) => $.identifier,
@@ -375,7 +376,8 @@ module.exports = grammar({
         field("value", $._type_def_value),
       ),
 
-    _type_def_value: ($) => choice($.type_expr, $.enum_def, $.object_def),
+    _type_def_value: ($) =>
+      choice($.type_expr, $.enum_def, $.object_def, $.concept_def),
 
     // Enum definition with optional values
     // Nim allows both comma-separated and newline-separated enum fields
@@ -475,6 +477,26 @@ module.exports = grammar({
         repeat(choice($.object_field, $._newline)),
         $._dedent,
       ),
+
+    // Concept definition: concept x, y or concept x of SomeType
+    // Body contains constraint expressions that must be satisfied
+    concept_def: ($) =>
+      seq(
+        "concept",
+        optional(seq(sep1($.symbol, ","), optional(seq("of", $.type_expr)))),
+        optional(
+          seq(
+            $._newline,
+            repeat($._newline),
+            $._indent,
+            repeat(choice($.concept_constraint, $._newline)),
+            $._dedent,
+          ),
+        ),
+      ),
+
+    // A concept constraint is an expression that must be valid/true for the concept
+    concept_constraint: ($) => seq($.expression, $._newline),
 
     decl_def: ($) =>
       seq(

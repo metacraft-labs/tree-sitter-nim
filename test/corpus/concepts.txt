@@ -1,0 +1,195 @@
+==================
+simple concept
+==================
+
+type
+  Printable = concept x
+    $x is string
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (concept_def
+          (symbol
+            (identifier))
+          (concept_constraint
+            (expression
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier)))))))))))))
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
+
+==================
+concept with multiple parameters
+==================
+
+type
+  Addable = concept a, b
+    a + b is typeof(a)
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (concept_def
+          (symbol
+            (identifier))
+          (symbol
+            (identifier))
+          (concept_constraint
+            (expression
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))
+                                    (call_suffix
+                                      (argument
+                                        (expression
+                                          (or_expr
+                                            (and_expr
+                                              (cmp_expr
+                                                (amp_expr
+                                                  (range_expr
+                                                    (add_expr
+                                                      (mul_expr
+                                                        (dollar_expr
+                                                          (hat_expr
+                                                            (prefix_expr
+                                                              (postfix_expr
+                                                                (primary
+                                                                  (qualified_identifier
+                                                                    (symbol
+                                                                      (identifier))))))))))))))))))))))))))))))))))))
+
+==================
+concept with of clause
+==================
+
+type
+  Comparable = concept x of RootObj
+    x < x is bool
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (concept_def
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))
+          (concept_constraint
+            (expression
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))
+                    (amp_expr
+                      (range_expr
+                        (add_expr
+                          (mul_expr
+                            (dollar_expr
+                              (hat_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
