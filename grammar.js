@@ -94,6 +94,7 @@ module.exports = grammar({
     [$.assignment_stmt, $._expr_body],
     [$._suite, $._expr_body],
     [$.tuple_field, $.qualified_identifier],
+    [$.routine_header, $.exported_symbol],
   ],
 
   word: ($) => $.identifier,
@@ -191,13 +192,15 @@ module.exports = grammar({
 
     expr_stmt: ($) => choice($.assignment_stmt, $.expression),
 
-    // Assignment statement with = or assignment operators (+=, -=, *=, etc.)
-    // Assignment operators are those ending with = but not starting with = < > !
+    // Assignment statement with = only
+    // In Nim's parser, = is handled specially as a statement form,
+    // but assignment-like operators (+=, *=, etc.) are parsed as normal
+    // operators at precedence tier 1 (handled by assign_op_expr)
     assignment_stmt: ($) =>
       prec.right(
         seq(
           field("left", $.expression),
-          field("operator", choice("=", $.assignment_operator)),
+          field("operator", "="),
           field("right", $.expression),
         ),
       ),
@@ -618,7 +621,11 @@ module.exports = grammar({
       ),
 
     // Concept definition: concept x, y or concept x of SomeType
-    // Body contains constraint expressions that must be satisfied
+    // Body contains constraint expressions and routine signatures
+    // Example:
+    //   type Comparable = concept x, y
+    //     (x < y) is bool
+    //     proc `==`(a, b: typeof(x)): bool
     concept_def: ($) =>
       seq(
         "concept",
@@ -628,7 +635,7 @@ module.exports = grammar({
             $._newline,
             repeat($._newline),
             $._indent,
-            repeat(choice($.concept_constraint, $._newline)),
+            repeat(choice($.concept_constraint, $.routine_header, $._newline)),
             $._dedent,
           ),
         ),
@@ -636,6 +643,19 @@ module.exports = grammar({
 
     // A concept constraint is an expression that must be valid/true for the concept
     concept_constraint: ($) => seq($.expression, $._newline),
+
+    // Routine header without body - used in concept definitions for signature constraints
+    // Example: proc `==`(a, b: T): bool
+    routine_header: ($) =>
+      seq(
+        field("kind", $.routine_kind),
+        field("name", choice($.symbol, $.exported_symbol)),
+        optional(field("generic_params", $.generic_params)),
+        optional(field("params", $.param_list)),
+        optional(seq(":", field("return_type", $.type_expr))),
+        optional(field("pragmas", $.pragma)),
+        $._newline,
+      ),
 
     decl_def: ($) =>
       seq(

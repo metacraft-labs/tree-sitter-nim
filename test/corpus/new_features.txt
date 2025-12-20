@@ -585,3 +585,62 @@ discard obj.while
                                           (identifier))
                                         (symbol
                                           (identifier))))))))))))))))))))))
+
+==================
+concept with proc signature constraint
+==================
+
+type Comparable = concept x, y
+  proc `<`(a, b: typeof(x)): bool
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (concept_def
+          (symbol
+            (identifier))
+          (symbol
+            (identifier))
+          (routine_header
+            kind: (routine_kind)
+            name: (symbol
+              (quoted_identifier))
+            params: (param_list
+              (param_decl
+                (symbol
+                  (identifier))
+                (symbol
+                  (identifier))
+                (type_expr
+                  (type_call
+                    name: (qualified_identifier
+                      (symbol
+                        (identifier)))
+                    (expression
+                      (arrow_expr
+                        (assign_op_expr
+                          (op2_expr
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (range_expr
+                                    (amp_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (pow_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (postfixable_primary
+                                                  (qualified_identifier
+                                                    (symbol
+                                                      (identifier))))))))))))))))))))))
+            return_type: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier))))))))))

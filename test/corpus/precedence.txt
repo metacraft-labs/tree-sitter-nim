@@ -163,7 +163,7 @@ discard a & b .. c
                                           (identifier))))))))))))))))))))))
 
 ==================
-dollar and hat same tier left associative
+unary dollar with infix hat
 ==================
 
 discard $a ^ b
@@ -1017,6 +1017,53 @@ x = y
                                             (identifier))))))))))))))))))
           right: (expression
             (arrow_expr
+              (assign_op_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier)))))))))))))))))))))))
+
+==================
+assignment operator += is not assignment stmt
+==================
+
+x += y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))))))))
               (assign_op_expr
                 (op2_expr
                   (or_expr
