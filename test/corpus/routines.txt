@@ -100,15 +100,15 @@ proc foo(x: int = 10) = discard
               (symbol
                 (identifier))))
           (expression
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (amp_expr
+            (arrow_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
                     (range_expr
-                      (add_expr
-                        (mul_expr
-                          (dollar_expr
-                            (hat_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
                               (prefix_expr
                                 (postfix_expr
                                   (primary
@@ -429,23 +429,22 @@ proc square(x: int): int = x * x
         (simple_stmt
           (expr_stmt
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (amp_expr
+              (arrow_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
                                       (qualified_identifier
                                         (symbol
-                                          (identifier))))))))
-                            (dollar_expr
-                              (hat_expr
+                                          (identifier)))))))
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary

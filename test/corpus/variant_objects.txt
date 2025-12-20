@@ -46,15 +46,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary
@@ -72,15 +72,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary
@@ -128,15 +128,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary
@@ -211,15 +211,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary
@@ -227,15 +227,15 @@ type
                                             (symbol
                                               (identifier))))))))))))))))
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary
@@ -253,15 +253,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (amp_expr
+                  (arrow_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
                           (range_expr
-                            (add_expr
-                              (mul_expr
-                                (dollar_expr
-                                  (hat_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (primary

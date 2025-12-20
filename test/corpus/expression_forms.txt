@@ -14,43 +14,43 @@ let x = (if cond: 1 else: 2)
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (paren_expr
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
                                                               (if_expr
                                                                 (expression
-                                                                  (or_expr
-                                                                    (and_expr
-                                                                      (cmp_expr
-                                                                        (amp_expr
+                                                                  (arrow_expr
+                                                                    (or_expr
+                                                                      (and_expr
+                                                                        (cmp_expr
                                                                           (range_expr
-                                                                            (add_expr
-                                                                              (mul_expr
-                                                                                (dollar_expr
-                                                                                  (hat_expr
+                                                                            (amp_expr
+                                                                              (add_expr
+                                                                                (mul_expr
+                                                                                  (pow_expr
                                                                                     (prefix_expr
                                                                                       (postfix_expr
                                                                                         (primary
@@ -58,30 +58,30 @@ let x = (if cond: 1 else: 2)
                                                                                             (symbol
                                                                                               (identifier))))))))))))))))
                                                                 (expression
-                                                                  (or_expr
-                                                                    (and_expr
-                                                                      (cmp_expr
-                                                                        (amp_expr
+                                                                  (arrow_expr
+                                                                    (or_expr
+                                                                      (and_expr
+                                                                        (cmp_expr
                                                                           (range_expr
-                                                                            (add_expr
-                                                                              (mul_expr
-                                                                                (dollar_expr
-                                                                                  (hat_expr
+                                                                            (amp_expr
+                                                                              (add_expr
+                                                                                (mul_expr
+                                                                                  (pow_expr
                                                                                     (prefix_expr
                                                                                       (postfix_expr
                                                                                         (primary
                                                                                           (literal
                                                                                             (integer_literal)))))))))))))))
                                                                 (expression
-                                                                  (or_expr
-                                                                    (and_expr
-                                                                      (cmp_expr
-                                                                        (amp_expr
+                                                                  (arrow_expr
+                                                                    (or_expr
+                                                                      (and_expr
+                                                                        (cmp_expr
                                                                           (range_expr
-                                                                            (add_expr
-                                                                              (mul_expr
-                                                                                (dollar_expr
-                                                                                  (hat_expr
+                                                                            (amp_expr
+                                                                              (add_expr
+                                                                                (mul_expr
+                                                                                  (pow_expr
                                                                                     (prefix_expr
                                                                                       (postfix_expr
                                                                                         (primary
@@ -104,29 +104,29 @@ let x = if cond: 1 else: 2
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (if_expr
                                     condition: (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -134,30 +134,30 @@ let x = if cond: 1 else: 2
                                                                 (symbol
                                                                   (identifier))))))))))))))))
                                     consequence: (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
                                                               (literal
                                                                 (integer_literal)))))))))))))))
                                     alternative: (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -180,29 +180,29 @@ let x = if a: 1 elif b: 2 else: 3
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (if_expr
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -210,30 +210,30 @@ let x = if a: 1 elif b: 2 else: 3
                                                                 (symbol
                                                                   (identifier))))))))))))))))
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
                                                               (literal
                                                                 (integer_literal)))))))))))))))
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -241,30 +241,30 @@ let x = if a: 1 elif b: 2 else: 3
                                                                 (symbol
                                                                   (identifier))))))))))))))))
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
                                                               (literal
                                                                 (integer_literal)))))))))))))))
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -287,29 +287,29 @@ let x = case k of 1: "a" else: "b"
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (case_expr
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -319,30 +319,30 @@ let x = case k of 1: "a" else: "b"
                                     (case_expr_branch
                                       (expression_list
                                         (expression
-                                          (or_expr
-                                            (and_expr
-                                              (cmp_expr
-                                                (amp_expr
+                                          (arrow_expr
+                                            (or_expr
+                                              (and_expr
+                                                (cmp_expr
                                                   (range_expr
-                                                    (add_expr
-                                                      (mul_expr
-                                                        (dollar_expr
-                                                          (hat_expr
+                                                    (amp_expr
+                                                      (add_expr
+                                                        (mul_expr
+                                                          (pow_expr
                                                             (prefix_expr
                                                               (postfix_expr
                                                                 (primary
                                                                   (literal
                                                                     (integer_literal))))))))))))))))
                                       (expression
-                                        (or_expr
-                                          (and_expr
-                                            (cmp_expr
-                                              (amp_expr
+                                        (arrow_expr
+                                          (or_expr
+                                            (and_expr
+                                              (cmp_expr
                                                 (range_expr
-                                                  (add_expr
-                                                    (mul_expr
-                                                      (dollar_expr
-                                                        (hat_expr
+                                                  (amp_expr
+                                                    (add_expr
+                                                      (mul_expr
+                                                        (pow_expr
                                                           (prefix_expr
                                                             (postfix_expr
                                                               (primary
@@ -350,15 +350,15 @@ let x = case k of 1: "a" else: "b"
                                                                   (string_literal))))))))))))))))
                                     (case_expr_branch
                                       (expression
-                                        (or_expr
-                                          (and_expr
-                                            (cmp_expr
-                                              (amp_expr
+                                        (arrow_expr
+                                          (or_expr
+                                            (and_expr
+                                              (cmp_expr
                                                 (range_expr
-                                                  (add_expr
-                                                    (mul_expr
-                                                      (dollar_expr
-                                                        (hat_expr
+                                                  (amp_expr
+                                                    (add_expr
+                                                      (mul_expr
+                                                        (pow_expr
                                                           (prefix_expr
                                                             (postfix_expr
                                                               (primary
@@ -381,29 +381,29 @@ let x = try: f() except: 0
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (try_expr
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary
@@ -413,15 +413,15 @@ let x = try: f() except: 0
                                                             (call_suffix)))))))))))))
                                     (except_expr_branch
                                       (expression
-                                        (or_expr
-                                          (and_expr
-                                            (cmp_expr
-                                              (amp_expr
+                                        (arrow_expr
+                                          (or_expr
+                                            (and_expr
+                                              (cmp_expr
                                                 (range_expr
-                                                  (add_expr
-                                                    (mul_expr
-                                                      (dollar_expr
-                                                        (hat_expr
+                                                  (amp_expr
+                                                    (add_expr
+                                                      (mul_expr
+                                                        (pow_expr
                                                           (prefix_expr
                                                             (postfix_expr
                                                               (primary
@@ -444,29 +444,29 @@ let x = block: computeValue()
           (symbol
             (identifier)))
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (amp_expr
+          (arrow_expr
+            (or_expr
+              (and_expr
+                (cmp_expr
                   (range_expr
-                    (add_expr
-                      (mul_expr
-                        (dollar_expr
-                          (hat_expr
+                    (amp_expr
+                      (add_expr
+                        (mul_expr
+                          (pow_expr
                             (prefix_expr
                               (postfix_expr
                                 (primary
                                   (block_expr
                                     (expression
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (amp_expr
+                                      (arrow_expr
+                                        (or_expr
+                                          (and_expr
+                                            (cmp_expr
                                               (range_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (dollar_expr
-                                                      (hat_expr
+                                                (amp_expr
+                                                  (add_expr
+                                                    (mul_expr
+                                                      (pow_expr
                                                         (prefix_expr
                                                           (postfix_expr
                                                             (primary

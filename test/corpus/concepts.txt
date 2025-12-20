@@ -20,28 +20,27 @@ type
             (identifier))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (amp_expr
+              (arrow_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (prefix_expr
                                     (postfix_expr
                                       (primary
                                         (qualified_identifier
                                           (symbol
-                                            (identifier)))))))))))))
-                    (amp_expr
+                                            (identifier))))))))))))
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
@@ -73,36 +72,34 @@ type
             (identifier))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (amp_expr
+              (arrow_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
                                       (qualified_identifier
                                         (symbol
-                                          (identifier)))))))))
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                                          (identifier))))))))
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
                                       (qualified_identifier
                                         (symbol
-                                          (identifier))))))))))))
-                    (amp_expr
+                                          (identifier)))))))))))
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
@@ -112,15 +109,15 @@ type
                                     (call_suffix
                                       (argument
                                         (expression
-                                          (or_expr
-                                            (and_expr
-                                              (cmp_expr
-                                                (amp_expr
+                                          (arrow_expr
+                                            (or_expr
+                                              (and_expr
+                                                (cmp_expr
                                                   (range_expr
-                                                    (add_expr
-                                                      (mul_expr
-                                                        (dollar_expr
-                                                          (hat_expr
+                                                    (amp_expr
+                                                      (add_expr
+                                                        (mul_expr
+                                                          (pow_expr
                                                             (prefix_expr
                                                               (postfix_expr
                                                                 (primary
@@ -154,39 +151,37 @@ type
                 (identifier))))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (amp_expr
+              (arrow_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
                                       (qualified_identifier
                                         (symbol
-                                          (identifier))))))))))))
-                    (amp_expr
+                                          (identifier)))))))))))
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary
                                       (qualified_identifier
                                         (symbol
-                                          (identifier))))))))))))
-                    (amp_expr
+                                          (identifier)))))))))))
                       (range_expr
-                        (add_expr
-                          (mul_expr
-                            (dollar_expr
-                              (hat_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (primary

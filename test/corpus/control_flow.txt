@@ -10,15 +10,15 @@ if x: discard
   (compound_stmt
     (if_stmt
       (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (amp_expr
+        (arrow_expr
+          (or_expr
+            (and_expr
+              (cmp_expr
                 (range_expr
-                  (add_expr
-                    (mul_expr
-                      (dollar_expr
-                        (hat_expr
+                  (amp_expr
+                    (add_expr
+                      (mul_expr
+                        (pow_expr
                           (prefix_expr
                             (postfix_expr
                               (primary
@@ -41,15 +41,15 @@ when true: discard
   (compound_stmt
     (when_stmt
       (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (amp_expr
+        (arrow_expr
+          (or_expr
+            (and_expr
+              (cmp_expr
                 (range_expr
-                  (add_expr
-                    (mul_expr
-                      (dollar_expr
-                        (hat_expr
+                  (amp_expr
+                    (add_expr
+                      (mul_expr
+                        (pow_expr
                           (prefix_expr
                             (postfix_expr
                               (primary
@@ -71,15 +71,15 @@ while true: discard
   (compound_stmt
     (while_stmt
       (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (amp_expr
+        (arrow_expr
+          (or_expr
+            (and_expr
+              (cmp_expr
                 (range_expr
-                  (add_expr
-                    (mul_expr
-                      (dollar_expr
-                        (hat_expr
+                  (amp_expr
+                    (add_expr
+                      (mul_expr
+                        (pow_expr
                           (prefix_expr
                             (postfix_expr
                               (primary
@@ -103,15 +103,15 @@ for i in items: discard
       (symbol
         (identifier))
       (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (amp_expr
+        (arrow_expr
+          (or_expr
+            (and_expr
+              (cmp_expr
                 (range_expr
-                  (add_expr
-                    (mul_expr
-                      (dollar_expr
-                        (hat_expr
+                  (amp_expr
+                    (add_expr
+                      (mul_expr
+                        (pow_expr
                           (prefix_expr
                             (postfix_expr
                               (primary
@@ -138,15 +138,15 @@ for k, v in pairs: discard
       (symbol
         (identifier))
       (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (amp_expr
+        (arrow_expr
+          (or_expr
+            (and_expr
+              (cmp_expr
                 (range_expr
-                  (add_expr
-                    (mul_expr
-                      (dollar_expr
-                        (hat_expr
+                  (amp_expr
+                    (add_expr
+                      (mul_expr
+                        (pow_expr
                           (prefix_expr
                             (postfix_expr
                               (primary

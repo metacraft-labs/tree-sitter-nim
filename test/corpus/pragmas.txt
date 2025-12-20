@@ -67,15 +67,15 @@ proc foo() {.raises: [].} = discard
           (symbol
             (identifier))
           (expression
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (amp_expr
+            (arrow_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
                     (range_expr
-                      (add_expr
-                        (mul_expr
-                          (dollar_expr
-                            (hat_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
                               (prefix_expr
                                 (postfix_expr
                                   (primary
@@ -104,15 +104,15 @@ proc foo() {.exportc: "c_foo".} = discard
           (symbol
             (identifier))
           (expression
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (amp_expr
+            (arrow_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
                     (range_expr
-                      (add_expr
-                        (mul_expr
-                          (dollar_expr
-                            (hat_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
                               (prefix_expr
                                 (postfix_expr
                                   (primary
