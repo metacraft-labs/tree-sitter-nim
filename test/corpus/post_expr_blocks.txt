@@ -1,0 +1,392 @@
+==================
+paren call with colon block inline
+==================
+
+foo(x): discard
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))
+                                  (call_suffix
+                                    (argument
+                                      (expression
+                                        (arrow_expr
+                                          (assign_op_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (qualified_identifier
+                                                                      (symbol
+                                                                        (identifier))))))))))))))))))))))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+identifier with colon block inline
+==================
+
+foo: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+expression with do block
+==================
+
+xs.map do (x): x * 2
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))
+                                      (symbol
+                                        (identifier))))))))))))))))))
+      (do_block
+        params: (param_list
+          (param_decl
+            (symbol
+              (identifier))))
+        (inline_stmt_list
+          (simple_stmt
+            (expr_stmt
+              (expression
+                (arrow_expr
+                  (assign_op_expr
+                    (op2_expr
+                      (or_expr
+                        (and_expr
+                          (cmp_expr
+                            (range_expr
+                              (amp_expr
+                                (add_expr
+                                  (mul_expr
+                                    (pow_expr
+                                      (prefix_expr
+                                        (postfix_expr
+                                          (postfixable_primary
+                                            (qualified_identifier
+                                              (symbol
+                                                (identifier)))))))
+                                    (pow_expr
+                                      (prefix_expr
+                                        (postfix_expr
+                                          (postfixable_primary
+                                            (literal
+                                              (integer_literal))))))))))))))))))))))))
+
+==================
+paren call with do block no params
+==================
+
+foo(x) do: discard
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))
+                                  (call_suffix
+                                    (argument
+                                      (expression
+                                        (arrow_expr
+                                          (assign_op_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (qualified_identifier
+                                                                      (symbol
+                                                                        (identifier))))))))))))))))))))))))))))))))))
+      (do_block
+        (inline_stmt_list
+          (simple_stmt
+            (discard_stmt)))))))
+
+==================
+paren call with multiple statements in block
+==================
+
+foo(x): echo "a"; echo "b"
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))
+                                  (call_suffix
+                                    (argument
+                                      (expression
+                                        (arrow_expr
+                                          (assign_op_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (qualified_identifier
+                                                                      (symbol
+                                                                        (identifier))))))))))))))))))))))))))))))))))
+      (inline_stmt_list
+        (simple_stmt
+          (expr_stmt
+            (expression
+              (command_expr
+                function: (postfix_expr
+                  (postfixable_primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (literal
+                                                (string_literal)))))))))))))))))))))
+        (simple_stmt
+          (expr_stmt
+            (expression
+              (command_expr
+                function: (postfix_expr
+                  (postfixable_primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (literal
+                                                (string_literal)))))))))))))))))))))))))
+
+==================
+identifier with indented block
+==================
+
+foo:
+  echo "hi"
+  echo "bye"
+
+---
+
+(source_file
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (arrow_expr
+          (assign_op_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (qualified_identifier
+                                      (symbol
+                                        (identifier))))))))))))))))))
+      (simple_stmt_line
+        (simple_stmt
+          (expr_stmt
+            (expression
+              (command_expr
+                function: (postfix_expr
+                  (postfixable_primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (literal
+                                                (string_literal))))))))))))))))))))))
+      (simple_stmt_line
+        (simple_stmt
+          (expr_stmt
+            (expression
+              (command_expr
+                function: (postfix_expr
+                  (postfixable_primary
+                    (qualified_identifier
+                      (symbol
+                        (identifier)))))
+                (command_first_arg
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (literal
+                                                (string_literal)))))))))))))))))))))))))

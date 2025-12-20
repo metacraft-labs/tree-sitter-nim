@@ -36,6 +36,13 @@ function commaSep(rule) {
 function commaSep1(rule) {
   return sep1(rule, ",");
 }
+// Separator that allows both comma and semicolon (for param lists, tuple fields)
+function paramSep(rule) {
+  return optional(seq(rule, repeat(seq(choice(",", ";"), rule))));
+}
+function paramSep1(rule) {
+  return seq(rule, repeat(seq(choice(",", ";"), rule)));
+}
 
 module.exports = grammar({
   name: "nim",
@@ -86,6 +93,7 @@ module.exports = grammar({
     [$.expr_stmt, $._expr_body],
     [$.assignment_stmt, $._expr_body],
     [$._suite, $._expr_body],
+    [$.tuple_field, $.qualified_identifier],
   ],
 
   word: ($) => $.identifier,
@@ -219,7 +227,24 @@ module.exports = grammar({
         $.defer_stmt,
         $.asm_stmt,
         $.routine_definition,
+        $.call_with_blocks,
       ),
+
+    // Post-expression blocks: foo(x): body, foo: body, expr do: body
+    // This handles Nim's postExprBlocks at the statement level
+    // Examples:
+    //   foo(x): discard
+    //   map xs do (x): x * 2
+    //   foo:
+    //     echo "hi"
+    //   template myTemplate(): untyped =
+    //     foo: body1
+    //     do: body2
+    call_with_blocks: ($) =>
+      seq(field("call", $.expression), repeat1($._post_expr_block)),
+
+    // A post-expression block is either a colon-suite or a do-block
+    _post_expr_block: ($) => choice($.do_block, $._colon_suite),
 
     // Unified suite handling - reusable for both : and = forms
     _suite: ($) =>
@@ -350,12 +375,13 @@ module.exports = grammar({
 
     // Per-section body rules - each section only allows its specific item type
     // This reduces ambiguity and prevents invalid parses (e.g., type_def in var section)
+    // Nim allows when statements inside sections for conditional compilation
     _type_section_body: ($) =>
       seq(
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.type_def, $._newline)),
+        repeat(choice($.type_def, $.when_stmt, $._newline)),
         $._dedent,
       ),
 
@@ -364,7 +390,7 @@ module.exports = grammar({
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.decl_def, $._newline)),
+        repeat(choice($.decl_def, $.when_stmt, $._newline)),
         $._dedent,
       ),
 
@@ -675,7 +701,10 @@ module.exports = grammar({
         optional(seq("=", $.type_expr)),
       ),
 
-    param_list: ($) => seq("(", commaSep($.param_decl), optional(","), ")"),
+    // Parameter list allows both comma and semicolon separators
+    // Nim supports: proc f(a, b: int; c: string) for grouping params
+    param_list: ($) =>
+      seq("(", paramSep($.param_decl), optional(choice(",", ";")), ")"),
     // Parameter declaration with optional modifiers (var, out, sink, lent)
     // Examples: proc f(var x: int), proc g(out y: int), proc h(sink s: string)
     param_decl: ($) =>
@@ -1012,7 +1041,8 @@ module.exports = grammar({
         PREC.PREFIX,
         choice(
           seq(
-            choice("+", "-", "not", "~", "@", "$", $.prefix_operator),
+            // ^ is for back-indexing: a[^1] means a[a.len - 1]
+            choice("+", "-", "not", "~", "@", "$", "^", $.prefix_operator),
             $.prefix_expr,
           ),
           $.postfix_expr,
@@ -1083,32 +1113,79 @@ module.exports = grammar({
       ),
 
     // Symbol or keyword - allows keywords after dot (e.g., x.type, x.addr)
-    // The Nim parser allows symbolOrKeyword in dot suffix contexts
+    // Nim's parser is very permissive about keywords after dot - almost any keyword works
     symbol_or_keyword: ($) =>
       choice(
         $.symbol,
-        // Common keywords that can appear after dot
-        "type",
+        // Keywords that can appear after dot (comprehensive list)
         "addr",
-        "ptr",
-        "ref",
-        "nil",
-        "true",
-        "false",
         "and",
-        "or",
-        "not",
-        "xor",
+        "as",
+        "asm",
+        "bind",
+        "block",
+        "break",
+        "case",
+        "cast",
+        "concept",
+        "const",
+        "continue",
+        "converter",
+        "defer",
+        "discard",
+        "distinct",
         "div",
-        "mod",
-        "shl",
-        "shr",
+        "do",
+        "elif",
+        "else",
+        "end",
+        "enum",
+        "except",
+        "export",
+        "finally",
+        "for",
+        "from",
+        "func",
+        "if",
+        "import",
         "in",
-        "notin",
+        "include",
+        "interface",
         "is",
         "isnot",
+        "iterator",
+        "let",
+        "macro",
+        "method",
+        "mixin",
+        "mod",
+        "nil",
+        "not",
+        "notin",
+        "object",
         "of",
-        "as",
+        "or",
+        "out",
+        "proc",
+        "ptr",
+        "raise",
+        "ref",
+        "return",
+        "shl",
+        "shr",
+        "static",
+        "template",
+        "try",
+        "tuple",
+        "type",
+        "using",
+        "var",
+        "when",
+        "while",
+        "xor",
+        "yield",
+        "true",
+        "false",
       ),
 
     // Primary expressions that CAN have postfix suffixes attached directly
@@ -1368,13 +1445,14 @@ module.exports = grammar({
     static_type: ($) => seq("static", field("base", $.type_expr)),
 
     // Tuple type: tuple[a: int, b: string] or tuple[int, string]
+    // Also supports semicolons and multiple names: tuple[a, b: int; c: string]
     tuple_type: ($) =>
       seq(
         "tuple",
         "[",
         choice(
-          seq(commaSep($.tuple_field), optional(",")), // Named tuple
-          seq(commaSep($.type_expr), optional(",")), // Anonymous tuple
+          seq(paramSep($.tuple_field), optional(choice(",", ";"))), // Named tuple
+          seq(paramSep($.type_expr), optional(choice(",", ";"))), // Anonymous tuple
         ),
         "]",
       ),
@@ -1423,7 +1501,8 @@ module.exports = grammar({
         ")",
       ),
 
-    tuple_field: ($) => seq($.symbol, ":", $.type_expr),
+    // Tuple field supports multiple names: tuple[a, b: int]
+    tuple_field: ($) => seq(sep1($.symbol, ","), ":", $.type_expr),
 
     // Type arguments can be types or expressions (for array[0..10, int] etc.)
     type_arg: ($) => choice($.type_expr, $.expression),
@@ -1485,10 +1564,42 @@ module.exports = grammar({
     boolean_literal: (_) => choice("true", "false"),
     nil_literal: (_) => "nil",
 
+    // Integer literals with optional type suffixes
+    // Standard suffixes: 'i8, 'i16, 'i32, 'i64, 'u, 'u8, 'u16, 'u32, 'u64, i8, u64, etc.
+    // Custom suffixes: 'suffix (any identifier after apostrophe)
+    // Examples: 123'i16, 12u64, 10'kg, 0xFF'u8
     integer_literal: (_) =>
-      /0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|[0-9][0-9_]*/,
+      token(
+        seq(
+          /0[xX][0-9a-fA-F_]+|0[bB][01_]+|0[oO][0-7_]+|[0-9][0-9_]*/,
+          optional(
+            choice(
+              // Standard suffixes without apostrophe (u, u8, u16, u32, u64, i8, i16, i32, i64)
+              /[iIuU](8|16|32|64)?/,
+              // Suffixes with apostrophe (standard or custom)
+              seq("'", /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/),
+            ),
+          ),
+        ),
+      ),
+
+    // Float literals with optional type suffixes
+    // Standard suffixes: 'f, 'f32, 'f64, 'f128, 'd, f, f32, f64, d, etc.
+    // Examples: 1.5f32, 3.14'f64, 2.0'd
     float_literal: (_) =>
-      /[0-9][0-9_]*\.[0-9_]+([eE][+-]?[0-9_]+)?|[0-9][0-9_]*[eE][+-]?[0-9_]+/,
+      token(
+        seq(
+          /[0-9][0-9_]*\.[0-9_]+([eE][+-]?[0-9_]+)?|[0-9][0-9_]*[eE][+-]?[0-9_]+/,
+          optional(
+            choice(
+              // Standard suffixes without apostrophe (f, f32, f64, f128, d)
+              /[fFdD](32|64|128)?/,
+              // Suffixes with apostrophe (standard or custom)
+              seq("'", /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/),
+            ),
+          ),
+        ),
+      ),
 
     // String literal with escape sequences
     // Nim escape sequences: \n \r \t \\ \" \' \a \b \e \f \v \xHH \0..9+

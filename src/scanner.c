@@ -181,11 +181,9 @@ static int get_operator_precedence(const char *op, int len) {
       return OP7_AMP;
 
     case '.':
-      // Check for .. operators
-      if (len >= 2 && op[1] == '.') {
-        return OP6_RANGE;
-      }
-      return OP5_CMP;  // Single dot operators are comparison-like
+      // Dot operators are always at range/dot tier (OP6)
+      // This includes .., ..<, and dot-operators like .+ .* etc.
+      return OP6_RANGE;
 
     case '=': case '<': case '>': case '!':
       return OP5_CMP;

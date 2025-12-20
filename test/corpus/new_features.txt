@@ -1,0 +1,587 @@
+==================
+unary hat for back indexing
+==================
+
+discard a[^1]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))
+                                    (index_suffix
+                                      (expression
+                                        (arrow_expr
+                                          (assign_op_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))))))))))))))))))))))
+
+==================
+back index range
+==================
+
+discard a[1..^1]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))
+                                    (index_suffix
+                                      (expression
+                                        (arrow_expr
+                                          (assign_op_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (literal
+                                                                      (integer_literal)))))))))
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (literal
+                                                                      (integer_literal))))))))))))))))))))))))))))))))))))
+
+==================
+integer with i16 suffix
+==================
+
+discard 123'i16
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+integer with u64 suffix no apostrophe
+==================
+
+discard 12u64
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+float with f32 suffix
+==================
+
+discard 1.5f32
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (float_literal)))))))))))))))))))))
+
+==================
+custom literal suffix
+==================
+
+discard 10'kg
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+hex literal with suffix
+==================
+
+discard 0xFF'u8
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+semicolon in param list
+==================
+
+proc f(a, b: int; c: string) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier)))
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier)))))
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+tuple type with multiple names per field
+==================
+
+type T = tuple[a, b: int]
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (type_expr
+          (tuple_type
+            (tuple_field
+              (symbol
+                (identifier))
+              (symbol
+                (identifier))
+              (type_expr
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))))))))
+
+==================
+tuple type with semicolons
+==================
+
+type T = tuple[a: int; b: string]
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (type_expr
+          (tuple_type
+            (tuple_field
+              (symbol
+                (identifier))
+              (type_expr
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))
+            (tuple_field
+              (symbol
+                (identifier))
+              (type_expr
+                (qualified_identifier
+                  (symbol
+                    (identifier)))))))))))
+
+==================
+when inside type section
+==================
+
+type
+  when defined(windows):
+    Handle = int
+  else:
+    Handle = cint
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (when_stmt
+        condition: (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))
+                                    (call_suffix
+                                      (argument
+                                        (expression
+                                          (arrow_expr
+                                            (assign_op_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (qualified_identifier
+                                                                        (symbol
+                                                                          (identifier))))))))))))))))))))))))))))))))))
+        (simple_stmt_line
+          (simple_stmt
+            (expr_stmt
+              (assignment_stmt
+                left: (expression
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))))))))))))))
+                right: (expression
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))))))))))))))))))
+        (simple_stmt_line
+          (simple_stmt
+            (expr_stmt
+              (assignment_stmt
+                left: (expression
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))))))))))))))
+                right: (expression
+                  (arrow_expr
+                    (assign_op_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))))))))))))))))))))))
+
+==================
+keyword after dot - if
+==================
+
+discard a.if
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
+
+==================
+keyword after dot - type
+==================
+
+discard x.type
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
+
+==================
+keyword after dot - while
+==================
+
+discard obj.while
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (arrow_expr
+            (assign_op_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))
+                                        (symbol
+                                          (identifier))))))))))))))))))))))

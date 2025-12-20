@@ -983,3 +983,53 @@ discard sql"""SELECT * FROM users"""
                                     (postfixable_primary
                                       (literal
                                         (generalized_string)))))))))))))))))))))
+
+==================
+plain assignment statement
+==================
+
+x = y
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (assignment_stmt
+          left: (expression
+            (arrow_expr
+              (assign_op_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier))))))))))))))))))
+          right: (expression
+            (arrow_expr
+              (assign_op_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier)))))))))))))))))))))))
