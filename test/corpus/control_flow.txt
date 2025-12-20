@@ -13,15 +13,18 @@ if x: discard
         (or_expr
           (and_expr
             (cmp_expr
-              (range_expr
-                (add_expr
-                  (mul_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
+              (amp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (dollar_expr
+                        (hat_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -41,14 +44,17 @@ when true: discard
         (or_expr
           (and_expr
             (cmp_expr
-              (range_expr
-                (add_expr
-                  (mul_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (primary
-                          (literal
-                            (boolean_literal))))))))))))
+              (amp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (dollar_expr
+                        (hat_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (literal
+                                  (boolean_literal)))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -68,14 +74,17 @@ while true: discard
         (or_expr
           (and_expr
             (cmp_expr
-              (range_expr
-                (add_expr
-                  (mul_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (primary
-                          (literal
-                            (boolean_literal))))))))))))
+              (amp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (dollar_expr
+                        (hat_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (literal
+                                  (boolean_literal)))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -97,15 +106,18 @@ for i in items: discard
         (or_expr
           (and_expr
             (cmp_expr
-              (range_expr
-                (add_expr
-                  (mul_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
+              (amp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (dollar_expr
+                        (hat_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -129,15 +141,18 @@ for k, v in pairs: discard
         (or_expr
           (and_expr
             (cmp_expr
-              (range_expr
-                (add_expr
-                  (mul_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
+              (amp_expr
+                (range_expr
+                  (add_expr
+                    (mul_expr
+                      (dollar_expr
+                        (hat_expr
+                          (prefix_expr
+                            (postfix_expr
+                              (primary
+                                (qualified_identifier
+                                  (symbol
+                                    (identifier))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

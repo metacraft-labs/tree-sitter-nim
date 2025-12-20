@@ -8,6 +8,17 @@ const PREC = {
   PREFIX: 7,
   CALL: 8,
   COMMAND: 0, // Lower than expression operators
+  // Operator precedence tiers based on Nim's lexer.nim:getPrecedence
+  // These are used for user-defined operators based on first character
+  OP_DOLLAR: 10, // $ operators (highest)
+  OP_HAT: 9, // ^ operators
+  OP_MUL: 8, // * / div mod shl shr % and .* operators
+  OP_ADD: 7, // + - | ~ or xor .+ operators
+  OP_AMP: 6, // & operators
+  OP_RANGE: 5, // .. operators
+  OP_CMP: 4, // == != < > <= >= in notin is isnot of as from .= .< operators
+  OP_ARROW: 3, // -> ~> => operators
+  OP_ASSIGN: 2, // = operators (assignment-like, but not bare =)
 };
 
 function sep1(rule, sep) {
@@ -46,10 +57,10 @@ module.exports = grammar({
     [$.command_first_arg, $.qualified_identifier],
     [$.import_symbol, $.qualified_identifier],
     [$.object_def],
-    [$.object_case],
     [$.object_def, $.object_type],
     [$.proc_type],
     [$.iterator_type],
+    [$.object_case],
   ],
 
   word: ($) => $.identifier,
@@ -367,7 +378,7 @@ module.exports = grammar({
     _type_def_value: ($) => choice($.type_expr, $.enum_def, $.object_def),
 
     // Enum definition with optional values
-    // Commas are handled by the list rules, not inside enum_field_def
+    // Nim allows both comma-separated and newline-separated enum fields
     enum_def: ($) =>
       seq(
         "enum",
@@ -376,17 +387,21 @@ module.exports = grammar({
           choice(
             // Inline form: enum A, B, C (comma-separated, optional trailing comma)
             seq(commaSep1($.enum_field_def), optional(",")),
-            // Indented form (one field per line, newline-separated)
+            // Indented form - can have comma-separated or newline-separated fields
             seq(
               $._newline,
               repeat($._newline),
               $._indent,
-              repeat(choice($.enum_field_def, $._newline)),
+              repeat(choice($._enum_field_line, $._newline)),
               $._dedent,
             ),
           ),
         ),
       ),
+
+    // A line of enum fields (can have multiple comma-separated fields)
+    _enum_field_line: ($) =>
+      prec.left(seq(commaSep1($.enum_field_def), optional(","))),
 
     // Enum field without trailing comma - commas are handled by the list rule
     enum_field_def: ($) =>
@@ -425,6 +440,8 @@ module.exports = grammar({
       ),
 
     // Variant object (case inside object)
+    // In Nim, the of/else branches are at the same indentation level as the case,
+    // not indented further. The fields inside of/else branches ARE indented.
     object_case: ($) =>
       seq(
         "case",
@@ -502,12 +519,18 @@ module.exports = grammar({
       ),
 
     param_list: ($) => seq("(", commaSep($.param_decl), optional(","), ")"),
+    // Parameter declaration with optional modifiers (var, out, sink, lent)
+    // Examples: proc f(var x: int), proc g(out y: int), proc h(sink s: string)
     param_decl: ($) =>
       seq(
+        optional(field("modifier", $.param_modifier)),
         sep1($.symbol, ","),
         optional(seq(":", $.type_expr)),
         optional(seq("=", $.expression)),
       ),
+
+    // Parameter modifiers that change calling conventions
+    param_modifier: (_) => choice("var", "out", "sink", "lent"),
 
     // -------------------------------
     // Expressions
@@ -555,6 +578,10 @@ module.exports = grammar({
     // Block argument: foo arg: body
     _block_arg: ($) => seq(":", $._suite),
 
+    // Operator expressions based on Nim's precedence model from lexer.nim:getPrecedence
+    // Precedence is determined by the first character of the operator token
+    // User-defined operators follow the same rules as built-in ones
+
     or_expr: ($) =>
       prec.left(
         PREC.OR,
@@ -564,14 +591,17 @@ module.exports = grammar({
     and_expr: ($) =>
       prec.left(PREC.AND, seq($.cmp_expr, repeat(seq("and", $.cmp_expr)))),
 
+    // Comparison operators and arrow operators
+    // Includes user-defined operators starting with = < > !
     cmp_expr: ($) =>
       prec.left(
         PREC.CMP,
         seq(
-          $.range_expr,
+          $.amp_expr,
           repeat(
             seq(
               choice(
+                // Built-in comparison operators
                 "==",
                 "!=",
                 "<=",
@@ -585,50 +615,120 @@ module.exports = grammar({
                 "of",
                 "as",
                 "from",
+                // Arrow operators (precedence 3, but grouped with cmp for simplicity)
+                "->",
+                "~>",
+                "=>",
+                // User-defined comparison operators (start with = < > !)
+                $.cmp_operator,
               ),
-              $.range_expr,
+              $.amp_expr,
             ),
           ),
         ),
       ),
 
+    // Ampersand operators (precedence 6)
+    // Built-in: & (bitwise and), user-defined: && and other &-prefixed operators
+    amp_expr: ($) =>
+      prec.left(
+        PREC.ADD - 1,
+        seq(
+          $.range_expr,
+          repeat(seq(choice("&", $.amp_operator), $.range_expr)),
+        ),
+      ),
+
+    // Range operators
     range_expr: ($) =>
       prec.left(
         PREC.RANGE,
-        seq($.add_expr, repeat(seq(choice("..", "..<"), $.add_expr))),
+        seq(
+          $.add_expr,
+          repeat(seq(choice("..", "..<", $.range_operator), $.add_expr)),
+        ),
       ),
 
+    // Additive operators: + - | ~
+    // Includes user-defined operators starting with these characters
     add_expr: ($) =>
       prec.left(
         PREC.ADD,
         seq(
           $.mul_expr,
-          repeat(seq(choice("+", "-", "|", "~", "&"), $.mul_expr)),
+          repeat(seq(choice("+", "-", "|", "~", $.add_operator), $.mul_expr)),
         ),
       ),
 
+    // Multiplicative operators: * / % div mod shl shr
+    // Includes user-defined operators starting with * / % \ .
     mul_expr: ($) =>
       prec.left(
         PREC.MUL,
         seq(
-          $.prefix_expr,
+          $.dollar_expr,
           repeat(
             seq(
-              choice("*", "/", "%", "div", "mod", "shl", "shr"),
-              $.prefix_expr,
+              choice(
+                "*",
+                "/",
+                "%",
+                "\\",
+                "div",
+                "mod",
+                "shl",
+                "shr",
+                $.mul_operator,
+              ),
+              $.dollar_expr,
             ),
           ),
         ),
       ),
 
+    // Dollar operators have highest precedence (precedence 10)
+    dollar_expr: ($) =>
+      prec.left(
+        PREC.MUL + 2,
+        seq($.hat_expr, repeat(seq($.dollar_operator, $.hat_expr))),
+      ),
+
+    // Hat/caret operators (precedence 9)
+    hat_expr: ($) =>
+      prec.left(
+        PREC.MUL + 1,
+        seq($.prefix_expr, repeat(seq($.hat_operator, $.prefix_expr))),
+      ),
+
+    // User-defined operator tokens based on first character
+    // These match Nim's lexer.nim:getPrecedence character classes
+    // Note: Operators that overlap with built-ins (like ++) require careful precedence
+    // The regex requires at least one additional operator char after the first to avoid
+    // conflicts with single-char built-in operators
+    dollar_operator: (_) => token(/\$[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    hat_operator: (_) => token(/\^[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    mul_operator: (_) =>
+      token(/[*%\\][=+\-*\/<>@$~&%|!?^.:\\]+|\/[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    add_operator: (_) => token(/[+\-~|][=+\-*\/<>@$~&%|!?^.:\\]+/),
+    amp_operator: (_) => token(/&[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    range_operator: (_) => token(/\.\.[=+\-*\/<>@$~&%|!?^.:\\]+/),
+    cmp_operator: (_) => token(/[=!<>][=+\-*\/<>@$~&%|!?^.:\\]+/),
+
     prefix_expr: ($) =>
       prec.right(
         PREC.PREFIX,
         choice(
-          seq(choice("+", "-", "not", "~", "@", "$"), $.prefix_expr),
+          seq(
+            choice("+", "-", "not", "~", "@", "$", $.prefix_operator),
+            $.prefix_expr,
+          ),
           $.postfix_expr,
         ),
       ),
+
+    // User-defined prefix operators (any operator chars)
+    prefix_operator: (_) =>
+      token(prec(-2, /[=+\-*\/<>@$~&%|!?^.:\\][=+\-*\/<>@$~&%|!?^.:\\]+/)),
 
     postfix_expr: ($) =>
       prec.left(
@@ -684,7 +784,78 @@ module.exports = grammar({
       ),
 
     // Parenthesized expression or tuple with optional named fields
-    paren_expr: ($) => seq("(", optional($.expression), ")"),
+    // Note: Expression forms of statements (if_expr, case_expr, try_expr, block_expr)
+    // are handled through the parenthesized form: (if cond: 1 else: 2)
+    // or through Nim's statement-as-expression in appropriate contexts.
+    // The compound_stmt forms handle these when used as statements.
+    paren_expr: ($) => seq("(", optional($._paren_content), ")"),
+
+    // Inside parens we can have regular expressions or expression forms of statements
+    _paren_content: ($) =>
+      choice($.if_expr, $.case_expr, $.try_expr, $.block_expr, $.expression),
+
+    // Expression form of if: (if cond: 1 else: 2)
+    if_expr: ($) =>
+      prec.right(
+        seq(
+          "if",
+          field("condition", $.expression),
+          ":",
+          field("consequence", $.expression),
+          repeat(
+            seq("elif", field("condition", $.expression), ":", $.expression),
+          ),
+          "else",
+          ":",
+          field("alternative", $.expression),
+        ),
+      ),
+
+    // Expression form of case: (case k of 1: "a" else: "b")
+    case_expr: ($) =>
+      prec.left(
+        seq(
+          "case",
+          field("expression", $.expression),
+          repeat1($.case_expr_branch),
+        ),
+      ),
+
+    case_expr_branch: ($) =>
+      choice(
+        seq("of", $.expression_list, ":", $.expression),
+        seq("else", ":", $.expression),
+      ),
+
+    // Expression form of try: (try: f() except: g())
+    try_expr: ($) =>
+      prec.right(
+        seq(
+          "try",
+          ":",
+          field("body", $.expression),
+          choice(
+            seq(repeat1($.except_expr_branch), optional($.finally_expr_branch)),
+            $.finally_expr_branch,
+          ),
+        ),
+      ),
+
+    except_expr_branch: ($) =>
+      seq("except", optional($.expression_list), ":", $.expression),
+
+    finally_expr_branch: ($) => seq("finally", ":", $.expression),
+
+    // Expression form of block: (block: computeValue())
+    block_expr: ($) =>
+      prec.right(
+        seq(
+          "block",
+          optional(field("name", $.symbol)),
+          ":",
+          field("body", $.expression),
+        ),
+      ),
 
     // Tuple expression with named fields: (x: 1, y: 2) or (1, 2, 3)
     tuple_expr: ($) =>
@@ -821,7 +992,9 @@ module.exports = grammar({
     // -------------------------------
     // Pragmas
     // -------------------------------
-    pragma: ($) => seq("{.", commaSep($.pragma_item), optional(","), ".}"),
+    // Nim's parser accepts both .} and } as pragma closers
+    pragma: ($) =>
+      seq("{.", commaSep($.pragma_item), optional(","), choice(".}", "}")),
     pragma_item: ($) =>
       seq(
         $.symbol,

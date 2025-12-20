@@ -1,0 +1,278 @@
+==================
+simple variant object
+==================
+
+type
+  NodeKind = enum
+    nkInt
+    nkFloat
+  Node = object
+    case kind: NodeKind
+    of nkInt:
+      intVal: int
+    of nkFloat:
+      floatVal: float
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (enum_def
+          (enum_field_def
+            name: (exported_symbol
+              (symbol
+                (identifier))))
+          (enum_field_def
+            name: (exported_symbol
+              (symbol
+                (identifier))))))
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (object_def
+          (object_case
+            discriminator: (symbol
+              (identifier))
+            discriminator_type: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier))))
+            (object_of_branch
+              (expression_list
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))
+            (object_of_branch
+              (expression_list
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))))))))
+
+==================
+variant object with else
+==================
+
+type
+  Value = object
+    case isInt: bool
+    of true:
+      i: int
+    else:
+      s: string
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (object_def
+          (object_case
+            discriminator: (symbol
+              (identifier))
+            discriminator_type: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier))))
+            (object_of_branch
+              (expression_list
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (literal
+                                            (boolean_literal))))))))))))))))
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))
+            (object_else_branch
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))))))))
+
+==================
+variant object with multiple values in of branch
+==================
+
+type
+  Color = enum
+    red, green, blue
+  ColorValue = object
+    case c: Color
+    of red, green:
+      rg: int
+    of blue:
+      b: int
+
+---
+
+(source_file
+  (section_stmt
+    (type_section
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (enum_def
+          (enum_field_def
+            name: (exported_symbol
+              (symbol
+                (identifier))))
+          (enum_field_def
+            name: (exported_symbol
+              (symbol
+                (identifier))))
+          (enum_field_def
+            name: (exported_symbol
+              (symbol
+                (identifier))))))
+      (type_def
+        name: (exported_symbol
+          (symbol
+            (identifier)))
+        value: (object_def
+          (object_case
+            discriminator: (symbol
+              (identifier))
+            discriminator_type: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier))))
+            (object_of_branch
+              (expression_list
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier))))))))))))))))
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))
+            (object_of_branch
+              (expression_list
+                (expression
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (amp_expr
+                          (range_expr
+                            (add_expr
+                              (mul_expr
+                                (dollar_expr
+                                  (hat_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (primary
+                                          (qualified_identifier
+                                            (symbol
+                                              (identifier)))))))))))))))))
+              (object_field
+                name: (exported_symbol
+                  (symbol
+                    (identifier)))
+                type: (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier))))))))))))

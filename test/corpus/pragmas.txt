@@ -70,13 +70,16 @@ proc foo() {.raises: [].} = discard
             (or_expr
               (and_expr
                 (cmp_expr
-                  (range_expr
-                    (add_expr
-                      (mul_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (primary
-                              (array_expr)))))))))))))
+                  (amp_expr
+                    (range_expr
+                      (add_expr
+                        (mul_expr
+                          (dollar_expr
+                            (hat_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (array_expr))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -104,14 +107,17 @@ proc foo() {.exportc: "c_foo".} = discard
             (or_expr
               (and_expr
                 (cmp_expr
-                  (range_expr
-                    (add_expr
-                      (mul_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (primary
-                              (literal
-                                (string_literal))))))))))))))
+                  (amp_expr
+                    (range_expr
+                      (add_expr
+                        (mul_expr
+                          (dollar_expr
+                            (hat_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (primary
+                                    (literal
+                                      (string_literal)))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

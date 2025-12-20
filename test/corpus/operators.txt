@@ -1,0 +1,195 @@
+==================
+user-defined add operator
+==================
+
+a +++ b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier)))))))))
+                      (add_operator)
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))))))))))
+
+==================
+user-defined mul operator
+==================
+
+a ** b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))
+                        (mul_operator)
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))))))))))
+
+==================
+user-defined hat operator
+==================
+
+a ^^ b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))
+                            (hat_operator)
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))))))))))
+
+==================
+user-defined cmp operator
+==================
+
+a ==> b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))
+                (cmp_operator)
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))))))))))
+
+==================
+user-defined amp operator
+==================
+
+a && b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (amp_expr
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier)))))))))))
+                  (amp_operator)
+                  (range_expr
+                    (add_expr
+                      (mul_expr
+                        (dollar_expr
+                          (hat_expr
+                            (prefix_expr
+                              (postfix_expr
+                                (primary
+                                  (qualified_identifier
+                                    (symbol
+                                      (identifier))))))))))))))))))))
