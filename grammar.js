@@ -36,18 +36,20 @@ module.exports = grammar({
   conflicts: ($) => [
     [$.routine_definition],
     [$.qualified_identifier],
-    [$.type_expr],
+    [$.type_expr, $.generic_type],
     [$.primary, $.type_expr],
+    [$.primary, $.generic_type],
     [$.param_decl],
-    [$.enum_field_def],
     [$.enum_def],
+    [$.enum_field_def],
     [$.command_arg, $.qualified_identifier],
     [$.command_first_arg, $.qualified_identifier],
-    [$.command_first_arg, $.primary],
     [$.import_symbol, $.qualified_identifier],
     [$.object_def],
     [$.object_case],
-    [$.object_def, $.type_expr],
+    [$.object_def, $.object_type],
+    [$.proc_type],
+    [$.iterator_type],
   ],
 
   word: ($) => $.identifier,
@@ -281,22 +283,77 @@ module.exports = grammar({
         $.using_section,
       ),
 
-    _section_body: ($) =>
+    // Per-section body rules - each section only allows its specific item type
+    // This reduces ambiguity and prevents invalid parses (e.g., type_def in var section)
+    _type_section_body: ($) =>
       seq(
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.section_item, $._newline)),
+        repeat(choice($.type_def, $._newline)),
         $._dedent,
       ),
 
-    section_item: ($) => choice($.type_def, $.decl_def),
+    _decl_section_body: ($) =>
+      seq(
+        $._newline,
+        repeat($._newline),
+        $._indent,
+        repeat(choice($.decl_def, $._newline)),
+        $._dedent,
+      ),
 
-    type_section: ($) => seq("type", $._section_body),
-    const_section: ($) => seq("const", $._section_body),
-    let_section: ($) => seq("let", $._section_body),
-    var_section: ($) => seq("var", $._section_body),
-    using_section: ($) => seq("using", $._section_body),
+    // Type section supports both block and inline forms
+    // Block form only allows type_def, inline form is a single type_def
+    type_section: ($) =>
+      seq(
+        "type",
+        choice(
+          $._type_section_body,
+          $.type_def, // Inline form: type Foo = int
+        ),
+      ),
+
+    // Const section supports both block and inline forms
+    // Block form only allows decl_def, inline form is a single decl_def
+    const_section: ($) =>
+      seq(
+        "const",
+        choice(
+          $._decl_section_body,
+          $.decl_def, // Inline form: const N = 10
+        ),
+      ),
+
+    // Let section supports both block and inline forms
+    let_section: ($) =>
+      seq(
+        "let",
+        choice(
+          $._decl_section_body,
+          $.decl_def, // Inline form: let x = 1
+        ),
+      ),
+
+    // Var section supports both block and inline forms
+    var_section: ($) =>
+      seq(
+        "var",
+        choice(
+          $._decl_section_body,
+          $.decl_def, // Inline form: var x = 1
+        ),
+      ),
+
+    // Using section supports both block and inline forms
+    using_section: ($) =>
+      seq(
+        "using",
+        choice(
+          $._decl_section_body,
+          $.decl_def, // Inline form: using x: int
+        ),
+      ),
 
     type_def: ($) =>
       seq(
@@ -310,15 +367,16 @@ module.exports = grammar({
     _type_def_value: ($) => choice($.type_expr, $.enum_def, $.object_def),
 
     // Enum definition with optional values
+    // Commas are handled by the list rules, not inside enum_field_def
     enum_def: ($) =>
       seq(
         "enum",
         optional($.pragma),
         optional(
           choice(
-            // Inline form: enum A, B, C
-            seq(commaSep1($.enum_field_def)),
-            // Indented form
+            // Inline form: enum A, B, C (comma-separated, optional trailing comma)
+            seq(commaSep1($.enum_field_def), optional(",")),
+            // Indented form (one field per line, newline-separated)
             seq(
               $._newline,
               repeat($._newline),
@@ -330,18 +388,19 @@ module.exports = grammar({
         ),
       ),
 
+    // Enum field without trailing comma - commas are handled by the list rule
     enum_field_def: ($) =>
       seq(
         field("name", $.exported_symbol),
         optional($.pragma),
         optional(seq("=", field("value", $.expression))),
-        optional(","),
       ),
 
     // Object definition with fields
+    // Uses seq("ref", "object") instead of "ref object" to handle whitespace properly
     object_def: ($) =>
       seq(
-        choice("object", "ref object", "ptr object"),
+        choice("object", seq("ref", "object"), seq("ptr", "object")),
         optional(seq("of", field("parent", $.type_expr))),
         optional($.pragma),
         optional(
@@ -455,10 +514,15 @@ module.exports = grammar({
     // -------------------------------
     expression: ($) => choice($.command_expr, prec(PREC.CALL, $.or_expr)),
 
-    // Command call syntax: echo "hello", foo a, b
-    // Strong spaces: suffix openers ([, {, () use token.immediate so they bind
-    // tightly without preceding whitespace, while command syntax naturally
-    // requires whitespace to separate function from arguments
+    // Command call syntax: echo "hello", foo a, b, foo a + b
+    // Strong spaces are enforced via token.immediate on suffixes:
+    //   foo(x)  -> call with parens (call_suffix uses token.immediate)
+    //   foo x   -> command call (no immediate binding, so whitespace separates)
+    //   foo[0]  -> indexing (index_suffix uses token.immediate)
+    //   foo [0] -> command call with array literal arg
+    // The first argument can be a full expression (or_expr) to support:
+    //   foo a + b  # parses as foo(a + b)
+    //   foo not x  # parses as foo(not x)
     command_expr: ($) =>
       prec.left(
         PREC.COMMAND,
@@ -470,27 +534,22 @@ module.exports = grammar({
         ),
       ),
 
-    // First command arg - with strong spaces (token.immediate on suffixes),
-    // we can now allow parenthesized expressions like: echo (1, 2)
+    // First command arg - allows full or_expr to support expressions like:
+    //   foo a + b  (parsed as foo(a + b))
+    //   foo not x  (parsed as foo(not x))
+    // Named arguments with : or = also supported
     command_first_arg: ($) =>
       choice(
-        $.literal, // String, number, etc.
-        $.array_expr, // [1, 2, 3]
-        $.set_expr, // {1, 2, 3}
-        $.paren_expr, // (expr) - now allowed with strong spaces
-        $.tuple_expr, // (a, b, c)
-        seq("@", $.array_expr), // @[1, 2, 3]
-        seq(choice("-", "+", "@", "$", "not"), $.prefix_expr), // Prefix operators
-        $.qualified_identifier, // Bare identifier
-        seq($.symbol, ":", $.or_expr), // Named argument
+        seq($.symbol, ":", $.or_expr), // Named argument (must come first to avoid ambiguity)
         seq($.symbol, "=", $.or_expr), // Named argument with =
+        $.or_expr, // Full expression including a + b, not x, etc.
       ),
 
     command_arg: ($) =>
       choice(
+        seq($.symbol, ":", $.or_expr), // Named argument
+        seq($.symbol, "=", $.or_expr), // Named argument with =
         $.or_expr,
-        seq($.symbol, ":", $.or_expr),
-        seq($.symbol, "=", $.or_expr),
       ),
 
     // Block argument: foo arg: body
@@ -621,7 +680,7 @@ module.exports = grammar({
         $.paren_expr,
         $.tuple_expr,
         $.array_expr,
-        $.set_expr,
+        $.curly_expr,
       ),
 
     // Parenthesized expression or tuple with optional named fields
@@ -644,43 +703,114 @@ module.exports = grammar({
     expression_list: ($) => sep1($.expression, ","),
 
     array_expr: ($) => seq("[", commaSep($.expression), optional(","), "]"),
-    set_expr: ($) => seq("{", commaSep($.expression), optional(","), "}"),
+
+    // Curly brace expressions support both set-like and table-like constructors:
+    //   {1, 2, 3}        # set-like
+    //   {"a": 1, "b": 2} # table-like
+    //   {:}              # empty table constructor
+    //   {}               # empty set/table
+    curly_expr: ($) =>
+      seq(
+        "{",
+        choice(
+          // Empty table constructor: {:}
+          ":",
+          // Elements (either set elements or key-value pairs)
+          seq(commaSep($.curly_element), optional(",")),
+        ),
+        "}",
+      ),
+
+    // A curly element can be a simple expression (set) or key:value pair (table)
+    curly_element: ($) =>
+      choice(
+        seq(field("key", $.expression), ":", field("value", $.expression)), // Table pair
+        $.expression, // Set element
+      ),
+
+    // Keep set_expr as alias for compatibility
+    set_expr: ($) => $.curly_expr,
 
     // -------------------------------
-    // Types
+    // Types - each type form has its own named node for better AST structure
     // -------------------------------
     type_expr: ($) =>
       choice(
-        $.qualified_identifier,
-        seq(
-          choice("ref", "ptr", "var", "out", "distinct", "static"),
-          $.type_expr,
+        $.ref_type,
+        $.ptr_type,
+        $.var_type,
+        $.out_type,
+        $.distinct_type,
+        $.static_type,
+        $.tuple_type,
+        $.proc_type,
+        $.iterator_type,
+        $.object_type,
+        $.generic_type,
+        $.qualified_identifier, // Simple type name (must be last to avoid conflicts)
+      ),
+
+    // Reference type: ref T
+    ref_type: ($) => seq("ref", field("base", $.type_expr)),
+
+    // Pointer type: ptr T
+    ptr_type: ($) => seq("ptr", field("base", $.type_expr)),
+
+    // Var type (mutable parameter): var T
+    var_type: ($) => seq("var", field("base", $.type_expr)),
+
+    // Out type: out T
+    out_type: ($) => seq("out", field("base", $.type_expr)),
+
+    // Distinct type: distinct T
+    distinct_type: ($) => seq("distinct", field("base", $.type_expr)),
+
+    // Static type: static T
+    static_type: ($) => seq("static", field("base", $.type_expr)),
+
+    // Tuple type: tuple[a: int, b: string] or tuple[int, string]
+    tuple_type: ($) =>
+      seq(
+        "tuple",
+        "[",
+        choice(
+          seq(commaSep($.tuple_field), optional(",")), // Named tuple
+          seq(commaSep($.type_expr), optional(",")), // Anonymous tuple
         ),
-        seq("tuple", "[", commaSep($.tuple_field), optional(","), "]"),
-        seq("tuple", "[", commaSep($.type_expr), optional(","), "]"),
-        seq(
-          "proc",
-          optional($.param_list),
-          optional(seq(":", $.type_expr)),
-          optional($.pragma),
-        ),
-        seq(
-          "iterator",
-          optional($.param_list),
-          optional(seq(":", $.type_expr)),
-          optional($.pragma),
-        ),
-        // Object type (inline, without fields)
-        seq("object", optional(seq("of", $.type_expr))),
-        // Generic type instantiation: Foo[T, U] or array[0..10, int]
-        // Type arguments can be types or expressions (e.g., range literals)
-        seq(
-          $.qualified_identifier,
-          "[",
-          commaSep1($.type_arg),
-          optional(","),
-          "]",
-        ),
+        "]",
+      ),
+
+    // Proc type: proc(x: int): bool {.pragma.}
+    proc_type: ($) =>
+      seq(
+        "proc",
+        optional(field("params", $.param_list)),
+        optional(seq(":", field("return_type", $.type_expr))),
+        optional(field("pragmas", $.pragma)),
+      ),
+
+    // Iterator type: iterator(x: int): int {.pragma.}
+    iterator_type: ($) =>
+      seq(
+        "iterator",
+        optional(field("params", $.param_list)),
+        optional(seq(":", field("return_type", $.type_expr))),
+        optional(field("pragmas", $.pragma)),
+      ),
+
+    // Object type (inline, without fields): object or object of Parent
+    object_type: ($) =>
+      seq("object", optional(seq("of", field("parent", $.type_expr)))),
+
+    // Generic type instantiation: Foo[T, U] or array[0..10, int]
+    // Type arguments can be types or expressions (e.g., range literals)
+    generic_type: ($) =>
+      seq(
+        field("name", $.qualified_identifier),
+        "[",
+        commaSep1($.type_arg),
+        optional(","),
+        "]",
       ),
 
     tuple_field: ($) => seq($.symbol, ":", $.type_expr),

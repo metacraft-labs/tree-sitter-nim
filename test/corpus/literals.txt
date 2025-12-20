@@ -480,7 +480,7 @@ discard {}
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (set_expr)))))))))))))))
+                            (curly_expr)))))))))))))))
 
 ==================
 set literal with elements
@@ -504,43 +504,46 @@ discard {1, 2, 3}
                       (prefix_expr
                         (postfix_expr
                           (primary
-                            (set_expr
-                              (expression
-                                (or_expr
-                                  (and_expr
-                                    (cmp_expr
-                                      (range_expr
-                                        (add_expr
-                                          (mul_expr
-                                            (prefix_expr
-                                              (postfix_expr
-                                                (primary
-                                                  (literal
-                                                    (integer_literal))))))))))))
-                              (expression
-                                (or_expr
-                                  (and_expr
-                                    (cmp_expr
-                                      (range_expr
-                                        (add_expr
-                                          (mul_expr
-                                            (prefix_expr
-                                              (postfix_expr
-                                                (primary
-                                                  (literal
-                                                    (integer_literal))))))))))))
-                              (expression
-                                (or_expr
-                                  (and_expr
-                                    (cmp_expr
-                                      (range_expr
-                                        (add_expr
-                                          (mul_expr
-                                            (prefix_expr
-                                              (postfix_expr
-                                                (primary
-                                                  (literal
-                                                    (integer_literal)))))))))))))))))))))))))))
+                            (curly_expr
+                              (curly_element
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal)))))))))))))
+                              (curly_element
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal)))))))))))))
+                              (curly_element
+                                (expression
+                                  (or_expr
+                                    (and_expr
+                                      (cmp_expr
+                                        (range_expr
+                                          (add_expr
+                                            (mul_expr
+                                              (prefix_expr
+                                                (postfix_expr
+                                                  (primary
+                                                    (literal
+                                                      (integer_literal))))))))))))))))))))))))))))
 
 ==================
 boolean literal true

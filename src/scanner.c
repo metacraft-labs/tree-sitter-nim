@@ -16,6 +16,7 @@ typedef struct {
   uint16_t indent_len;
   uint16_t pending_dedents;
   bool pending_indent;
+  bool eof_newline_emitted;  // Track if we've emitted synthetic newline at EOF
 } Scanner;
 
 static void advance(TSLexer *lexer, bool skip) { lexer->advance(lexer, skip); }
@@ -141,6 +142,7 @@ unsigned tree_sitter_nim_external_scanner_serialize(void *payload, char *buffer)
   buffer[i++] = (char)s->indent_len;
   buffer[i++] = (char)s->pending_dedents;
   buffer[i++] = (char)(s->pending_indent ? 1 : 0);
+  buffer[i++] = (char)(s->eof_newline_emitted ? 1 : 0);
 
   for (unsigned j = 0; j < s->indent_len; j++) {
     buffer[i++] = (char)(s->indents[j] & 0xFF);
@@ -151,12 +153,13 @@ unsigned tree_sitter_nim_external_scanner_serialize(void *payload, char *buffer)
 
 void tree_sitter_nim_external_scanner_deserialize(void *payload, const char *buffer, unsigned length) {
   Scanner *s = (Scanner *)payload;
-  if (length < 3) return;
+  if (length < 4) return;
 
   unsigned i = 0;
   s->indent_len = (uint8_t)buffer[i++];
   s->pending_dedents = (uint8_t)buffer[i++];
   s->pending_indent = buffer[i++] != 0;
+  s->eof_newline_emitted = buffer[i++] != 0;
 
   if (s->indent_len == 0) s->indent_len = 1;
 
@@ -188,8 +191,27 @@ bool tree_sitter_nim_external_scanner_scan(void *payload, TSLexer *lexer, const 
     return scan_comment(lexer);
   }
 
-  // EOF: flush remaining dedents
+  // EOF handling: emit synthetic NEWLINE first (once), then flush remaining DEDENTs.
+  // This ensures files without trailing newlines parse correctly.
   if (lexer->lookahead == 0) {
+    // First, emit a synthetic NEWLINE at EOF if the parser can accept it
+    // and we haven't already emitted one
+    if (valid[NEWLINE] && !s->eof_newline_emitted) {
+      s->eof_newline_emitted = true;
+      // Queue up dedents for remaining indentation levels
+      while (s->indent_len > 1) {
+        s->indent_len--;
+        s->pending_dedents++;
+      }
+      lexer->result_symbol = NEWLINE;
+      return true;
+    }
+    // Then flush remaining dedents
+    if (valid[DEDENT] && s->pending_dedents > 0) {
+      s->pending_dedents--;
+      lexer->result_symbol = DEDENT;
+      return true;
+    }
     if (valid[DEDENT] && s->indent_len > 1) {
       s->indent_len--;
       lexer->result_symbol = DEDENT;
