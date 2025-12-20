@@ -26,10 +26,10 @@ return 42
         (expression
           (arrow_expr
             (assign_op_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (type_relation_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
                         (amp_expr
                           (add_expr
@@ -37,7 +37,7 @@ return 42
                               (pow_expr
                                 (prefix_expr
                                   (postfix_expr
-                                    (primary
+                                    (postfixable_primary
                                       (literal
                                         (integer_literal)))))))))))))))))))))
 
@@ -69,10 +69,10 @@ yield x
         (expression
           (arrow_expr
             (assign_op_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (type_relation_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
                         (amp_expr
                           (add_expr
@@ -80,7 +80,7 @@ yield x
                               (pow_expr
                                 (prefix_expr
                                   (postfix_expr
-                                    (primary
+                                    (postfixable_primary
                                       (qualified_identifier
                                         (symbol
                                           (identifier))))))))))))))))))))))
@@ -113,10 +113,10 @@ raise newException(ValueError, "error")
         (expression
           (arrow_expr
             (assign_op_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (type_relation_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
                         (amp_expr
                           (add_expr
@@ -124,7 +124,7 @@ raise newException(ValueError, "error")
                               (pow_expr
                                 (prefix_expr
                                   (postfix_expr
-                                    (primary
+                                    (postfixable_primary
                                       (qualified_identifier
                                         (symbol
                                           (identifier))))
@@ -133,10 +133,10 @@ raise newException(ValueError, "error")
                                         (expression
                                           (arrow_expr
                                             (assign_op_expr
-                                              (or_expr
-                                                (and_expr
-                                                  (cmp_expr
-                                                    (type_relation_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
                                                       (range_expr
                                                         (amp_expr
                                                           (add_expr
@@ -144,7 +144,7 @@ raise newException(ValueError, "error")
                                                               (pow_expr
                                                                 (prefix_expr
                                                                   (postfix_expr
-                                                                    (primary
+                                                                    (postfixable_primary
                                                                       (qualified_identifier
                                                                         (symbol
                                                                           (identifier)))))))))))))))))))
@@ -152,10 +152,10 @@ raise newException(ValueError, "error")
                                         (expression
                                           (arrow_expr
                                             (assign_op_expr
-                                              (or_expr
-                                                (and_expr
-                                                  (cmp_expr
-                                                    (type_relation_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
                                                       (range_expr
                                                         (amp_expr
                                                           (add_expr
@@ -163,7 +163,7 @@ raise newException(ValueError, "error")
                                                               (pow_expr
                                                                 (prefix_expr
                                                                   (postfix_expr
-                                                                    (primary
+                                                                    (postfixable_primary
                                                                       (literal
                                                                         (string_literal)))))))))))))))))))))))))))))))))))))
 
@@ -208,10 +208,10 @@ break myLabel
         (expression
           (arrow_expr
             (assign_op_expr
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (type_relation_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
                       (range_expr
                         (amp_expr
                           (add_expr
@@ -219,7 +219,7 @@ break myLabel
                               (pow_expr
                                 (prefix_expr
                                   (postfix_expr
-                                    (primary
+                                    (postfixable_primary
                                       (qualified_identifier
                                         (symbol
                                           (identifier))))))))))))))))))))))
@@ -253,10 +253,10 @@ x = 5
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -264,17 +264,17 @@ x = 5
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (qualified_identifier
                                           (symbol
                                             (identifier))))))))))))))))))
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -282,7 +282,7 @@ x = 5
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (literal
                                           (integer_literal))))))))))))))))))))))
 
@@ -302,10 +302,10 @@ x = 1; y = 2
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -313,17 +313,17 @@ x = 1; y = 2
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (qualified_identifier
                                           (symbol
                                             (identifier))))))))))))))))))
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -331,7 +331,7 @@ x = 1; y = 2
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (literal
                                           (integer_literal))))))))))))))))))))
     (simple_stmt
@@ -340,10 +340,10 @@ x = 1; y = 2
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -351,17 +351,17 @@ x = 1; y = 2
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (qualified_identifier
                                           (symbol
                                             (identifier))))))))))))))))))
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -369,7 +369,7 @@ x = 1; y = 2
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (literal
                                           (integer_literal))))))))))))))))))))))
 

@@ -7,21 +7,23 @@
 //  5: == != < > <= >= in notin is isnot of as from
 //  4: and
 //  3: or xor
+//  2: @ : ? operators and other "default" operators (OP2 tier)
 //  1: assignment-like operators (+=, *=, etc. - but not bare =)
 //  0: -> ~> =>   (arrow operators - lowest)
 const PREC = {
   ARROW: 0, // -> ~> => (lowest)
   ASSIGN_OP: 1, // += -= *= etc (assignment-like operators)
-  OR: 2, // or xor
-  AND: 3, // and
-  CMP: 4, // == != < > in is of as etc
-  RANGE: 5, // .. and dot-operators
-  AMP: 6, // &
-  ADD: 7, // + - | ~
-  MUL: 8, // * / % div mod shl shr
-  POW: 9, // $ ^ (same tier, left associative)
-  PREFIX: 10,
-  CALL: 11,
+  OP2: 2, // @ : ? and other miscellaneous operators
+  OR: 3, // or xor
+  AND: 4, // and
+  CMP: 5, // == != < > in is of as etc
+  RANGE: 6, // .. and dot-operators
+  AMP: 7, // &
+  ADD: 8, // + - | ~
+  MUL: 9, // * / % div mod shl shr
+  POW: 10, // $ ^ (same tier, left associative)
+  PREFIX: 11,
+  CALL: 12,
   COMMAND: -1, // Lower than all expression operators
 };
 
@@ -44,6 +46,19 @@ module.exports = grammar({
     $._newline,
     $._soft_newline,
     $.comment,
+    // Operator tokens classified by precedence (from external scanner)
+    // These handle multi-character operators like <->, +++, etc.
+    $._op0_arrow, // -> ~> => and operators ending in [-~=]>
+    $._op1_assignment, // operators ending in = (except == != <= >= and ~= ?=)
+    $._op2_misc, // @ : ? multi-char operators
+    $._op3_or, // (unused - or/xor are keywords)
+    $._op4_and, // (unused - and is keyword)
+    $._op5_cmp, // = < > ! multi-char operators
+    $._op6_range, // .. multi-char operators (like ..+)
+    $._op7_amp, // & multi-char operators
+    $._op8_add, // + - ~ | multi-char operators
+    $._op9_mul, // * / % \ multi-char operators
+    $._op10_pow, // $ ^ multi-char operators
   ],
 
   extras: ($) => [$._ws, $._soft_newline, $.comment],
@@ -52,10 +67,9 @@ module.exports = grammar({
     [$.routine_definition],
     [$.qualified_identifier],
     [$.type_expr, $.generic_type],
-    [$.type_expr, $.type_call],
-    [$.primary, $.type_expr],
-    [$.primary, $.generic_type],
-    [$.primary, $.type_call],
+    [$.postfixable_primary, $.type_expr],
+    [$.postfixable_primary, $.generic_type],
+    [$.postfixable_primary, $.type_call],
     [$.param_decl],
     [$.enum_def],
     [$.enum_field_def],
@@ -180,11 +194,14 @@ module.exports = grammar({
         ),
       ),
 
-    // Assignment operators: end with = but don't start with = < > !
+    // Assignment operators: end with = but don't start with = < > ! ~ ?
     // Examples: +=, -=, *=, /=, &=, |=, ^=, $=, @=, etc.
     // Note: ==, !=, <=, >= are comparison operators, not assignment
+    // IMPORTANT: Operators starting with ~ keep their tier-8 precedence even with = ending
+    // IMPORTANT: Operators starting with ? keep their tier-2 precedence even with = ending
+    // So ~= is NOT an assignment operator, it stays at add tier (8)
     assignment_operator: (_) =>
-      token(/[+\-*\/%&|^$@~:\\][=+\-*\/<>@$~&%|!?^.:\\]*=/),
+      token(/[+\-*\/%&|^$@:\\][=+\-*\/<>@$~&%|!?^.:\\]*=/),
 
     // -------------------------------
     // Compound statements (suite-based)
@@ -746,7 +763,10 @@ module.exports = grammar({
         seq(
           $.assign_op_expr,
           repeat(
-            seq(choice("->", "~>", "=>", $.arrow_operator), $.assign_op_expr),
+            seq(
+              choice("->", "~>", "=>", $.arrow_operator, $._op0_arrow),
+              $.assign_op_expr,
+            ),
           ),
         ),
       ),
@@ -760,7 +780,27 @@ module.exports = grammar({
     assign_op_expr: ($) =>
       prec.right(
         PREC.ASSIGN_OP,
-        seq($.or_expr, optional(seq($.assignment_operator, $.assign_op_expr))),
+        seq(
+          $.op2_expr,
+          optional(
+            seq(
+              choice($.assignment_operator, $._op1_assignment),
+              $.assign_op_expr,
+            ),
+          ),
+        ),
+      ),
+
+    // OP2 tier (precedence 2): operators starting with @ : ? and "other" operators
+    // These are miscellaneous operators that don't fit in other categories
+    // In Nim's lexer.nim, these are handled via considerAsgn(2) for the default case
+    op2_expr: ($) =>
+      prec.left(
+        PREC.OP2,
+        seq(
+          $.or_expr,
+          repeat(seq(choice($.op2_operator, $._op2_misc), $.or_expr)),
+        ),
       ),
 
     // or/xor operators (precedence 3)
@@ -778,43 +818,44 @@ module.exports = grammar({
     // Comparison operators (precedence 5)
     // User-defined operators starting with = < > ! are also comparison operators
     // Note: Arrow operators are NOT here - they have their own lowest tier
-    // Note: is/isnot/of/as are handled separately in type_relation_expr because
-    // they take a type_expr on the RHS, not a range_expr
+    //
+    // IMPORTANT: is/isnot/of/as are in the SAME precedence tier as comparisons
+    // and chain left-to-right. This means:
+    //   x < x is bool   parses as   (x < x) is bool
+    // This is critical for concept constraints like `x < x is bool` to work.
+    //
+    // The difference is that is/isnot/of/as take a type_expr on the RHS,
+    // while other comparison operators take a range_expr.
     cmp_expr: ($) =>
       prec.left(
         PREC.CMP,
         seq(
-          $.type_relation_expr,
+          $.range_expr,
           repeat(
-            seq(
-              choice(
-                // Built-in comparison operators
-                "==",
-                "!=",
-                "<=",
-                ">=",
-                "<",
-                ">",
-                "in",
-                "notin",
-                "from",
-                // User-defined comparison operators (start with = < > !)
-                $.cmp_operator,
+            choice(
+              // Regular comparison operators: RHS is range_expr
+              seq(
+                choice(
+                  // Built-in comparison operators
+                  "==",
+                  "!=",
+                  "<=",
+                  ">=",
+                  "<",
+                  ">",
+                  "in",
+                  "notin",
+                  "from",
+                  // User-defined comparison operators (start with = < > !)
+                  $.cmp_operator,
+                  $._op5_cmp,
+                ),
+                $.range_expr,
               ),
-              $.type_relation_expr,
+              // Type relation operators: RHS is type_expr
+              seq(choice("is", "isnot", "of", "as"), $.type_expr),
             ),
           ),
-        ),
-      ),
-
-    // Type relation operators: is, isnot, of, as
-    // These take a type_expr on the RHS (e.g., x as ptr int, x of SomeType)
-    type_relation_expr: ($) =>
-      prec.left(
-        PREC.CMP,
-        seq(
-          $.range_expr,
-          optional(seq(choice("is", "isnot", "of", "as"), $.type_expr)),
         ),
       ),
 
@@ -826,7 +867,12 @@ module.exports = grammar({
         PREC.RANGE,
         seq(
           $.amp_expr,
-          repeat(seq(choice("..", "..<", $.range_operator), $.amp_expr)),
+          repeat(
+            seq(
+              choice("..", "..<", $.range_operator, $._op6_range),
+              $.amp_expr,
+            ),
+          ),
         ),
       ),
 
@@ -836,7 +882,10 @@ module.exports = grammar({
     amp_expr: ($) =>
       prec.left(
         PREC.AMP,
-        seq($.add_expr, repeat(seq(choice("&", $.amp_operator), $.add_expr))),
+        seq(
+          $.add_expr,
+          repeat(seq(choice("&", $.amp_operator, $._op7_amp), $.add_expr)),
+        ),
       ),
 
     // Additive operators (precedence 8): + - | ~
@@ -848,7 +897,12 @@ module.exports = grammar({
         PREC.ADD,
         seq(
           $.mul_expr,
-          repeat(seq(choice("+", "-", "|", "~", $.add_operator), $.mul_expr)),
+          repeat(
+            seq(
+              choice("+", "-", "|", "~", $.add_operator, $._op8_add),
+              $.mul_expr,
+            ),
+          ),
         ),
       ),
 
@@ -872,6 +926,7 @@ module.exports = grammar({
                 "shl",
                 "shr",
                 $.mul_operator,
+                $._op9_mul,
               ),
               $.pow_expr,
             ),
@@ -889,7 +944,7 @@ module.exports = grammar({
           $.prefix_expr,
           repeat(
             seq(
-              choice("$", "^", $.dollar_operator, $.hat_operator),
+              choice("$", "^", $.dollar_operator, $.hat_operator, $._op10_pow),
               $.prefix_expr,
             ),
           ),
@@ -905,9 +960,12 @@ module.exports = grammar({
     //
     // Pattern breakdown:
     // - [=+\-*\/<>@$~&%|!?^.:\\]* matches zero or more operator chars
-    // - [+\-*\/<>@$~&%|!?^.:\\] (no =) at the end ensures no = ending
-    // - OR match single additional char if not =
-    arrow_operator: (_) => token(/->|~>|=>|[\-~=][=+\-*\/<>@$~&%|!?^.:\\]*>/),
+    // Arrow operators have the LOWEST precedence (0)
+    // Nim's rule: if the LAST char is > and the PENULTIMATE char is - ~ =,
+    // then it's an arrow operator.
+    // This allows operators like <->, ***=>, etc.
+    // Common: ->, ~>, =>
+    arrow_operator: (_) => token(/[=+\-*\/<>@$~&%|!?^.:\\]*[\-~=]>/),
     // $ operators: $+ $* etc, but NOT $= (assignment-like) unless starts with ~ or ?
     dollar_operator: (_) =>
       token(
@@ -941,6 +999,13 @@ module.exports = grammar({
       ),
     // = ! < > operators (comparison tier) - these can end in = (==, !=, <=, >=)
     cmp_operator: (_) => token(/[=!<>][=+\-*\/<>@$~&%|!?^.:\\]+/),
+    // OP2 operators: @ : ? and other "miscellaneous" operators
+    // These are operators that start with @ : ? which fall into the OP2 tier
+    // Note: ? operators keep their precedence even if ending in =
+    op2_operator: (_) =>
+      token(
+        /[@:][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[@:][~?][=+\-*\/<>@$~&%|!?^.:\\]*|\?[=+\-*\/<>@$~&%|!?^.:\\]*/,
+      ),
 
     prefix_expr: ($) =>
       prec.right(
@@ -958,21 +1023,35 @@ module.exports = grammar({
     prefix_operator: (_) =>
       token(prec(-2, /[=+\-*\/<>@$~&%|!?^.:\\][=+\-*\/<>@$~&%|!?^.:\\]+/)),
 
+    // Postfix expression handles suffixes like (), [], {}, .field, do blocks
+    // IMPORTANT: Expression-form primaries (if, case, try, block, proc_expr)
+    // do NOT allow direct suffixes without parenthesization.
+    // This is because:
+    //   block: computeValue()  should parse as  block: (computeValue())
+    //   NOT as  (block: computeValue)()
+    //
+    // Only "postfixable_primary" (identifiers, literals, parens, arrays, braces)
+    // can have suffixes directly attached.
     postfix_expr: ($) =>
       prec.left(
         PREC.CALL,
-        seq(
-          $.primary,
-          repeat(
-            choice(
-              $.call_suffix,
-              $.index_suffix,
-              $.dot_suffix,
-              $.brace_suffix,
-              $.pragma_suffix,
-              $.do_block,
+        choice(
+          // Postfixable primaries can have suffixes
+          seq(
+            $.postfixable_primary,
+            repeat(
+              choice(
+                $.call_suffix,
+                $.index_suffix,
+                $.dot_suffix,
+                $.brace_suffix,
+                $.pragma_suffix,
+                $.do_block,
+              ),
             ),
           ),
+          // Expression forms stand alone (no direct suffixes)
+          $.expression_form_primary,
         ),
       ),
 
@@ -1032,7 +1111,9 @@ module.exports = grammar({
         "as",
       ),
 
-    primary: ($) =>
+    // Primary expressions that CAN have postfix suffixes attached directly
+    // These are "atomic" expressions like identifiers, literals, parenthesized exprs
+    postfixable_primary: ($) =>
       choice(
         $.literal,
         $.qualified_identifier,
@@ -1040,14 +1121,17 @@ module.exports = grammar({
         $.tuple_expr,
         $.array_expr,
         $.curly_expr,
-        // Expression forms of statements - can appear as primary expressions
-        $.if_expr,
-        $.case_expr,
-        $.try_expr,
-        $.block_expr,
-        // Anonymous proc/func/iterator expressions (lambdas)
-        $.proc_expr,
       ),
+
+    // Expression-form primaries that CANNOT have postfix suffixes directly
+    // These require parenthesization to apply suffixes: (if ...: 1 else: 2)()
+    // This prevents ambiguity like: block: computeValue() being parsed as
+    // (block: computeValue)() instead of block: (computeValue())
+    expression_form_primary: ($) =>
+      choice($.if_expr, $.case_expr, $.try_expr, $.block_expr, $.proc_expr),
+
+    // Combined primary for backward compatibility and other uses
+    primary: ($) => choice($.postfixable_primary, $.expression_form_primary),
 
     // Parenthesized expression: (expr) - just grouping, not a tuple
     // Also supports statement-list expressions: (discard 1; 2)
@@ -1064,17 +1148,32 @@ module.exports = grammar({
 
     // Statement-list expression in parentheses: (discard 1; 2)
     // Requires at least one semicolon to distinguish from plain paren_expr
-    // Examples: (discard 1; 2), (let x = 1; x), (discard;)
+    // Examples: (discard 1; 2), (let x = 1; x), (var x = 1; x + 1)
+    //
+    // IMPORTANT: Nim's parsePar allows section statements (let, var, const, type)
+    // and compound statements inside parentheses, not just simple_stmt.
+    // This enables patterns like: (let x = 1; x + 1)
     stmt_list_expr: ($) =>
       seq(
         "(",
-        $.simple_stmt,
+        $._paren_stmt,
         ";",
         choice(
-          seq(repeat(seq($.simple_stmt, ";")), optional($.expression)),
+          seq(repeat(seq($._paren_stmt, ";")), optional($.expression)),
           $.expression,
         ),
         ")",
+      ),
+
+    // Statements allowed inside parenthesized statement-list expressions
+    // Includes simple statements and inline section statements (let, var, const, type)
+    _paren_stmt: ($) =>
+      choice(
+        $.simple_stmt,
+        $.let_section,
+        $.var_section,
+        $.const_section,
+        $.type_section,
       ),
 
     // Expression body - can be inline expression or indented suite
@@ -1361,6 +1460,26 @@ module.exports = grammar({
         $.triple_string_literal,
         $.char_literal,
         $.nil_literal,
+        $.generalized_string,
+      ),
+
+    // Generalized string literals: ident"string" or ident"""string"""
+    // Examples: re"^pattern$", fmt"hello {name}", sql"SELECT * FROM ..."
+    // The identifier is immediately followed by the string (no space)
+    // Uses a single token to ensure no whitespace between identifier and string
+    generalized_string: (_) =>
+      token(
+        seq(
+          // Identifier prefix
+          /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/,
+          // Immediately followed by string (no space allowed)
+          choice(
+            // Regular quoted string
+            seq('"', repeat(choice(/[^"\\\r\n]+/, /\\./)), '"'),
+            // Triple-quoted string
+            seq('"""', repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)), '"""'),
+          ),
+        ),
       ),
 
     boolean_literal: (_) => choice("true", "false"),

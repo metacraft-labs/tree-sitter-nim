@@ -72,10 +72,10 @@ proc foo() {.raises: [].} = discard
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -83,7 +83,7 @@ proc foo() {.raises: [].} = discard
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (array_expr))))))))))))))))))
       (inline_stmt_list
         (simple_stmt
@@ -112,10 +112,10 @@ proc foo() {.exportc: "c_foo".} = discard
           (expression
             (arrow_expr
               (assign_op_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (type_relation_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
                         (range_expr
                           (amp_expr
                             (add_expr
@@ -123,7 +123,7 @@ proc foo() {.exportc: "c_foo".} = discard
                                 (pow_expr
                                   (prefix_expr
                                     (postfix_expr
-                                      (primary
+                                      (postfixable_primary
                                         (literal
                                           (string_literal)))))))))))))))))))
       (inline_stmt_list
