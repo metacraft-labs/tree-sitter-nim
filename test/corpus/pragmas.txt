@@ -70,21 +70,13 @@ proc foo() {.raises: [].} = discard
           (symbol
             (identifier))
           (expression
-            (arrow_expr
-              (assign_op_expr
-                (op2_expr
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (amp_expr
-                            (add_expr
-                              (mul_expr
-                                (pow_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (array_expr))))))))))))))))))
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (prefix_expr
+                    (postfix_expr
+                      (postfixable_primary
+                        (array_expr))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -110,22 +102,14 @@ proc foo() {.exportc: "c_foo".} = discard
           (symbol
             (identifier))
           (expression
-            (arrow_expr
-              (assign_op_expr
-                (op2_expr
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (amp_expr
-                            (add_expr
-                              (mul_expr
-                                (pow_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (string_literal)))))))))))))))))))
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (prefix_expr
+                    (postfix_expr
+                      (postfixable_primary
+                        (literal
+                          (string_literal)))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

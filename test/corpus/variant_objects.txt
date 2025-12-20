@@ -46,23 +46,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier)))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol
@@ -74,23 +66,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier)))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol
@@ -132,22 +116,14 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (literal
-                                                (boolean_literal))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (literal
+                                (boolean_literal))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol
@@ -217,41 +193,25 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier))))))))))
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier)))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol
@@ -263,23 +223,15 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier)))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (qualified_identifier
+                                (symbol
+                                  (identifier)))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol
@@ -312,43 +264,27 @@ type
         value: (object_def
           (object_when
             condition: (expression
-              (arrow_expr
-                (assign_op_expr
-                  (op2_expr
-                    (or_expr
-                      (and_expr
-                        (cmp_expr
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))
+                        (call_suffix
+                          (argument
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
                                     (prefix_expr
                                       (postfix_expr
                                         (postfixable_primary
                                           (qualified_identifier
                                             (symbol
-                                              (identifier))))
-                                        (call_suffix
-                                          (argument
-                                            (expression
-                                              (arrow_expr
-                                                (assign_op_expr
-                                                  (op2_expr
-                                                    (or_expr
-                                                      (and_expr
-                                                        (cmp_expr
-                                                          (range_expr
-                                                            (amp_expr
-                                                              (add_expr
-                                                                (mul_expr
-                                                                  (pow_expr
-                                                                    (prefix_expr
-                                                                      (postfix_expr
-                                                                        (postfixable_primary
-                                                                          (qualified_identifier
-                                                                            (symbol
-                                                                              (identifier))))))))))))))))))))))))))))))))))
+                                              (identifier))))))))))))))))))
             (object_field
               name: (exported_symbol
                 (symbol
@@ -398,42 +334,26 @@ type
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (literal
-                                                (integer_literal))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (literal
+                                (integer_literal))))))))))
               (object_nil))
             (object_of_branch
               (expression_list
                 (expression
-                  (arrow_expr
-                    (assign_op_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (literal
-                                                (integer_literal))))))))))))))))))
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (prefix_expr
+                          (postfix_expr
+                            (postfixable_primary
+                              (literal
+                                (integer_literal))))))))))
               (object_field
                 name: (exported_symbol
                   (symbol

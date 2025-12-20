@@ -104,22 +104,14 @@ proc foo(x: int = 10) = discard
               (symbol
                 (identifier))))
           (expression
-            (arrow_expr
-              (assign_op_expr
-                (op2_expr
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (range_expr
-                          (amp_expr
-                            (add_expr
-                              (mul_expr
-                                (pow_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal)))))))))))))))))))
+            (or_expr
+              (and_expr
+                (cmp_expr
+                  (prefix_expr
+                    (postfix_expr
+                      (postfixable_primary
+                        (literal
+                          (integer_literal)))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -446,30 +438,21 @@ proc square(x: int): int = x * x
         (simple_stmt
           (expr_stmt
             (expression
-              (arrow_expr
-                (assign_op_expr
-                  (op2_expr
-                    (or_expr
-                      (and_expr
-                        (cmp_expr
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier)))))))
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier))))))))))))))))))))))))
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))))))))))))
 
 ==================
 anonymous proc
@@ -484,29 +467,21 @@ proc (x: int) = discard
     (simple_stmt
       (expr_stmt
         (expression
-          (arrow_expr
-            (assign_op_expr
-              (op2_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (amp_expr
-                          (add_expr
-                            (mul_expr
-                              (pow_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (expression_form_primary
-                                      (proc_expr
-                                        (param_list
-                                          (param_decl
-                                            (symbol
-                                              (identifier))
-                                            (type_expr
-                                              (qualified_identifier
-                                                (symbol
-                                                  (identifier))))))
-                                        (inline_stmt_list
-                                          (simple_stmt
-                                            (discard_stmt)))))))))))))))))))))))
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (expression_form_primary
+                      (proc_expr
+                        (param_list
+                          (param_decl
+                            (symbol
+                              (identifier))
+                            (type_expr
+                              (qualified_identifier
+                                (symbol
+                                  (identifier))))))
+                        (inline_stmt_list
+                          (simple_stmt
+                            (discard_stmt)))))))))))))))

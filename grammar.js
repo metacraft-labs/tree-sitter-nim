@@ -205,14 +205,8 @@ module.exports = grammar({
         ),
       ),
 
-    // Assignment operators: end with = but don't start with = < > ! ~ ?
-    // Examples: +=, -=, *=, /=, &=, |=, ^=, $=, @=, etc.
-    // Note: ==, !=, <=, >= are comparison operators, not assignment
-    // IMPORTANT: Operators starting with ~ keep their tier-8 precedence even with = ending
-    // IMPORTANT: Operators starting with ? keep their tier-2 precedence even with = ending
-    // So ~= is NOT an assignment operator, it stays at add tier (8)
-    assignment_operator: (_) =>
-      token(/[+\-*\/%&|^$@:\\][=+\-*\/<>@$~&%|!?^.:\\]*=/),
+    // Assignment operators (+=, -=, etc.) are handled by the external scanner
+    // and parsed as expressions, not as statement assignments.
 
     // -------------------------------
     // Compound statements (suite-based)
@@ -743,7 +737,7 @@ module.exports = grammar({
     // -------------------------------
     // Expression hierarchy follows Nim's precedence from lexer.nim:getPrecedence
     // Arrow operators are the lowest precedence (0), then or/xor (3), and (4), etc.
-    expression: ($) => choice($.command_expr, prec(PREC.CALL, $.arrow_expr)),
+    expression: ($) => choice($.command_expr, prec(PREC.CALL, $._arrow_expr)),
 
     // Command call syntax: echo "hello", foo a, b, foo a + b
     // Strong spaces are enforced via token.immediate on suffixes:
@@ -773,16 +767,16 @@ module.exports = grammar({
     // Named arguments with : or = also supported
     command_first_arg: ($) =>
       choice(
-        seq($.symbol, ":", $.arrow_expr), // Named argument (must come first to avoid ambiguity)
-        seq($.symbol, "=", $.arrow_expr), // Named argument with =
-        $.arrow_expr, // Full expression including a + b, not x, etc.
+        seq($.symbol, ":", $._arrow_expr), // Named argument (must come first to avoid ambiguity)
+        seq($.symbol, "=", $._arrow_expr), // Named argument with =
+        $._arrow_expr, // Full expression including a + b, not x, etc.
       ),
 
     command_arg: ($) =>
       choice(
-        seq($.symbol, ":", $.arrow_expr), // Named argument
-        seq($.symbol, "=", $.arrow_expr), // Named argument with =
-        $.arrow_expr,
+        seq($.symbol, ":", $._arrow_expr), // Named argument
+        seq($.symbol, "=", $._arrow_expr), // Named argument with =
+        $._arrow_expr,
       ),
 
     // Block argument: foo arg: body
@@ -806,15 +800,17 @@ module.exports = grammar({
 
     // Arrow operators have the LOWEST precedence (0)
     // This means: a -> b or c  parses as  a -> (b or c)
-    arrow_expr: ($) =>
+    // Uses external scanner for multi-char arrow operators
+    // Made anonymous (_) to reduce tree depth
+    _arrow_expr: ($) =>
       prec.left(
         PREC.ARROW,
         seq(
-          $.assign_op_expr,
+          $._assign_op_expr,
           repeat(
             seq(
-              choice("->", "~>", "=>", $.arrow_operator, $._op0_arrow),
-              $.assign_op_expr,
+              choice("->", "~>", "=>", $._op0_arrow),
+              $._assign_op_expr,
             ),
           ),
         ),
@@ -826,15 +822,17 @@ module.exports = grammar({
     // Examples: +=, -=, *=, &= etc.
     // Note: In Nim, operators ending in = have assignment precedence (1)
     // EXCEPT when they start with ~ or ? (those keep their first-char precedence)
-    assign_op_expr: ($) =>
+    // Uses external scanner for multi-char assignment operators
+    // Made anonymous (_) to reduce tree depth
+    _assign_op_expr: ($) =>
       prec.right(
         PREC.ASSIGN_OP,
         seq(
-          $.op2_expr,
+          $._op2_expr,
           optional(
             seq(
-              choice($.assignment_operator, $._op1_assignment),
-              $.assign_op_expr,
+              $._op1_assignment,
+              $._assign_op_expr,
             ),
           ),
         ),
@@ -843,13 +841,12 @@ module.exports = grammar({
     // OP2 tier (precedence 2): operators starting with @ : ? and "other" operators
     // These are miscellaneous operators that don't fit in other categories
     // In Nim's lexer.nim, these are handled via considerAsgn(2) for the default case
-    op2_expr: ($) =>
+    // Uses external scanner for multi-char operators
+    // Made anonymous (_) to reduce tree depth
+    _op2_expr: ($) =>
       prec.left(
         PREC.OP2,
-        seq(
-          $.or_expr,
-          repeat(seq(choice($.op2_operator, $._op2_misc), $.or_expr)),
-        ),
+        seq($.or_expr, repeat(seq($._op2_misc, $.or_expr))),
       ),
 
     // or/xor operators (precedence 3)
@@ -865,7 +862,7 @@ module.exports = grammar({
       prec.left(PREC.AND, seq($.cmp_expr, repeat(seq("and", $.cmp_expr)))),
 
     // Comparison operators (precedence 5)
-    // User-defined operators starting with = < > ! are also comparison operators
+    // User-defined operators starting with = < > ! are handled by external scanner
     // Note: Arrow operators are NOT here - they have their own lowest tier
     //
     // IMPORTANT: is/isnot/of/as are in the SAME precedence tier as comparisons
@@ -879,7 +876,7 @@ module.exports = grammar({
       prec.left(
         PREC.CMP,
         seq(
-          $.range_expr,
+          $._range_expr,
           repeat(
             choice(
               // Regular comparison operators: RHS is range_expr
@@ -895,11 +892,10 @@ module.exports = grammar({
                   "in",
                   "notin",
                   "from",
-                  // User-defined comparison operators (start with = < > !)
-                  $.cmp_operator,
+                  // User-defined comparison operators (external scanner)
                   $._op5_cmp,
                 ),
-                $.range_expr,
+                $._range_expr,
               ),
               // Type relation operators: RHS is type_expr
               seq(choice("is", "isnot", "of", "as"), $.type_expr),
@@ -911,73 +907,55 @@ module.exports = grammar({
     // Range/dot operators (precedence 6)
     // Note: This is LOWER than & (precedence 7)
     // So: a & b .. c  parses as  (a & b) .. c
-    range_expr: ($) =>
+    // Uses external scanner for multi-char range/dot operators
+    // Made anonymous (_) to reduce tree depth
+    _range_expr: ($) =>
       prec.left(
         PREC.RANGE,
         seq(
-          $.amp_expr,
-          repeat(
-            seq(
-              choice("..", "..<", $.range_operator, $._op6_range),
-              $.amp_expr,
-            ),
-          ),
+          $._amp_expr,
+          repeat(seq(choice("..", "..<", $._op6_range), $._amp_expr)),
         ),
       ),
 
     // Ampersand operators (precedence 7)
     // Built-in: & (string concat), user-defined: && and other &-prefixed operators
     // Note: This binds TIGHTER than .. (precedence 6)
-    amp_expr: ($) =>
+    // Uses external scanner for multi-char amp operators
+    // Made anonymous (_) to reduce tree depth
+    _amp_expr: ($) =>
       prec.left(
         PREC.AMP,
-        seq(
-          $.add_expr,
-          repeat(seq(choice("&", $.amp_operator, $._op7_amp), $.add_expr)),
-        ),
+        seq($._add_expr, repeat(seq(choice("&", $._op7_amp), $._add_expr))),
       ),
 
     // Additive operators (precedence 8): + - | ~
     // IMPORTANT: | is here at add-level, NOT at or-level!
     // So: a or b | c  parses as  a or (b | c)
-    // Includes user-defined operators starting with these characters
-    add_expr: ($) =>
+    // Uses external scanner for multi-char add operators
+    // Made anonymous (_) to reduce tree depth
+    _add_expr: ($) =>
       prec.left(
         PREC.ADD,
         seq(
-          $.mul_expr,
-          repeat(
-            seq(
-              choice("+", "-", "|", "~", $.add_operator, $._op8_add),
-              $.mul_expr,
-            ),
-          ),
+          $._mul_expr,
+          repeat(seq(choice("+", "-", "|", "~", $._op8_add), $._mul_expr)),
         ),
       ),
 
     // Multiplicative operators (precedence 9): * / % div mod shl shr \
     // Note: shl/shr are ONLY here, not in add tier
-    // Includes user-defined operators starting with * / % \
-    mul_expr: ($) =>
+    // Uses external scanner for multi-char mul operators
+    // Made anonymous (_) to reduce tree depth
+    _mul_expr: ($) =>
       prec.left(
         PREC.MUL,
         seq(
-          $.pow_expr,
+          $._pow_expr,
           repeat(
             seq(
-              choice(
-                "*",
-                "/",
-                "%",
-                "\\",
-                "div",
-                "mod",
-                "shl",
-                "shr",
-                $.mul_operator,
-                $._op9_mul,
-              ),
-              $.pow_expr,
+              choice("*", "/", "%", "\\", "div", "mod", "shl", "shr", $._op9_mul),
+              $._pow_expr,
             ),
           ),
         ),
@@ -986,75 +964,20 @@ module.exports = grammar({
     // Power/highest infix operators (precedence 10): $ and ^
     // IMPORTANT: $ and ^ share the SAME precedence tier, left associative
     // So: a $ b ^ c  parses as  (a $ b) ^ c
-    pow_expr: ($) =>
+    // Uses external scanner for multi-char pow operators
+    // Made anonymous (_) to reduce tree depth
+    _pow_expr: ($) =>
       prec.left(
         PREC.POW,
         seq(
           $.prefix_expr,
-          repeat(
-            seq(
-              choice("$", "^", $.dollar_operator, $.hat_operator, $._op10_pow),
-              $.prefix_expr,
-            ),
-          ),
+          repeat(seq(choice("$", "^", $._op10_pow), $.prefix_expr)),
         ),
       ),
 
-    // User-defined operator tokens based on first character
-    // These match Nim's lexer.nim:getPrecedence character classes
-    //
-    // IMPORTANT: Operators ending in = have assignment precedence (1) UNLESS
-    // they start with ~ or ? (those keep their first-char precedence).
-    // So we exclude =$ endings from tier tokens and route them through assignment_operator.
-    //
-    // Pattern breakdown:
-    // - [=+\-*\/<>@$~&%|!?^.:\\]* matches zero or more operator chars
-    // Arrow operators have the LOWEST precedence (0)
-    // Nim's rule: if the LAST char is > and the PENULTIMATE char is - ~ =,
-    // then it's an arrow operator.
-    // This allows operators like <->, ***=>, etc.
-    // Common: ->, ~>, =>
-    arrow_operator: (_) => token(/[=+\-*\/<>@$~&%|!?^.:\\]*[\-~=]>/),
-    // $ operators: $+ $* etc, but NOT $= (assignment-like) unless starts with ~ or ?
-    dollar_operator: (_) =>
-      token(
-        /\$[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\$[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
-    // ^ operators: ^+ ^* etc, but NOT ^= (assignment-like) unless starts with ~ or ?
-    hat_operator: (_) =>
-      token(
-        /\^[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\^[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
-    // * / % \ operators, but NOT *= /= etc (assignment-like) unless starts with ~ or ?
-    mul_operator: (_) =>
-      token(
-        /[*%\\/][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[*%\\/][~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
-    // + - ~ | operators, but NOT += -= etc (assignment-like)
-    // Note: ~ and ? starting operators keep their precedence even with = ending
-    add_operator: (_) =>
-      token(
-        /[+\-|][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[+\-|][~?][=+\-*\/<>@$~&%|!?^.:\\]*|~[=+\-*\/<>@$~&%|!?^.:\\]+/,
-      ),
-    // & operators, but NOT &= (assignment-like) unless starts with ~ or ?
-    amp_operator: (_) =>
-      token(
-        /&[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|&[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
-    // .. operators, but NOT ..= (assignment-like) unless starts with ~ or ?
-    range_operator: (_) =>
-      token(
-        /\.\.[=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|\.\.[~?][=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
-    // = ! < > operators (comparison tier) - these can end in = (==, !=, <=, >=)
-    cmp_operator: (_) => token(/[=!<>][=+\-*\/<>@$~&%|!?^.:\\]+/),
-    // OP2 operators: @ : ? and other "miscellaneous" operators
-    // These are operators that start with @ : ? which fall into the OP2 tier
-    // Note: ? operators keep their precedence even if ending in =
-    op2_operator: (_) =>
-      token(
-        /[@:][=+\-*\/<>@$~&%|!?^.:\\]*[+\-*\/<>@$~&%|!?^.:\\]|[@:][~?][=+\-*\/<>@$~&%|!?^.:\\]*|\?[=+\-*\/<>@$~&%|!?^.:\\]*/,
-      ),
+    // Multi-character operators are handled by the external scanner
+    // which classifies them by precedence tier based on first character.
+    // The grammar only uses single-char literals and keyword operators.
 
     prefix_expr: ($) =>
       prec.right(

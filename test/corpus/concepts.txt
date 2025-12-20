@@ -20,28 +20,20 @@ type
             (identifier))
           (concept_constraint
             (expression
-              (arrow_expr
-                (assign_op_expr
-                  (op2_expr
-                    (or_expr
-                      (and_expr
-                        (cmp_expr
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (prefix_expr
-                                        (postfix_expr
-                                          (postfixable_primary
-                                            (qualified_identifier
-                                              (symbol
-                                                (identifier))))))))))))
-                          (type_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (prefix_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
                             (qualified_identifier
                               (symbol
-                                (identifier)))))))))))))))))
+                                (identifier)))))))
+                    (type_expr
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))))))))))
 
 ==================
 concept with multiple parameters
@@ -67,54 +59,36 @@ type
             (identifier))
           (concept_constraint
             (expression
-              (arrow_expr
-                (assign_op_expr
-                  (op2_expr
-                    (or_expr
-                      (and_expr
-                        (cmp_expr
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier))))))))
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier)))))))))))
-                          (type_expr
-                            (type_call
-                              (qualified_identifier
-                                (symbol
-                                  (identifier)))
-                              (expression
-                                (arrow_expr
-                                  (assign_op_expr
-                                    (op2_expr
-                                      (or_expr
-                                        (and_expr
-                                          (cmp_expr
-                                            (range_expr
-                                              (amp_expr
-                                                (add_expr
-                                                  (mul_expr
-                                                    (pow_expr
-                                                      (prefix_expr
-                                                        (postfix_expr
-                                                          (postfixable_primary
-                                                            (qualified_identifier
-                                                              (symbol
-                                                                (identifier)))))))))))))))))))))))))))))))))
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))
+                    (type_expr
+                      (type_call
+                        (qualified_identifier
+                          (symbol
+                            (identifier)))
+                        (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 concept with of clause
@@ -142,35 +116,22 @@ type
                 (identifier))))
           (concept_constraint
             (expression
-              (arrow_expr
-                (assign_op_expr
-                  (op2_expr
-                    (or_expr
-                      (and_expr
-                        (cmp_expr
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier)))))))))))
-                          (range_expr
-                            (amp_expr
-                              (add_expr
-                                (mul_expr
-                                  (pow_expr
-                                    (prefix_expr
-                                      (postfix_expr
-                                        (postfixable_primary
-                                          (qualified_identifier
-                                            (symbol
-                                              (identifier)))))))))))
-                          (type_expr
-                            (qualified_identifier
-                              (symbol
-                                (identifier)))))))))))))))))
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))
+                    (prefix_expr
+                      (postfix_expr
+                        (postfixable_primary
+                          (qualified_identifier
+                            (symbol
+                              (identifier))))))
+                    (type_expr
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))))))))))
