@@ -27,6 +27,33 @@ const PREC = {
   COMMAND: -1, // Lower than all expression operators
 };
 
+// Helper to create left-associative infix expression rules
+// This produces infix_expression nodes that preserve operator structure
+function infixLeft(prec, operand, operators) {
+  return ($) =>
+    prec.left(
+      prec,
+      seq(
+        field("left", operand($)),
+        field("operator", operators($)),
+        field("right", operand($)),
+      ),
+    );
+}
+
+// Helper to create right-associative infix expression rules
+function infixRight(prec, operand, operators) {
+  return ($) =>
+    prec.right(
+      prec,
+      seq(
+        field("left", operand($)),
+        field("operator", operators($)),
+        field("right", operand($)),
+      ),
+    );
+}
+
 function sep1(rule, sep) {
   return seq(rule, repeat(seq(sep, rule)));
 }
@@ -77,11 +104,16 @@ module.exports = grammar({
     [$.postfixable_primary, $.type_expr],
     [$.postfixable_primary, $.generic_type],
     [$.postfixable_primary, $.type_call],
+    [$.postfixable_primary, $.qualified_identifier], // symbol vs qualified path
+    [$.postfixable_primary, $.named_tuple_element], // symbol: could be colon block or named tuple
+    [$.postfixable_primary, $.argument], // symbol: could be colon block or named argument
     [$.param_decl],
     [$.enum_def],
     [$.enum_field_def],
     [$.command_arg, $.qualified_identifier],
     [$.command_first_arg, $.qualified_identifier],
+    [$.command_first_arg, $.postfixable_primary], // symbol can be named arg or expression
+    [$.command_arg, $.postfixable_primary], // symbol can be named arg or expression
     [$.import_symbol, $.qualified_identifier],
     [$.object_def],
     [$.object_def, $.object_type],
@@ -739,7 +771,8 @@ module.exports = grammar({
     // -------------------------------
     // Expression hierarchy follows Nim's precedence from lexer.nim:getPrecedence
     // Arrow operators are the lowest precedence (0), then or/xor (3), and (4), etc.
-    expression: ($) => choice($.command_expr, prec(PREC.CALL, $._arrow_expr)),
+    expression: ($) =>
+      choice($.command_expr, prec(PREC.CALL, $.infix_expression)),
 
     // Command call syntax: echo "hello", foo a, b, foo a + b
     // Strong spaces are enforced via token.immediate on suffixes:
@@ -763,22 +796,22 @@ module.exports = grammar({
         ),
       ),
 
-    // First command arg - allows full arrow_expr to support expressions like:
+    // First command arg - allows full infix_expression to support expressions like:
     //   foo a + b  (parsed as foo(a + b))
     //   foo not x  (parsed as foo(not x))
     // Named arguments with : or = also supported
     command_first_arg: ($) =>
       choice(
-        seq($.symbol, ":", $._arrow_expr), // Named argument (must come first to avoid ambiguity)
-        seq($.symbol, "=", $._arrow_expr), // Named argument with =
-        $._arrow_expr, // Full expression including a + b, not x, etc.
+        seq($.symbol, ":", $.infix_expression), // Named argument (must come first to avoid ambiguity)
+        seq($.symbol, "=", $.infix_expression), // Named argument with =
+        $.infix_expression, // Full expression including a + b, not x, etc.
       ),
 
     command_arg: ($) =>
       choice(
-        seq($.symbol, ":", $._arrow_expr), // Named argument
-        seq($.symbol, "=", $._arrow_expr), // Named argument with =
-        $._arrow_expr,
+        seq($.symbol, ":", $.infix_expression), // Named argument
+        seq($.symbol, "=", $.infix_expression), // Named argument with =
+        $.infix_expression,
       ),
 
     // Block argument: foo arg: body
@@ -789,6 +822,13 @@ module.exports = grammar({
     // Precedence is determined by the first character of the operator token
     // User-defined operators follow the same rules as built-in ones
     //
+    // All infix operators produce infix_expression nodes with:
+    //   left: the left operand
+    //   operator: the operator token (named node for visibility)
+    //   right: the right operand
+    //
+    // This preserves operator structure in the AST for meaningful precedence tests.
+    //
     // Nim precedence tiers (higher = binds tighter):
     //  10: $ ^        (highest infix - SAME tier, left associative)
     //   9: * / div mod shl shr % \
@@ -798,19 +838,52 @@ module.exports = grammar({
     //   5: == != < > <= >= in notin is isnot of as from
     //   4: and
     //   3: or xor
+    //   2: @ : ? operators (OP2 tier)
+    //   1: assignment operators (+=, *=, etc)
     //   0: -> ~> =>   (arrow operators - lowest)
+
+    // Named operator nodes for each precedence tier
+    // These make operators visible in the AST for tooling
+    arrow_operator: (_) => choice("->", "~>", "=>"),
+    assign_operator: ($) => $._op1_assignment,
+    op2_operator: ($) => $._op2_misc,
+    or_operator: (_) => choice("or", "xor"),
+    and_operator: (_) => "and",
+    cmp_operator: ($) =>
+      choice(
+        "==",
+        "!=",
+        "<=",
+        ">=",
+        "<",
+        ">",
+        "in",
+        "notin",
+        "from",
+        $._op5_cmp,
+      ),
+    type_cmp_operator: (_) => choice("is", "isnot", "of", "as"),
+    range_operator: ($) => choice("..", "..<", $._op6_range),
+    amp_operator: ($) => choice("&", $._op7_amp),
+    add_operator: ($) => choice("+", "-", "|", "~", $._op8_add),
+    mul_operator: ($) =>
+      choice("*", "/", "%", "\\", "div", "mod", "shl", "shr", $._op9_mul),
+    pow_operator: ($) => choice("$", "^", $._op10_pow),
 
     // Arrow operators have the LOWEST precedence (0)
     // This means: a -> b or c  parses as  a -> (b or c)
     // Uses external scanner for multi-char arrow operators
-    // Made anonymous (_) to reduce tree depth
-    _arrow_expr: ($) =>
+    // Note: We use a single prec.left with repeat to allow chaining: a -> b -> c
+    infix_expression: ($) =>
       prec.left(
         PREC.ARROW,
         seq(
-          $._assign_op_expr,
+          $.assign_expr,
           repeat(
-            seq(choice("->", "~>", "=>", $._op0_arrow), $._assign_op_expr),
+            seq(
+              field("operator", choice($.arrow_operator, $._op0_arrow)),
+              $.assign_expr,
+            ),
           ),
         ),
       ),
@@ -819,44 +892,53 @@ module.exports = grammar({
     // These are operators ending in = (but not ==, !=, <=, >=)
     // Right-associative like assignment
     // Examples: +=, -=, *=, &= etc.
-    // Note: In Nim, operators ending in = have assignment precedence (1)
-    // EXCEPT when they start with ~ or ? (those keep their first-char precedence)
-    // Uses external scanner for multi-char assignment operators
-    // Made anonymous (_) to reduce tree depth
-    _assign_op_expr: ($) =>
+    assign_expr: ($) =>
       prec.right(
         PREC.ASSIGN_OP,
-        seq($._op2_expr, optional(seq($._op1_assignment, $._assign_op_expr))),
+        seq(
+          $.op2_expr,
+          optional(seq(field("operator", $.assign_operator), $.assign_expr)),
+        ),
       ),
 
     // OP2 tier (precedence 2): operators starting with @ : ? and "other" operators
     // These are miscellaneous operators that don't fit in other categories
-    // In Nim's lexer.nim, these are handled via considerAsgn(2) for the default case
-    // Uses external scanner for multi-char operators
-    // Made anonymous (_) to reduce tree depth
-    _op2_expr: ($) =>
-      prec.left(PREC.OP2, seq($.or_expr, repeat(seq($._op2_misc, $.or_expr)))),
+    op2_expr: ($) =>
+      prec.left(
+        PREC.OP2,
+        seq(
+          $.or_expr,
+          repeat(seq(field("operator", $.op2_operator), $.or_expr)),
+        ),
+      ),
 
     // or/xor operators (precedence 3)
     // Note: | is NOT here - it's in add_expr (precedence 8)
     or_expr: ($) =>
       prec.left(
         PREC.OR,
-        seq($.and_expr, repeat(seq(choice("or", "xor"), $.and_expr))),
+        seq(
+          $.and_expr,
+          repeat(seq(field("operator", $.or_operator), $.and_expr)),
+        ),
       ),
 
     // and operator (precedence 4)
     and_expr: ($) =>
-      prec.left(PREC.AND, seq($.cmp_expr, repeat(seq("and", $.cmp_expr)))),
+      prec.left(
+        PREC.AND,
+        seq(
+          $.cmp_expr,
+          repeat(seq(field("operator", $.and_operator), $.cmp_expr)),
+        ),
+      ),
 
     // Comparison operators (precedence 5)
     // User-defined operators starting with = < > ! are handled by external scanner
-    // Note: Arrow operators are NOT here - they have their own lowest tier
     //
     // IMPORTANT: is/isnot/of/as are in the SAME precedence tier as comparisons
     // and chain left-to-right. This means:
     //   x < x is bool   parses as   (x < x) is bool
-    // This is critical for concept constraints like `x < x is bool` to work.
     //
     // The difference is that is/isnot/of/as take a type_expr on the RHS,
     // while other comparison operators take a range_expr.
@@ -864,29 +946,13 @@ module.exports = grammar({
       prec.left(
         PREC.CMP,
         seq(
-          $._range_expr,
+          $.range_expr,
           repeat(
             choice(
               // Regular comparison operators: RHS is range_expr
-              seq(
-                choice(
-                  // Built-in comparison operators
-                  "==",
-                  "!=",
-                  "<=",
-                  ">=",
-                  "<",
-                  ">",
-                  "in",
-                  "notin",
-                  "from",
-                  // User-defined comparison operators (external scanner)
-                  $._op5_cmp,
-                ),
-                $._range_expr,
-              ),
+              seq(field("operator", $.cmp_operator), $.range_expr),
               // Type relation operators: RHS is type_expr
-              seq(choice("is", "isnot", "of", "as"), $.type_expr),
+              seq(field("operator", $.type_cmp_operator), $.type_expr),
             ),
           ),
         ),
@@ -895,81 +961,59 @@ module.exports = grammar({
     // Range/dot operators (precedence 6)
     // Note: This is LOWER than & (precedence 7)
     // So: a & b .. c  parses as  (a & b) .. c
-    // Uses external scanner for multi-char range/dot operators
-    // Made anonymous (_) to reduce tree depth
-    _range_expr: ($) =>
+    range_expr: ($) =>
       prec.left(
         PREC.RANGE,
         seq(
-          $._amp_expr,
-          repeat(seq(choice("..", "..<", $._op6_range), $._amp_expr)),
+          $.amp_expr,
+          repeat(seq(field("operator", $.range_operator), $.amp_expr)),
         ),
       ),
 
     // Ampersand operators (precedence 7)
     // Built-in: & (string concat), user-defined: && and other &-prefixed operators
     // Note: This binds TIGHTER than .. (precedence 6)
-    // Uses external scanner for multi-char amp operators
-    // Made anonymous (_) to reduce tree depth
-    _amp_expr: ($) =>
+    amp_expr: ($) =>
       prec.left(
         PREC.AMP,
-        seq($._add_expr, repeat(seq(choice("&", $._op7_amp), $._add_expr))),
+        seq(
+          $.add_expr,
+          repeat(seq(field("operator", $.amp_operator), $.add_expr)),
+        ),
       ),
 
     // Additive operators (precedence 8): + - | ~
     // IMPORTANT: | is here at add-level, NOT at or-level!
     // So: a or b | c  parses as  a or (b | c)
-    // Uses external scanner for multi-char add operators
-    // Made anonymous (_) to reduce tree depth
-    _add_expr: ($) =>
+    add_expr: ($) =>
       prec.left(
         PREC.ADD,
         seq(
-          $._mul_expr,
-          repeat(seq(choice("+", "-", "|", "~", $._op8_add), $._mul_expr)),
+          $.mul_expr,
+          repeat(seq(field("operator", $.add_operator), $.mul_expr)),
         ),
       ),
 
     // Multiplicative operators (precedence 9): * / % div mod shl shr \
     // Note: shl/shr are ONLY here, not in add tier
-    // Uses external scanner for multi-char mul operators
-    // Made anonymous (_) to reduce tree depth
-    _mul_expr: ($) =>
+    mul_expr: ($) =>
       prec.left(
         PREC.MUL,
         seq(
-          $._pow_expr,
-          repeat(
-            seq(
-              choice(
-                "*",
-                "/",
-                "%",
-                "\\",
-                "div",
-                "mod",
-                "shl",
-                "shr",
-                $._op9_mul,
-              ),
-              $._pow_expr,
-            ),
-          ),
+          $.pow_expr,
+          repeat(seq(field("operator", $.mul_operator), $.pow_expr)),
         ),
       ),
 
     // Power/highest infix operators (precedence 10): $ and ^
     // IMPORTANT: $ and ^ share the SAME precedence tier, left associative
     // So: a $ b ^ c  parses as  (a $ b) ^ c
-    // Uses external scanner for multi-char pow operators
-    // Made anonymous (_) to reduce tree depth
-    _pow_expr: ($) =>
+    pow_expr: ($) =>
       prec.left(
         PREC.POW,
         seq(
           $.prefix_expr,
-          repeat(seq(choice("$", "^", $._op10_pow), $.prefix_expr)),
+          repeat(seq(field("operator", $.pow_operator), $.prefix_expr)),
         ),
       ),
 
@@ -977,22 +1021,49 @@ module.exports = grammar({
     // which classifies them by precedence tier based on first character.
     // The grammar only uses single-char literals and keyword operators.
 
+    // Named unary operator node for prefix expressions
+    // This makes prefix operators visible in the AST
+    // Includes common single-char operators and allows user-defined multi-char operators
+    // Excludes: * (export marker), = (assignment), . : (structural)
+    unary_operator: ($) =>
+      choice(
+        "+",
+        "-",
+        "not",
+        "~",
+        "@",
+        "$",
+        "^",
+        // Single-char operators commonly used as prefixes
+        "!",
+        "?",
+        "%",
+        "/",
+        "\\",
+        "&",
+        "|",
+        "<",
+        ">",
+        $.custom_prefix_operator,
+      ),
+
+    // User-defined prefix operators (any operator chars, 2+ characters)
+    // Single-char operators are handled above to avoid matching structural punctuation
+    custom_prefix_operator: (_) =>
+      token(prec(-2, /[=+\-*\/<>@$~&%|!?^.:\\][=+\-*\/<>@$~&%|!?^.:\\]+/)),
+
     prefix_expr: ($) =>
       prec.right(
         PREC.PREFIX,
         choice(
           seq(
             // ^ is for back-indexing: a[^1] means a[a.len - 1]
-            choice("+", "-", "not", "~", "@", "$", "^", $.prefix_operator),
-            $.prefix_expr,
+            field("operator", $.unary_operator),
+            field("operand", $.prefix_expr),
           ),
           $.postfix_expr,
         ),
       ),
-
-    // User-defined prefix operators (any operator chars)
-    prefix_operator: (_) =>
-      token(prec(-2, /[=+\-*\/<>@$~&%|!?^.:\\][=+\-*\/<>@$~&%|!?^.:\\]+/)),
 
     // Postfix expression handles suffixes like (), [], {}, .field, do blocks
     // IMPORTANT: Expression-form primaries (if, case, try, block, proc_expr)
@@ -1018,6 +1089,8 @@ module.exports = grammar({
                 $.brace_suffix,
                 $.pragma_suffix,
                 $.do_block,
+                $.colon_block_suffix, // foo: body (post-expression block)
+                $.generalized_string_suffix, // re"pattern", fmt"hello"
               ),
             ),
           ),
@@ -1041,6 +1114,45 @@ module.exports = grammar({
       seq(token.immediate("{"), commaSep($.expression), optional(","), "}"),
     dot_suffix: ($) => seq(".", $.symbol_or_keyword),
     pragma_suffix: ($) => $.pragma,
+
+    // Colon block suffix: foo: body (post-expression block in expression context)
+    // This allows post-expr blocks anywhere expressions appear:
+    //   let y = foo: discard
+    //   return bar: expr
+    //   echo (foo: body)
+    // Uses _colon_suite which handles both inline and indented bodies
+    colon_block_suffix: ($) => $._colon_suite,
+
+    // Generalized string suffix: re"pattern", fmt"hello {name}", sql"SELECT..."
+    // This is a call-like construct in Nim's AST (nkCallStrLit).
+    // The identifier (callee) immediately precedes the string (no space allowed).
+    // Examples:
+    //   re"^pattern$"  -> callee=re, argument="^pattern$"
+    //   x.re"pattern"  -> dot chain ending in re, then this suffix attaches
+    //   fmt"{x}"       -> callee=fmt, argument="{x}"
+    //
+    // Uses token.immediate on just the opening quote to enforce no whitespace,
+    // similar to how call_suffix uses token.immediate("(").
+    // Higher precedence than CALL to prefer this over command call syntax.
+    generalized_string_suffix: ($) =>
+      prec(
+        PREC.CALL + 1,
+        choice(
+          // Regular quoted string - opening quote must be immediate
+          seq(
+            token.immediate('"'),
+            optional(token.immediate(/[^"\\\r\n]+|\\./)),
+            repeat(choice(/[^"\\\r\n]+/, /\\./)),
+            '"',
+          ),
+          // Triple-quoted string - opening quotes must be immediate
+          seq(
+            token.immediate('"""'),
+            repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)),
+            '"""',
+          ),
+        ),
+      ),
 
     // Do block: xs.map do (x: int) -> int {.gcsafe.}: x * 2
     // Supports optional params, return type, and pragma
@@ -1131,10 +1243,16 @@ module.exports = grammar({
 
     // Primary expressions that CAN have postfix suffixes attached directly
     // These are "atomic" expressions like identifiers, literals, parenthesized exprs
+    //
+    // IMPORTANT: We use $.symbol here instead of $.qualified_identifier so that
+    // all dot expressions (foo.bar.baz) are consistently represented via dot_suffix.
+    // This aligns with Nim's AST where obj.field is a dot expression (nkDotExpr),
+    // not a single identifier. Keep qualified_identifier for non-expression contexts
+    // (imports, types) where it represents a static path.
     postfixable_primary: ($) =>
       choice(
         $.literal,
-        $.qualified_identifier,
+        $.symbol,
         $.paren_expr,
         $.tuple_expr,
         $.array_expr,
@@ -1496,6 +1614,8 @@ module.exports = grammar({
         $.triple_string_literal,
         $.char_literal,
         $.nil_literal,
+        // Generalized strings like re"pattern" are kept as literals for direct use.
+        // For chained cases like x.re"pattern", generalized_string_suffix is used.
         $.generalized_string,
       ),
 
@@ -1503,13 +1623,13 @@ module.exports = grammar({
     // Examples: re"^pattern$", fmt"hello {name}", sql"SELECT * FROM ..."
     // The identifier is immediately followed by the string (no space)
     // Uses a single token to ensure no whitespace between identifier and string
-    // Lower precedence than raw_string_literal to ensure r"..." is parsed correctly
+    // Note: This produces a call-like construct (nkCallStrLit in Nim's AST)
     generalized_string: (_) =>
       token(
         prec(
           1,
           seq(
-            // Identifier prefix
+            // Identifier prefix (callee)
             /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/,
             // Immediately followed by string (no space allowed)
             choice(
@@ -1583,13 +1703,11 @@ module.exports = grammar({
 
     // Raw string literal: r"..." or R"..."
     // Double quotes inside are escaped by doubling: r"foo""bar" -> foo"bar
-    // Higher precedence than generalized_string to ensure r"..." is parsed as raw_string_literal
     raw_string_literal: (_) =>
       token(prec(2, seq(/[rR]/, '"', repeat(choice(/[^"\r\n]+/, '""')), '"'))),
 
     // Triple-quoted string literal (can span multiple lines)
     // Can optionally be raw: r"""..."""
-    // Higher precedence than generalized_string to ensure r"""...""" is parsed correctly
     // Practical approximation; for perfect Nim behavior you'll eventually
     // want a string external scanner too.
     triple_string_literal: (_) =>

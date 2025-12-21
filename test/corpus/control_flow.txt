@@ -9,17 +9,24 @@ if x: discard
 (source_file
   (compound_stmt
     (if_stmt
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (qualified_identifier
-                      (symbol
-                        (identifier))))))))))
-      (inline_stmt_list
+      condition: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (symbol
+                                      (identifier)))))))))))))))))
+      consequence: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -34,15 +41,23 @@ when true: discard
 (source_file
   (compound_stmt
     (when_stmt
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (literal
-                      (boolean_literal)))))))))
+      condition: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (literal
+                                      (boolean_literal)))))))))))))))))
       (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -58,16 +73,24 @@ while true: discard
 (source_file
   (compound_stmt
     (while_stmt
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (literal
-                      (boolean_literal)))))))))
-      (inline_stmt_list
+      condition: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (literal
+                                      (boolean_literal)))))))))))))))))
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -82,20 +105,27 @@ for i in items: discard
 (source_file
   (compound_stmt
     (for_stmt
-      (for_pattern
+      variables: (for_pattern
         (symbol
           (identifier)))
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (qualified_identifier
-                      (symbol
-                        (identifier))))))))))
-      (inline_stmt_list
+      iterable: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (symbol
+                                      (identifier)))))))))))))))))
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -110,22 +140,29 @@ for k, v in pairs: discard
 (source_file
   (compound_stmt
     (for_stmt
-      (for_pattern
+      variables: (for_pattern
         (symbol
           (identifier))
         (symbol
           (identifier)))
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (qualified_identifier
-                      (symbol
-                        (identifier))))))))))
-      (inline_stmt_list
+      iterable: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (symbol
+                                      (identifier)))))))))))))))))
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -140,41 +177,62 @@ for (a, b) in items: discard
 (source_file
   (compound_stmt
     (for_stmt
-      (for_pattern
+      variables: (for_pattern
         (tuple_expr
           (tuple_element
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))))))))))))))
           (tuple_element
             (expression
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))))))))))))))))
+      iterable: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
               (or_expr
                 (and_expr
                   (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier)))))))))))))
-      (expression
-        (or_expr
-          (and_expr
-            (cmp_expr
-              (prefix_expr
-                (postfix_expr
-                  (postfixable_primary
-                    (qualified_identifier
-                      (symbol
-                        (identifier))))))))))
-      (inline_stmt_list
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (symbol
+                                      (identifier)))))))))))))))))
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -189,9 +247,9 @@ block myblock: discard
 (source_file
   (compound_stmt
     (block_stmt
-      (symbol
+      name: (symbol
         (identifier))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -206,7 +264,7 @@ block: discard
 (source_file
   (compound_stmt
     (block_stmt
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 

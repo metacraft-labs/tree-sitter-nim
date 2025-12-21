@@ -11,14 +11,22 @@ discard 123
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 integer literal with underscores
@@ -33,14 +41,22 @@ discard 1_000_000
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 integer literal hex
@@ -55,14 +71,22 @@ discard 0xFF
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 integer literal binary
@@ -77,14 +101,22 @@ discard 0b1010
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 integer literal octal
@@ -99,14 +131,22 @@ discard 0o755
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 float literal simple
@@ -121,14 +161,22 @@ discard 3.14
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (float_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (float_literal)))))))))))))))))))))
 
 ==================
 float literal with exponent
@@ -143,14 +191,22 @@ discard 1.5e10
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (float_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (float_literal)))))))))))))))))))))
 
 ==================
 float literal negative exponent
@@ -165,14 +221,22 @@ discard 2.5e-3
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (float_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (float_literal)))))))))))))))))))))
 
 ==================
 string literal simple
@@ -187,14 +251,22 @@ discard "hello"
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (string_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (string_literal)))))))))))))))))))))
 
 ==================
 string literal with escapes
@@ -209,14 +281,22 @@ discard "hello\nworld"
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (string_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (string_literal)))))))))))))))))))))
 
 ==================
 raw string literal
@@ -231,14 +311,22 @@ discard r"hello\nworld"
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (raw_string_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (raw_string_literal)))))))))))))))))))))
 
 ==================
 generalized string literal
@@ -253,14 +341,22 @@ discard re"^pattern$"
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (generalized_string)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (generalized_string)))))))))))))))))))))
 
 ==================
 triple string literal
@@ -276,14 +372,22 @@ line"""
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (triple_string_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (triple_string_literal)))))))))))))))))))))
 
 ==================
 char literal
@@ -298,14 +402,22 @@ discard 'a'
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (char_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (char_literal)))))))))))))))))))))
 
 ==================
 char literal escaped
@@ -320,14 +432,22 @@ discard '\n'
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (char_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (char_literal)))))))))))))))))))))
 
 ==================
 nil literal
@@ -342,14 +462,22 @@ discard nil
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (nil_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (nil_literal)))))))))))))))))))))
 
 ==================
 array literal empty
@@ -364,13 +492,21 @@ discard []
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (array_expr))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (array_expr))))))))))))))))))))
 
 ==================
 array literal with elements
@@ -385,40 +521,72 @@ discard [1, 2, 3]
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (array_expr
-                        (expression
-                          (or_expr
-                            (and_expr
-                              (cmp_expr
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (postfixable_primary
-                                      (literal
-                                        (integer_literal)))))))))
-                        (expression
-                          (or_expr
-                            (and_expr
-                              (cmp_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (postfixable_primary
-                                      (literal
-                                        (integer_literal)))))))))
-                        (expression
-                          (or_expr
-                            (and_expr
-                              (cmp_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (postfixable_primary
-                                      (literal
-                                        (integer_literal)))))))))))))))))))))
+                                      (array_expr
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))))))))))))))))))))))
 
 ==================
 set literal empty
@@ -433,13 +601,21 @@ discard {}
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (curly_expr))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (curly_expr))))))))))))))))))))
 
 ==================
 set literal with elements
@@ -454,43 +630,75 @@ discard {1, 2, 3}
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (curly_expr
-                        (curly_element
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))
-                        (curly_element
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))
-                        (curly_element
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (curly_expr
+                                        (curly_element
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal))))))))))))))))))
+                                        (curly_element
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal))))))))))))))))))
+                                        (curly_element
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal))))))))))))))))))))))))))))))))))))))
 
 ==================
 boolean literal true
@@ -505,14 +713,22 @@ discard true
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (boolean_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (boolean_literal)))))))))))))))))))))
 
 ==================
 boolean literal false
@@ -527,14 +743,22 @@ discard false
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (boolean_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (boolean_literal)))))))))))))))))))))
 
 ==================
 seq literal
@@ -549,38 +773,71 @@ discard @[1, 2, 3]
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (prefix_expr
-                    (postfix_expr
-                      (postfixable_primary
-                        (array_expr
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  operator: (unary_operator)
+                                  operand: (prefix_expr
                                     (postfix_expr
                                       (postfixable_primary
-                                        (literal
-                                          (integer_literal)))))))))
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal)))))))))
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))))))))))))))
+                                        (array_expr
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal)))))))))))))))))
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal)))))))))))))))))
+                                          (expression
+                                            (infix_expression
+                                              (assign_expr
+                                                (op2_expr
+                                                  (or_expr
+                                                    (and_expr
+                                                      (cmp_expr
+                                                        (range_expr
+                                                          (amp_expr
+                                                            (add_expr
+                                                              (mul_expr
+                                                                (pow_expr
+                                                                  (prefix_expr
+                                                                    (postfix_expr
+                                                                      (postfixable_primary
+                                                                        (literal
+                                                                          (integer_literal))))))))))))))))))))))))))))))))))))))

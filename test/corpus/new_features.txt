@@ -11,26 +11,42 @@ discard a[^1]
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))
-                    (index_suffix
-                      (expression
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (prefix_expr
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (postfixable_primary
-                                      (literal
-                                        (integer_literal)))))))))))))))))))))
+                                      (symbol
+                                        (identifier)))
+                                    (index_suffix
+                                      (expression
+                                        (infix_expression
+                                          (assign_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                operator: (unary_operator)
+                                                                operand: (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))))))))))))))))))))))
 
 ==================
 back index range
@@ -45,30 +61,50 @@ discard a[1..^1]
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))
-                    (index_suffix
-                      (expression
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (prefix_expr
-                                (postfix_expr
-                                  (postfixable_primary
-                                    (literal
-                                      (integer_literal)))))
-                              (prefix_expr
-                                (postfix_expr
-                                  (postfixable_primary
-                                    (literal
-                                      (integer_literal))))))))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (index_suffix
+                                      (expression
+                                        (infix_expression
+                                          (assign_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (literal
+                                                                      (integer_literal)))))))))
+                                                      operator: (range_operator)
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (literal
+                                                                      (integer_literal))))))))))))))))))))))))))))))))))))
 
 ==================
 integer with i16 suffix
@@ -83,14 +119,22 @@ discard 123'i16
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 integer with u64 suffix no apostrophe
@@ -105,14 +149,22 @@ discard 12u64
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 float with f32 suffix
@@ -127,14 +179,22 @@ discard 1.5f32
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (float_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (float_literal)))))))))))))))))))))
 
 ==================
 custom literal suffix
@@ -149,14 +209,22 @@ discard 10'kg
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 hex literal with suffix
@@ -171,14 +239,22 @@ discard 0xFF'u8
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (literal
-                        (integer_literal)))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
 
 ==================
 semicolon in param list
@@ -293,75 +369,117 @@ type
     (type_section
       (when_stmt
         condition: (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))
-                    (call_suffix
-                      (argument
-                        (expression
-                          (or_expr
-                            (and_expr
-                              (cmp_expr
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
                                 (prefix_expr
                                   (postfix_expr
                                     (postfixable_primary
-                                      (qualified_identifier
-                                        (symbol
-                                          (identifier))))))))))))))))))
+                                      (symbol
+                                        (identifier)))
+                                    (call_suffix
+                                      (argument
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (symbol
+                                                                        (identifier)))))))))))))))))))))))))))))))))
         (simple_stmt_line
           (simple_stmt
             (expr_stmt
               (assignment_stmt
                 left: (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (postfixable_primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))))))
+                  (infix_expression
+                    (assign_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (symbol
+                                                (identifier)))))))))))))))))
                 right: (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (postfixable_primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))))))))))
+                  (infix_expression
+                    (assign_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (symbol
+                                                (identifier)))))))))))))))))))))
         (simple_stmt_line
           (simple_stmt
             (expr_stmt
               (assignment_stmt
                 left: (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (postfixable_primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))))))
+                  (infix_expression
+                    (assign_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (symbol
+                                                (identifier)))))))))))))))))
                 right: (expression
-                  (or_expr
-                    (and_expr
-                      (cmp_expr
-                        (prefix_expr
-                          (postfix_expr
-                            (postfixable_primary
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))))))))))))))
+                  (infix_expression
+                    (assign_expr
+                      (op2_expr
+                        (or_expr
+                          (and_expr
+                            (cmp_expr
+                              (range_expr
+                                (amp_expr
+                                  (add_expr
+                                    (mul_expr
+                                      (pow_expr
+                                        (prefix_expr
+                                          (postfix_expr
+                                            (postfixable_primary
+                                              (symbol
+                                                (identifier)))))))))))))))))))))))))
 
 ==================
 keyword after dot - if
@@ -376,17 +494,24 @@ discard a.if
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (dot_suffix
+                                      (symbol_or_keyword))))))))))))))))))))
 
 ==================
 keyword after dot - type
@@ -401,17 +526,24 @@ discard x.type
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (dot_suffix
+                                      (symbol_or_keyword))))))))))))))))))))
 
 ==================
 keyword after dot - while
@@ -426,17 +558,24 @@ discard obj.while
     (simple_stmt
       (discard_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (dot_suffix
+                                      (symbol_or_keyword))))))))))))))))))))
 
 ==================
 concept with proc signature constraint
@@ -475,15 +614,22 @@ type Comparable = concept x, y
                       (symbol
                         (identifier)))
                     (expression
-                      (or_expr
-                        (and_expr
-                          (cmp_expr
-                            (prefix_expr
-                              (postfix_expr
-                                (postfixable_primary
-                                  (qualified_identifier
-                                    (symbol
-                                      (identifier))))))))))))))
+                      (infix_expression
+                        (assign_expr
+                          (op2_expr
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (range_expr
+                                    (amp_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (pow_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (postfixable_primary
+                                                  (symbol
+                                                    (identifier)))))))))))))))))))))
             return_type: (type_expr
               (qualified_identifier
                 (symbol

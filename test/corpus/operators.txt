@@ -11,21 +11,30 @@ a +++ b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))
+                            operator: (add_operator)
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 user-defined mul operator
@@ -40,21 +49,29 @@ a ** b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))
+                              operator: (mul_operator)
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 user-defined hat operator
@@ -69,21 +86,28 @@ a ^^ b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))
+                                operator: (pow_operator)
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 user-defined arrow operator
@@ -98,24 +122,37 @@ a ==> b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier)))))))))
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 user-defined amp operator
@@ -130,21 +167,31 @@ a && b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))))
+                          operator: (amp_operator)
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 triple equals is comparison not assignment
@@ -159,21 +206,33 @@ a === b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))))))
+                      operator: (cmp_operator)
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 not-equals-equals is comparison not assignment
@@ -188,21 +247,33 @@ a !== b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))))))
+                      operator: (cmp_operator)
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
 
 ==================
 less-equals-equals is comparison not assignment
@@ -217,18 +288,30 @@ a <== b
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))
-                (prefix_expr
-                  (postfix_expr
-                    (postfixable_primary
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))))))
+                      operator: (cmp_operator)
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))

@@ -9,12 +9,12 @@ proc hello() = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list)
-      (inline_stmt_list
+      params: (param_list)
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -29,16 +29,16 @@ proc hello(): int = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list)
-      (type_expr
+      params: (param_list)
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -53,11 +53,11 @@ proc add(a: int, b: int): int = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -72,11 +72,11 @@ proc add(a: int, b: int): int = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -91,11 +91,11 @@ proc foo(x: int = 10) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -104,15 +104,23 @@ proc foo(x: int = 10) = discard
               (symbol
                 (identifier))))
           (expression
-            (or_expr
-              (and_expr
-                (cmp_expr
-                  (prefix_expr
-                    (postfix_expr
-                      (postfixable_primary
-                        (literal
-                          (integer_literal)))))))))))
-      (inline_stmt_list
+            (infix_expression
+              (assign_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (literal
+                                          (integer_literal)))))))))))))))))))
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -127,11 +135,11 @@ proc foo(a, b, c: int) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -143,7 +151,7 @@ proc foo(a, b, c: int) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -158,16 +166,16 @@ proc foo() {.inline.} = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list)
-      (pragma
+      params: (param_list)
+      pragmas: (pragma
         (pragma_item
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -182,11 +190,11 @@ func double(x: int): int = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -194,11 +202,11 @@ func double(x: int): int = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -213,11 +221,11 @@ iterator items(a: seq) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -225,7 +233,7 @@ iterator items(a: seq) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -240,11 +248,11 @@ method foo(o: Object) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -252,7 +260,7 @@ method foo(o: Object) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -267,11 +275,11 @@ template foo(x: untyped) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -279,7 +287,7 @@ template foo(x: untyped) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -294,11 +302,11 @@ macro foo(x: untyped) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -306,7 +314,7 @@ macro foo(x: untyped) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -321,11 +329,11 @@ converter toInt(x: bool): int = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -333,11 +341,11 @@ converter toInt(x: bool): int = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -352,15 +360,15 @@ proc foo[T](x: T) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (generic_params
+      generic_params: (generic_params
         (generic_param
           (symbol
             (identifier))))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -368,7 +376,7 @@ proc foo[T](x: T) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -383,11 +391,11 @@ proc foo[T: SomeInteger](x: T) = discard
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (generic_params
+      generic_params: (generic_params
         (generic_param
           (symbol
             (identifier))
@@ -395,7 +403,7 @@ proc foo[T: SomeInteger](x: T) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -403,7 +411,7 @@ proc foo[T: SomeInteger](x: T) = discard
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
 
@@ -418,11 +426,11 @@ proc square(x: int): int = x * x
 (source_file
   (compound_stmt
     (routine_definition
-      (routine_kind)
-      (exported_symbol
+      kind: (routine_kind)
+      name: (exported_symbol
         (symbol
           (identifier)))
-      (param_list
+      params: (param_list
         (param_decl
           (symbol
             (identifier))
@@ -430,29 +438,37 @@ proc square(x: int): int = x * x
             (qualified_identifier
               (symbol
                 (identifier))))))
-      (type_expr
+      return_type: (type_expr
         (qualified_identifier
           (symbol
             (identifier))))
-      (inline_stmt_list
+      body: (inline_stmt_list
         (simple_stmt
           (expr_stmt
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))))))))))))
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))
+                                  operator: (mul_operator)
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier)))))))))))))))))))))))
 
 ==================
 anonymous proc
@@ -467,21 +483,29 @@ proc (x: int) = discard
     (simple_stmt
       (expr_stmt
         (expression
-          (or_expr
-            (and_expr
-              (cmp_expr
-                (prefix_expr
-                  (postfix_expr
-                    (expression_form_primary
-                      (proc_expr
-                        (param_list
-                          (param_decl
-                            (symbol
-                              (identifier))
-                            (type_expr
-                              (qualified_identifier
-                                (symbol
-                                  (identifier))))))
-                        (inline_stmt_list
-                          (simple_stmt
-                            (discard_stmt)))))))))))))))
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (expression_form_primary
+                                      (proc_expr
+                                        params: (param_list
+                                          (param_decl
+                                            (symbol
+                                              (identifier))
+                                            (type_expr
+                                              (qualified_identifier
+                                                (symbol
+                                                  (identifier))))))
+                                        body: (inline_stmt_list
+                                          (simple_stmt
+                                            (discard_stmt)))))))))))))))))))))))

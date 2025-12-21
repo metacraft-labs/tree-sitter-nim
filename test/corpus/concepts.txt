@@ -12,28 +12,37 @@ type
   (section_stmt
     (type_section
       (type_def
-        (exported_symbol
+        name: (exported_symbol
           (symbol
             (identifier)))
-        (concept_def
+        value: (concept_def
           (symbol
             (identifier))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (prefix_expr
-                        (postfix_expr
-                          (postfixable_primary
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      operator: (unary_operator)
+                                      operand: (prefix_expr
+                                        (postfix_expr
+                                          (postfixable_primary
+                                            (symbol
+                                              (identifier)))))))))))
+                          operator: (type_cmp_operator)
+                          (type_expr
                             (qualified_identifier
                               (symbol
-                                (identifier)))))))
-                    (type_expr
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+                                (identifier)))))))))))))))))
 
 ==================
 concept with multiple parameters
@@ -49,46 +58,63 @@ type
   (section_stmt
     (type_section
       (type_def
-        (exported_symbol
+        name: (exported_symbol
           (symbol
             (identifier)))
-        (concept_def
+        value: (concept_def
           (symbol
             (identifier))
           (symbol
             (identifier))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (type_expr
-                      (type_call
-                        (qualified_identifier
-                          (symbol
-                            (identifier)))
-                        (expression
-                          (or_expr
-                            (and_expr
-                              (cmp_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (postfixable_primary
-                                      (qualified_identifier
-                                        (symbol
-                                          (identifier))))))))))))))))))))))
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier)))))))
+                                operator: (add_operator)
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))))))
+                          operator: (type_cmp_operator)
+                          (type_expr
+                            (type_call
+                              name: (qualified_identifier
+                                (symbol
+                                  (identifier)))
+                              (expression
+                                (infix_expression
+                                  (assign_expr
+                                    (op2_expr
+                                      (or_expr
+                                        (and_expr
+                                          (cmp_expr
+                                            (range_expr
+                                              (amp_expr
+                                                (add_expr
+                                                  (mul_expr
+                                                    (pow_expr
+                                                      (prefix_expr
+                                                        (postfix_expr
+                                                          (postfixable_primary
+                                                            (symbol
+                                                              (identifier))))))))))))))))))))))))))))))))
 
 ==================
 concept with of clause
@@ -104,10 +130,10 @@ type
   (section_stmt
     (type_section
       (type_def
-        (exported_symbol
+        name: (exported_symbol
           (symbol
             (identifier)))
-        (concept_def
+        value: (concept_def
           (symbol
             (identifier))
           (type_expr
@@ -116,22 +142,35 @@ type
                 (identifier))))
           (concept_constraint
             (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (type_expr
-                      (qualified_identifier
-                        (symbol
-                          (identifier))))))))))))))
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))))))
+                          operator: (cmp_operator)
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier))))))))))
+                          operator: (type_cmp_operator)
+                          (type_expr
+                            (qualified_identifier
+                              (symbol
+                                (identifier)))))))))))))))))
