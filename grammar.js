@@ -95,6 +95,8 @@ module.exports = grammar({
     [$._suite, $._expr_body],
     [$.tuple_field, $.qualified_identifier],
     [$.routine_header, $.exported_symbol],
+    [$.expr_stmt, $._paren_stmt],
+    [$.tuple_expr, $.tuple_element],
   ],
 
   word: ($) => $.identifier,
@@ -808,10 +810,7 @@ module.exports = grammar({
         seq(
           $._assign_op_expr,
           repeat(
-            seq(
-              choice("->", "~>", "=>", $._op0_arrow),
-              $._assign_op_expr,
-            ),
+            seq(choice("->", "~>", "=>", $._op0_arrow), $._assign_op_expr),
           ),
         ),
       ),
@@ -827,15 +826,7 @@ module.exports = grammar({
     _assign_op_expr: ($) =>
       prec.right(
         PREC.ASSIGN_OP,
-        seq(
-          $._op2_expr,
-          optional(
-            seq(
-              $._op1_assignment,
-              $._assign_op_expr,
-            ),
-          ),
-        ),
+        seq($._op2_expr, optional(seq($._op1_assignment, $._assign_op_expr))),
       ),
 
     // OP2 tier (precedence 2): operators starting with @ : ? and "other" operators
@@ -844,10 +835,7 @@ module.exports = grammar({
     // Uses external scanner for multi-char operators
     // Made anonymous (_) to reduce tree depth
     _op2_expr: ($) =>
-      prec.left(
-        PREC.OP2,
-        seq($.or_expr, repeat(seq($._op2_misc, $.or_expr))),
-      ),
+      prec.left(PREC.OP2, seq($.or_expr, repeat(seq($._op2_misc, $.or_expr)))),
 
     // or/xor operators (precedence 3)
     // Note: | is NOT here - it's in add_expr (precedence 8)
@@ -954,7 +942,17 @@ module.exports = grammar({
           $._pow_expr,
           repeat(
             seq(
-              choice("*", "/", "%", "\\", "div", "mod", "shl", "shr", $._op9_mul),
+              choice(
+                "*",
+                "/",
+                "%",
+                "\\",
+                "div",
+                "mod",
+                "shl",
+                "shr",
+                $._op9_mul,
+              ),
               $._pow_expr,
             ),
           ),
@@ -1154,13 +1152,19 @@ module.exports = grammar({
     primary: ($) => choice($.postfixable_primary, $.expression_form_primary),
 
     // Parenthesized expression: (expr) - just grouping, not a tuple
-    // Also supports statement-list expressions: (discard 1; 2)
+    // Also supports:
+    //   - Statement-list expressions: (discard 1; 2)
+    //   - Parenthesized assignment: (x = y)
     // Note: () is an empty tuple, handled by tuple_expr
     paren_expr: ($) =>
       prec(
         2,
         choice(
           seq("(", $.expression, ")"),
+          // Parenthesized assignment: (x = y)
+          // This is a Nim special case - = is normally statement-level,
+          // but Nim allows it in parentheses
+          seq("(", $.assignment_stmt, ")"),
           // Statement-list expression: (stmt; stmt; expr) or (stmt;)
           $.stmt_list_expr,
         ),
@@ -1169,10 +1173,11 @@ module.exports = grammar({
     // Statement-list expression in parentheses: (discard 1; 2)
     // Requires at least one semicolon to distinguish from plain paren_expr
     // Examples: (discard 1; 2), (let x = 1; x), (var x = 1; x + 1)
+    // Can also include if/when/for/while/case/try/block expressions inline
     //
     // IMPORTANT: Nim's parsePar allows section statements (let, var, const, type)
     // and compound statements inside parentheses, not just simple_stmt.
-    // This enables patterns like: (let x = 1; x + 1)
+    // This enables patterns like: (let x = 1; x + 1), (if true: 1 else: 2)
     stmt_list_expr: ($) =>
       seq(
         "(",
@@ -1186,10 +1191,12 @@ module.exports = grammar({
       ),
 
     // Statements allowed inside parenthesized statement-list expressions
-    // Includes simple statements and inline section statements (let, var, const, type)
+    // Includes simple statements, inline section statements (let, var, const, type),
+    // and assignment statements
     _paren_stmt: ($) =>
       choice(
         $.simple_stmt,
+        $.assignment_stmt,
         $.let_section,
         $.var_section,
         $.const_section,
@@ -1289,16 +1296,19 @@ module.exports = grammar({
     // Tuple expression: (a, b) or (a,) or () or (x: 1, y: 2)
     // In Nim:
     //   (a, b)  - tuple with 2 elements (NO trailing comma required)
-    //   (a,)    - single-element tuple (trailing comma required to distinguish from paren_expr)
+    //   (a,)    - single-element unnamed tuple (trailing comma required to distinguish from paren_expr)
     //   ()      - empty tuple
+    //   (x: 1)  - single-element named tuple (NO comma required - colon distinguishes it)
     // Named fields are also supported: (x: 1, y: 2)
     tuple_expr: ($) =>
       choice(
         // Empty tuple: ()
         seq("(", ")"),
-        // Single-element tuple (requires trailing comma): (a,)
-        seq("(", $.tuple_element, ",", ")"),
-        // Multi-element tuple: (a, b) or (a, b,)
+        // Single-element unnamed tuple (requires trailing comma): (a,)
+        seq("(", $.expression, ",", ")"),
+        // Single-element named tuple (comma optional): (x: 1) or (x: 1,)
+        seq("(", $.named_tuple_element, optional(","), ")"),
+        // Multi-element tuple: (a, b) or (a, b,) or (x: 1, y: 2)
         seq(
           "(",
           $.tuple_element,
@@ -1310,8 +1320,12 @@ module.exports = grammar({
         ),
       ),
 
-    tuple_element: ($) =>
-      choice($.expression, seq($.symbol, ":", $.expression)),
+    // Named tuple element: field: value
+    named_tuple_element: ($) =>
+      seq(field("name", $.symbol), ":", field("value", $.expression)),
+
+    // Tuple element can be named or unnamed
+    tuple_element: ($) => choice($.expression, $.named_tuple_element),
 
     expression_list: ($) => sep1($.expression, ","),
 
@@ -1489,17 +1503,21 @@ module.exports = grammar({
     // Examples: re"^pattern$", fmt"hello {name}", sql"SELECT * FROM ..."
     // The identifier is immediately followed by the string (no space)
     // Uses a single token to ensure no whitespace between identifier and string
+    // Lower precedence than raw_string_literal to ensure r"..." is parsed correctly
     generalized_string: (_) =>
       token(
-        seq(
-          // Identifier prefix
-          /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/,
-          // Immediately followed by string (no space allowed)
-          choice(
-            // Regular quoted string
-            seq('"', repeat(choice(/[^"\\\r\n]+/, /\\./)), '"'),
-            // Triple-quoted string
-            seq('"""', repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)), '"""'),
+        prec(
+          1,
+          seq(
+            // Identifier prefix
+            /[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*/,
+            // Immediately followed by string (no space allowed)
+            choice(
+              // Regular quoted string
+              seq('"', repeat(choice(/[^"\\\r\n]+/, /\\./)), '"'),
+              // Triple-quoted string
+              seq('"""', repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)), '"""'),
+            ),
           ),
         ),
       ),
@@ -1565,20 +1583,25 @@ module.exports = grammar({
 
     // Raw string literal: r"..." or R"..."
     // Double quotes inside are escaped by doubling: r"foo""bar" -> foo"bar
+    // Higher precedence than generalized_string to ensure r"..." is parsed as raw_string_literal
     raw_string_literal: (_) =>
-      token(seq(/[rR]/, '"', repeat(choice(/[^"\r\n]+/, '""')), '"')),
+      token(prec(2, seq(/[rR]/, '"', repeat(choice(/[^"\r\n]+/, '""')), '"'))),
 
     // Triple-quoted string literal (can span multiple lines)
     // Can optionally be raw: r"""..."""
+    // Higher precedence than generalized_string to ensure r"""...""" is parsed correctly
     // Practical approximation; for perfect Nim behavior you'll eventually
     // want a string external scanner too.
     triple_string_literal: (_) =>
       token(
-        seq(
-          optional(/[rR]/),
-          '"""',
-          repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)),
-          '"""',
+        prec(
+          2,
+          seq(
+            optional(/[rR]/),
+            '"""',
+            repeat(choice(/[^"]+/, /"[^"]/, /""[^"]/)),
+            '"""',
+          ),
         ),
       ),
 

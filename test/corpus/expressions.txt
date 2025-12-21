@@ -1559,3 +1559,113 @@ let x = (discard 1; 2)
                                       (postfixable_primary
                                         (literal
                                           (integer_literal))))))))))))))))))))))
+
+
+==================
+single named tuple element
+==================
+
+discard (x: 1)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (tuple_expr
+                        (named_tuple_element
+                          (symbol
+                            (identifier))
+                          (expression
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (literal
+                                          (integer_literal))))))))))))))))))))))
+
+==================
+single named tuple element with trailing comma
+==================
+
+discard (x: 1,)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (tuple_expr
+                        (named_tuple_element
+                          (symbol
+                            (identifier))
+                          (expression
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (literal
+                                          (integer_literal))))))))))))))))))))))
+
+==================
+parenthesized assignment
+==================
+
+discard (x = y)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (paren_expr
+                        (assignment_stmt
+                          (expression
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier))))))))))
+                          (expression
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (qualified_identifier
+                                          (symbol
+                                            (identifier)))))))))))))))))))))))
+

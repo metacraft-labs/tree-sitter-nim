@@ -145,3 +145,90 @@ a && b
                       (qualified_identifier
                         (symbol
                           (identifier))))))))))))))
+
+==================
+triple equals is comparison not assignment
+==================
+
+a === b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))))))))))
+
+==================
+not-equals-equals is comparison not assignment
+==================
+
+a !== b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))))))))))
+
+==================
+less-equals-equals is comparison not assignment
+==================
+
+a <== b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (qualified_identifier
+                        (symbol
+                          (identifier))))))))))))))

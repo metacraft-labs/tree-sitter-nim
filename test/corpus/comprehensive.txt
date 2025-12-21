@@ -470,37 +470,59 @@ when isMainModule:
       kind: (routine_kind)
       name: (exported_symbol
         (symbol
-          (identifier)))
-      params: (param_list
-        (param_decl
-          (symbol
-            (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
-      return_type: (type_expr
-        (qualified_identifier
-          (symbol
-            (identifier))))
-      body: (simple_stmt_line
+          (identifier)))))
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (or_expr
+          (and_expr
+            (cmp_expr
+              (prefix_expr
+                (postfix_expr
+                  (postfixable_primary
+                    (tuple_expr
+                      (named_tuple_element
+                        name: (symbol
+                          (identifier))
+                        value: (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))))))))))))
+      (inline_stmt_list
         (simple_stmt
           (expr_stmt
-            (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (qualified_identifier
-                            (symbol
-                              (identifier))))))
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (literal
-                            (integer_literal))))))))))))))
+            (assignment_stmt
+              left: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))))))
+              right: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (literal
+                              (integer_literal)))))))))))))))
   (compound_stmt
     (routine_definition
       kind: (routine_kind)
@@ -695,65 +717,110 @@ when isMainModule:
       kind: (routine_kind)
       name: (exported_symbol
         (symbol
-          (identifier)))
-      params: (param_list
-        (param_decl
-          (symbol
-            (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
-      return_type: (type_expr
-        (qualified_identifier
-          (symbol
-            (identifier))))
-      pragmas: (pragma
-        (pragma_item
-          (symbol
-            (identifier))))
-      body: (simple_stmt_line
+          (identifier)))))
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (or_expr
+          (and_expr
+            (cmp_expr
+              (prefix_expr
+                (postfix_expr
+                  (postfixable_primary
+                    (tuple_expr
+                      (named_tuple_element
+                        name: (symbol
+                          (identifier))
+                        value: (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))))))))))))
+      (inline_stmt_list
         (simple_stmt
           (expr_stmt
-            (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (literal
-                            (string_literal))))))))))))))
+            (assignment_stmt
+              left: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))
+                          (pragma_suffix
+                            (pragma
+                              (pragma_item
+                                (symbol
+                                  (identifier)))))))))))
+              right: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (literal
+                              (string_literal)))))))))))))))
   (compound_stmt
     (routine_definition
       kind: (routine_kind)
       name: (exported_symbol
         (symbol
-          (identifier)))
-      params: (param_list
-        (param_decl
-          (symbol
-            (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
-      return_type: (type_expr
-        (qualified_identifier
-          (symbol
-            (identifier))))
-      body: (simple_stmt_line
+          (identifier)))))
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (or_expr
+          (and_expr
+            (cmp_expr
+              (prefix_expr
+                (postfix_expr
+                  (postfixable_primary
+                    (tuple_expr
+                      (named_tuple_element
+                        name: (symbol
+                          (identifier))
+                        value: (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))))))))))))
+      (inline_stmt_list
         (simple_stmt
           (expr_stmt
-            (expression
-              (or_expr
-                (and_expr
-                  (cmp_expr
-                    (prefix_expr
-                      (postfix_expr
-                        (postfixable_primary
-                          (literal
-                            (string_literal))))))))))))))
+            (assignment_stmt
+              left: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))))))
+              right: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (literal
+                              (string_literal)))))))))))))))
   (compound_stmt
     (routine_definition
       kind: (routine_kind)
@@ -889,22 +956,54 @@ when isMainModule:
       kind: (routine_kind)
       name: (exported_symbol
         (symbol
-          (identifier)))
-      params: (param_list
-        (param_decl
-          (symbol
-            (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
-      return_type: (type_expr
-        (qualified_identifier
-          (symbol
-            (identifier))))
-      body: (simple_stmt_line
+          (identifier)))))
+  (compound_stmt
+    (call_with_blocks
+      call: (expression
+        (or_expr
+          (and_expr
+            (cmp_expr
+              (prefix_expr
+                (postfix_expr
+                  (postfixable_primary
+                    (tuple_expr
+                      (named_tuple_element
+                        name: (symbol
+                          (identifier))
+                        value: (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier)))))))))))))))))))
+      (inline_stmt_list
         (simple_stmt
-          (discard_stmt)))))
+          (expr_stmt
+            (assignment_stmt
+              left: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))))))
+              right: (expression
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (prefix_expr
+                        (postfix_expr
+                          (postfixable_primary
+                            (qualified_identifier
+                              (symbol
+                                (identifier))))))))))))))))
   (compound_stmt
     (routine_definition
       kind: (routine_kind)
@@ -1956,7 +2055,7 @@ when isMainModule:
                       (postfix_expr
                         (postfixable_primary
                           (literal
-                            (generalized_string))))))))))
+                            (raw_string_literal))))))))))
           (decl_def
             (exported_symbol
               (symbol

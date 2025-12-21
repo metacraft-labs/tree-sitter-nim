@@ -290,17 +290,16 @@ let u = (a,)
                   (postfix_expr
                     (postfixable_primary
                       (tuple_expr
-                        (tuple_element
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (qualified_identifier
-                                          (symbol
-                                            (identifier)))))))))))))))))))))))
+                        (expression
+                          (or_expr
+                            (and_expr
+                              (cmp_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (qualified_identifier
+                                        (symbol
+                                          (identifier))))))))))))))))))))))
 
 ==================
 parenthesized expression not tuple
@@ -491,29 +490,31 @@ discard (x: 1, y: 2)
                     (postfixable_primary
                       (tuple_expr
                         (tuple_element
-                          (symbol
-                            (identifier))
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))
+                          (named_tuple_element
+                            (symbol
+                              (identifier))
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (literal
+                                            (integer_literal)))))))))))
                         (tuple_element
-                          (symbol
-                            (identifier))
-                          (expression
-                            (or_expr
-                              (and_expr
-                                (cmp_expr
-                                  (prefix_expr
-                                    (postfix_expr
-                                      (postfixable_primary
-                                        (literal
-                                          (integer_literal))))))))))))))))))))))
+                          (named_tuple_element
+                            (symbol
+                              (identifier))
+                            (expression
+                              (or_expr
+                                (and_expr
+                                  (cmp_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (literal
+                                            (integer_literal)))))))))))))))))))))))
 
 ==================
 table constructor with pairs

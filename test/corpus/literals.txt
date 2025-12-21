@@ -238,6 +238,28 @@ discard r"hello\nworld"
                   (postfix_expr
                     (postfixable_primary
                       (literal
+                        (raw_string_literal)))))))))))))
+
+==================
+generalized string literal
+==================
+
+discard re"^pattern$"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (or_expr
+            (and_expr
+              (cmp_expr
+                (prefix_expr
+                  (postfix_expr
+                    (postfixable_primary
+                      (literal
                         (generalized_string)))))))))))))
 
 ==================

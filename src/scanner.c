@@ -76,23 +76,32 @@ static bool scan_line_comment(TSLexer *lexer) {
 }
 
 static bool scan_block_comment(TSLexer *lexer, bool doc) {
+  // Block comment nesting follows Nim's strict rules:
+  // - #[ ... ]# only nests with #[ and ]#
+  // - ##[ ... ]## only nests with ##[ and ]##
+  // They don't mix: ##[ inside #[ doesn't start a nested level
   int nesting = 1;
 
   while (lexer->lookahead) {
     if (lexer->lookahead == '#') {
       advance(lexer, false);
-      if (!doc && lexer->lookahead == '[') {
-        advance(lexer, false);
-        nesting++;
-        continue;
-      }
-      if (doc && lexer->lookahead == '#') {
-        advance(lexer, false);
+      if (doc) {
+        // Doc comment (##[): only ##[ opens a nested level
+        if (lexer->lookahead == '#') {
+          advance(lexer, false);
+          if (lexer->lookahead == '[') {
+            advance(lexer, false);
+            nesting++;
+          }
+        }
+      } else {
+        // Regular comment (#[): only #[ opens a nested level
+        // Must check it's not ##[ (which should be ignored in regular comments)
         if (lexer->lookahead == '[') {
           advance(lexer, false);
           nesting++;
-          continue;
         }
+        // Note: if we see ## here, we just continue - it's not a nesting opener
       }
       continue;
     }
@@ -101,16 +110,23 @@ static bool scan_block_comment(TSLexer *lexer, bool doc) {
       if (lexer->lookahead == '#') {
         advance(lexer, false);
         if (doc) {
+          // Doc comment: only ]## closes a level
           if (lexer->lookahead == '#') {
             advance(lexer, false);
-          } else {
-            continue;
+            nesting--;
+            if (nesting == 0) {
+              lexer->mark_end(lexer);
+              return true;
+            }
           }
-        }
-        nesting--;
-        if (nesting == 0) {
-          lexer->mark_end(lexer);
-          return true;
+          // ]# alone doesn't close doc comments
+        } else {
+          // Regular comment: ]# closes a level
+          nesting--;
+          if (nesting == 0) {
+            lexer->mark_end(lexer);
+            return true;
+          }
         }
         continue;
       }
@@ -155,12 +171,16 @@ static int get_operator_precedence(const char *op, int len) {
     return OP0_ARROW;
   }
 
-  // Assignment operators: end in '=' but not == != <= >=
-  // EXCEPT: operators starting with ~ or ? keep their first-char precedence
-  if (last == '=' && len >= 2 && first != '~' && first != '?') {
-    // Check it's not a comparison operator
-    if (len == 2 && (first == '=' || first == '!' || first == '<' || first == '>')) {
-      // These are comparison operators, not assignment
+  // Assignment operators: end in '=' but NOT if first char is = < > ! ~ ?
+  // According to Nim's lexer, operators starting with = < > ! are ALWAYS
+  // comparison operators (precedence 5), regardless of length or whether they end in =
+  // So ===, !==, <<=, >>= etc. are all comparison operators, not assignment.
+  // Operators starting with ~ or ? also keep their first-char precedence.
+  if (last == '=' && len >= 2) {
+    // Check if first char makes it a comparison operator (not assignment)
+    if (first == '=' || first == '<' || first == '>' || first == '!' ||
+        first == '~' || first == '?') {
+      // These are NOT assignment operators - fall through to first-char classification
     } else {
       return OP1_ASSIGNMENT;
     }
