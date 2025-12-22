@@ -1646,6 +1646,10 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "tuple_decl"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "when_stmt"
               },
               {
@@ -1722,6 +1726,10 @@
             {
               "type": "SYMBOL",
               "name": "decl_def"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "tuple_decl"
             }
           ]
         }
@@ -1744,6 +1752,10 @@
             {
               "type": "SYMBOL",
               "name": "decl_def"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "tuple_decl"
             }
           ]
         }
@@ -2983,6 +2995,70 @@
         }
       ]
     },
+    "tuple_decl": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "exported_symbol"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "tuple_decl"
+                }
+              ]
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "exported_symbol"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "tuple_decl"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        }
+      ]
+    },
     "routine_definition": {
       "type": "SEQ",
       "members": [
@@ -3318,7 +3394,7 @@
                 },
                 {
                   "type": "SYMBOL",
-                  "name": "type_expr"
+                  "name": "type_constraint"
                 }
               ]
             },
@@ -3349,6 +3425,95 @@
           ]
         }
       ]
+    },
+    "type_constraint": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "type_or_constraint"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_and_constraint"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_not_constraint"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_expr"
+        }
+      ]
+    },
+    "type_or_constraint": {
+      "type": "PREC_LEFT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "type_constraint"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "|"
+              },
+              {
+                "type": "STRING",
+                "value": "or"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type_constraint"
+          }
+        ]
+      }
+    },
+    "type_and_constraint": {
+      "type": "PREC_LEFT",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "type_constraint"
+          },
+          {
+            "type": "STRING",
+            "value": "and"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type_constraint"
+          }
+        ]
+      }
+    },
+    "type_not_constraint": {
+      "type": "PREC",
+      "value": 3,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "not"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "type_constraint"
+          }
+        ]
+      }
     },
     "param_list": {
       "type": "SEQ",
@@ -6117,6 +6282,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "lent_type"
+        },
+        {
+          "type": "SYMBOL",
           "name": "distinct_type"
         },
         {
@@ -6231,6 +6400,23 @@
         {
           "type": "STRING",
           "value": "sink"
+        },
+        {
+          "type": "FIELD",
+          "name": "base",
+          "content": {
+            "type": "SYMBOL",
+            "name": "type_expr"
+          }
+        }
+      ]
+    },
+    "lent_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "lent"
         },
         {
           "type": "FIELD",
@@ -7382,23 +7568,8 @@
       "routine_definition"
     ],
     [
-      "qualified_identifier"
-    ],
-    [
       "type_expr",
       "generic_type"
-    ],
-    [
-      "postfixable_primary",
-      "type_expr"
-    ],
-    [
-      "postfixable_primary",
-      "generic_type"
-    ],
-    [
-      "postfixable_primary",
-      "type_call"
     ],
     [
       "postfixable_primary",
@@ -7420,14 +7591,6 @@
     ],
     [
       "enum_field_def"
-    ],
-    [
-      "command_arg",
-      "qualified_identifier"
-    ],
-    [
-      "command_first_arg",
-      "qualified_identifier"
     ],
     [
       "command_first_arg",

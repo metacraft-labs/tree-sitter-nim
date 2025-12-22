@@ -147,3 +147,8 @@ bump-minor-version:
 # Bump major version (0.1.0 -> 1.0.0), commit and tag
 bump-major-version:
     python scripts/bump-version.py major
+
+# Generate a repomix bundle for expert review
+# Includes all essential hand-written files, excludes generated code
+repomix:
+    repomix --include "README.md,CLAUDE.md,Grammar-Design-Goals.md,Testing-Strategy-Spec.md,grammar.js,src/scanner.c,ast/README.md,ast/schema/ast.schema.json,ast/nim/*.nim,tests/nim/*.nim,test/corpus/*.txt,queries/*.scm,package.json,tree-sitter.json,tree_sitter_nim.nimble,Justfile,flake.nix"

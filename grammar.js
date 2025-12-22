@@ -99,19 +99,13 @@ module.exports = grammar({
 
   conflicts: ($) => [
     [$.routine_definition],
-    [$.qualified_identifier],
     [$.type_expr, $.generic_type],
-    [$.postfixable_primary, $.type_expr],
-    [$.postfixable_primary, $.generic_type],
-    [$.postfixable_primary, $.type_call],
     [$.postfixable_primary, $.qualified_identifier], // symbol vs qualified path
     [$.postfixable_primary, $.named_tuple_element], // symbol: could be colon block or named tuple
     [$.postfixable_primary, $.argument], // symbol: could be colon block or named argument
     [$.param_decl],
     [$.enum_def],
     [$.enum_field_def],
-    [$.command_arg, $.qualified_identifier],
-    [$.command_first_arg, $.qualified_identifier],
     [$.command_first_arg, $.postfixable_primary], // symbol can be named arg or expression
     [$.command_arg, $.postfixable_primary], // symbol can be named arg or expression
     [$.import_symbol, $.qualified_identifier],
@@ -421,7 +415,7 @@ module.exports = grammar({
         $._newline,
         repeat($._newline),
         $._indent,
-        repeat(choice($.decl_def, $.when_stmt, $._newline)),
+        repeat(choice($.decl_def, $.tuple_decl, $.when_stmt, $._newline)),
         $._dedent,
       ),
 
@@ -448,22 +442,26 @@ module.exports = grammar({
       ),
 
     // Let section supports both block and inline forms
+    // Also supports tuple unpacking: let (a, b) = expr
     let_section: ($) =>
       seq(
         "let",
         choice(
           $._decl_section_body,
           $.decl_def, // Inline form: let x = 1
+          $.tuple_decl, // Tuple unpacking: let (a, b) = expr
         ),
       ),
 
     // Var section supports both block and inline forms
+    // Also supports tuple unpacking: var (a, b) = expr
     var_section: ($) =>
       seq(
         "var",
         choice(
           $._decl_section_body,
           $.decl_def, // Inline form: var x = 1
+          $.tuple_decl, // Tuple unpacking: var (a, b) = expr
         ),
       ),
 
@@ -692,6 +690,18 @@ module.exports = grammar({
         optional(seq("=", $.expression)),
       ),
 
+    // Tuple unpacking in variable declarations: let (a, b) = getTuple()
+    // Nim uses nkVarTuple for this construct
+    // Supports nested unpacking: let (a, (b, c)) = expr
+    tuple_decl: ($) =>
+      seq(
+        "(",
+        sep1(choice($.exported_symbol, $.tuple_decl), ","),
+        ")",
+        "=",
+        $.expression,
+      ),
+
     // -------------------------------
     // Routines
     // -------------------------------
@@ -745,9 +755,29 @@ module.exports = grammar({
     generic_param: ($) =>
       seq(
         $.symbol,
-        optional(seq(":", $.type_expr)),
+        optional(seq(":", $.type_constraint)),
         optional(seq("=", $.type_expr)),
       ),
+
+    // Type constraint in generic parameters: allows type unions like int | string
+    // Nim supports both | and 'or' for type unions in constraints
+    // Also supports 'and' for type intersection (though less common)
+    // Also supports 'not' for type exclusion
+    type_constraint: ($) =>
+      choice(
+        $.type_or_constraint,
+        $.type_and_constraint,
+        $.type_not_constraint,
+        $.type_expr,
+      ),
+    type_or_constraint: ($) =>
+      prec.left(
+        1,
+        seq($.type_constraint, choice("|", "or"), $.type_constraint),
+      ),
+    type_and_constraint: ($) =>
+      prec.left(2, seq($.type_constraint, "and", $.type_constraint)),
+    type_not_constraint: ($) => prec(3, seq("not", $.type_constraint)),
 
     // Parameter list allows both comma and semicolon separators
     // Nim supports: proc f(a, b: int; c: string) for grouping params
@@ -1487,6 +1517,7 @@ module.exports = grammar({
         $.var_type,
         $.out_type,
         $.sink_type,
+        $.lent_type,
         $.distinct_type,
         $.static_type,
         $.tuple_type,
@@ -1516,6 +1547,9 @@ module.exports = grammar({
 
     // Sink type: sink T
     sink_type: ($) => seq("sink", field("base", $.type_expr)),
+
+    // Lent type: lent T (borrowed reference)
+    lent_type: ($) => seq("lent", field("base", $.type_expr)),
 
     // Distinct type: distinct T
     distinct_type: ($) => seq("distinct", field("base", $.type_expr)),

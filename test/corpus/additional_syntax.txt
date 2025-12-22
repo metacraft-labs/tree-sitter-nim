@@ -417,10 +417,11 @@ proc foo[T: SomeInteger](x: T) = discard
         (generic_param
           (symbol
             (identifier))
-          (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
+          (type_constraint
+            (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
       params: (param_list
         (param_decl
           (symbol

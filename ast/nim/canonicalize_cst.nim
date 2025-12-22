@@ -947,6 +947,11 @@ proc canonicalizeSection(node: Node, source: string, kind: string, defKind: stri
       var def = canonicalize(child, source, profile)
       def["kind"] = %defKind
       defs.add def
+    elif child.nodeType == "tuple_decl":
+      # Tuple unpacking: (a, b) = expr -> wrapped with section's defKind
+      var def = canonicalize(child, source, profile)
+      def["kind"] = %defKind
+      defs.add def
 
   result = %*{
     "kind": kind,
@@ -1003,10 +1008,44 @@ proc canonicalize*(node: Node, source: string, profile: CanonProfile = cpNim): J
       result = canonicalizeIdent(node, source, profile)
 
   of "quoted_identifier":
-    let text = node.text
+    # Nim's parser splits quoted identifiers into tokens and joins with spaces
+    # e.g., `=destroy` becomes "= destroy", `hello world` becomes "hello world"
+    let content = node.text[1..^2]  # Strip backticks
+    # Split into parts matching Nim's tokenization
+    var parts: seq[string] = @[]
+    var i = 0
+    while i < content.len:
+      if content[i] in Whitespace:
+        # Skip whitespace between tokens
+        inc i
+      elif content[i] in {'a'..'z', 'A'..'Z', '_', '\x80'..'\xFF'}:
+        # Identifier
+        var j = i
+        while j < content.len and content[j] in {'a'..'z', 'A'..'Z', '0'..'9', '_', '\x80'..'\xFF'}:
+          inc j
+        parts.add content[i..<j]
+        i = j
+      elif content[i] in {'0'..'9'}:
+        # Number (part of identifier)
+        var j = i
+        while j < content.len and content[j] in {'0'..'9'}:
+          inc j
+        parts.add content[i..<j]
+        i = j
+      else:
+        # Operator or special char
+        var j = i
+        # Collect consecutive operator chars
+        while j < content.len and content[j] notin {'a'..'z', 'A'..'Z', '0'..'9', '_', ' ', '\t', '\x80'..'\xFF'}:
+          inc j
+        if j > i:
+          parts.add content[i..<j]
+          i = j
+        else:
+          inc i  # Skip unknown char
     result = %*{
       "kind": "Ident",
-      "name": text[1..^2],  # Strip backticks
+      "name": parts.join(" "),
       "span": newSpan(node)
     }
     result.addCstRef(node, profile)
@@ -1102,12 +1141,33 @@ proc canonicalize*(node: Node, source: string, profile: CanonProfile = cpNim): J
           var args: seq[JsonNode] = @[]
           for arg in child.namedChildren:
             args.add canonicalize(arg, source, profile)
-          base = %*{
-            "kind": "Call",
-            "callee": base,
-            "args": args,
-            "span": newSpan(node)
-          }
+          # Check for cast[T](x) pattern
+          if base != nil and base["kind"].getStr == "Index":
+            let indexBase = base["base"]
+            if indexBase != nil and indexBase["kind"].getStr == "Ident" and
+               indexBase["name"].getStr == "cast":
+              # This is cast[T](x) -> produce Cast node
+              let indices = base["indices"].getElems()
+              base = %*{
+                "kind": "Cast",
+                "targetType": if indices.len > 0: indices[0] else: %*{"kind": "Empty"},
+                "expr": if args.len > 0: args[0] else: %*{"kind": "Empty"},
+                "span": newSpan(node)
+              }
+            else:
+              base = %*{
+                "kind": "Call",
+                "callee": base,
+                "args": args,
+                "span": newSpan(node)
+              }
+          else:
+            base = %*{
+              "kind": "Call",
+              "callee": base,
+              "args": args,
+              "span": newSpan(node)
+            }
         of "index_suffix":
           var indices: seq[JsonNode] = @[]
           for idx in child.namedChildren:
@@ -2045,6 +2105,109 @@ proc canonicalize*(node: Node, source: string, profile: CanonProfile = cpNim): J
       "kind": "RefType",
       "base": if baseField.isSome: canonicalize(baseField.get, source, profile)
               else: %*{"kind": "Empty"},
+      "span": newSpan(node)
+    }
+    result.addCstRef(node, profile)
+
+  of "lent_type":
+    # lent T -> LentType (similar to RefType)
+    let baseField = node.childByFieldName("base")
+    result = %*{
+      "kind": "LentType",
+      "base": if baseField.isSome: canonicalize(baseField.get, source, profile)
+              else: %*{"kind": "Empty"},
+      "span": newSpan(node)
+    }
+    result.addCstRef(node, profile)
+
+  of "generic_type":
+    # Generic type like seq[int], range[0..100] -> Index (matches Nim's nkBracketExpr)
+    let nameField = node.childByFieldName("name")
+    var indices: seq[JsonNode] = @[]
+    for child in node.namedChildren:
+      if child.nodeType == "type_arg":
+        # type_arg can contain type_expr or expression
+        for argChild in child.namedChildren:
+          indices.add canonicalize(argChild, source, profile)
+    result = %*{
+      "kind": "Index",
+      "base": if nameField.isSome: canonicalize(nameField.get, source, profile)
+              else: %*{"kind": "Empty"},
+      "indices": indices,
+      "span": newSpan(node)
+    }
+    result.addCstRef(node, profile)
+
+  of "type_constraint":
+    # Type constraint in generic params - unwrap to inner type
+    let children = node.getNamedChildren()
+    if children.len == 1:
+      result = canonicalize(children[0], source, profile)
+    else:
+      result = %*{"kind": "Empty", "span": newSpan(node)}
+
+  of "type_or_constraint":
+    # T: int | string -> Infix with | operator
+    let children = node.getNamedChildren()
+    if children.len >= 2:
+      result = %*{
+        "kind": "Infix",
+        "op": %*{"kind": "Ident", "name": "|"},
+        "left": canonicalize(children[0], source, profile),
+        "right": canonicalize(children[1], source, profile),
+        "span": newSpan(node)
+      }
+    else:
+      result = %*{"kind": "Empty", "span": newSpan(node)}
+    result.addCstRef(node, profile)
+
+  of "type_and_constraint":
+    # T: int and string -> Infix with and operator
+    let children = node.getNamedChildren()
+    if children.len >= 2:
+      result = %*{
+        "kind": "Infix",
+        "op": %*{"kind": "Ident", "name": "and"},
+        "left": canonicalize(children[0], source, profile),
+        "right": canonicalize(children[1], source, profile),
+        "span": newSpan(node)
+      }
+    else:
+      result = %*{"kind": "Empty", "span": newSpan(node)}
+    result.addCstRef(node, profile)
+
+  of "type_not_constraint":
+    # not T -> Prefix with not operator
+    let children = node.getNamedChildren()
+    if children.len >= 1:
+      result = %*{
+        "kind": "Prefix",
+        "op": %*{"kind": "Ident", "name": "not"},
+        "operand": canonicalize(children[0], source, profile),
+        "span": newSpan(node)
+      }
+    else:
+      result = %*{"kind": "Empty", "span": newSpan(node)}
+    result.addCstRef(node, profile)
+
+  of "tuple_decl":
+    # Tuple unpacking: (a, b) = expr -> matches Nim's nkVarTuple structure
+    # Nim puts all children (names + type + value) into elements
+    var elements: seq[JsonNode] = @[]
+    for child in node.namedChildren:
+      case child.nodeType
+      of "exported_symbol":
+        elements.add canonicalize(child, source, profile)
+      of "tuple_decl":
+        # Nested tuple unpacking
+        elements.add canonicalize(child, source, profile)
+      of "expression":
+        elements.add canonicalize(child, source, profile)
+      else:
+        discard
+    result = %*{
+      "kind": "Tuple",
+      "elements": elements,
       "span": newSpan(node)
     }
     result.addCstRef(node, profile)

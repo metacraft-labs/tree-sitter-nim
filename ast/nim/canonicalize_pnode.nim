@@ -1059,6 +1059,19 @@ proc canonicalize*(node: PNode, profile: CanonProfile = cpNim): JsonNode =
     }
     if profile == cpLossless:
       result.addNimRef(node)
+  of nkCast:
+    # Cast expression: cast[Type](expr)
+    # [0] = type, [1] = expr
+    result = %*{
+      "kind": "Cast",
+      "span": newSpan(node)
+    }
+    if node.safeLen > 0 and node[0] != nil:
+      result["targetType"] = canonicalize(node[0], profile)
+    if node.safeLen > 1 and node[1] != nil:
+      result["expr"] = canonicalize(node[1], profile)
+    if profile == cpLossless:
+      result.addNimRef(node)
   else:
     # Fallback: create generic node with children
     result = %*{
