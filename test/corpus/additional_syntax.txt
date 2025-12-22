@@ -1,0 +1,434 @@
+==================
+using statement
+==================
+
+using ctx: Context
+
+---
+
+(source_file
+  (section_stmt
+    (using_section
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (type_expr
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+import with as alias
+==================
+
+import os as sys
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (import_stmt
+        (import_expr
+          (import_path
+            (symbol
+              (identifier)))
+          (symbol
+            (identifier)))))))
+
+==================
+addr operator
+==================
+
+discard addr(x)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (call_suffix
+                                      (argument
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (symbol
+                                                                        (identifier)))))))))))))))))))))))))))))))))))))
+
+==================
+object constructor
+==================
+
+discard Obj(x: 1, y: 2)
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (call_suffix
+                                      (argument
+                                        (symbol
+                                          (identifier))
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal))))))))))))))))))
+                                      (argument
+                                        (symbol
+                                          (identifier))
+                                        (expression
+                                          (infix_expression
+                                            (assign_expr
+                                              (op2_expr
+                                                (or_expr
+                                                  (and_expr
+                                                    (cmp_expr
+                                                      (range_expr
+                                                        (amp_expr
+                                                          (add_expr
+                                                            (mul_expr
+                                                              (pow_expr
+                                                                (prefix_expr
+                                                                  (postfix_expr
+                                                                    (postfixable_primary
+                                                                      (literal
+                                                                        (integer_literal)))))))))))))))))))))))))))))))))))))
+
+==================
+openArray generic type
+==================
+
+proc foo(x: openArray[int]) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (generic_type
+              name: (qualified_identifier
+                (symbol
+                  (identifier)))
+              (type_arg
+                (type_expr
+                  (qualified_identifier
+                    (symbol
+                      (identifier)))))))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+converter definition
+==================
+
+converter toInt(x: string): int = parseInt(x)
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      return_type: (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (expr_stmt
+            (expression
+              (infix_expression
+                (assign_expr
+                  (op2_expr
+                    (or_expr
+                      (and_expr
+                        (cmp_expr
+                          (range_expr
+                            (amp_expr
+                              (add_expr
+                                (mul_expr
+                                  (pow_expr
+                                    (prefix_expr
+                                      (postfix_expr
+                                        (postfixable_primary
+                                          (symbol
+                                            (identifier)))
+                                        (call_suffix
+                                          (argument
+                                            (expression
+                                              (infix_expression
+                                                (assign_expr
+                                                  (op2_expr
+                                                    (or_expr
+                                                      (and_expr
+                                                        (cmp_expr
+                                                          (range_expr
+                                                            (amp_expr
+                                                              (add_expr
+                                                                (mul_expr
+                                                                  (pow_expr
+                                                                    (prefix_expr
+                                                                      (postfix_expr
+                                                                        (postfixable_primary
+                                                                          (symbol
+                                                                            (identifier)))))))))))))))))))))))))))))))))))))))
+
+==================
+method definition
+==================
+
+method speak(a: Animal): string {.base.} = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      return_type: (type_expr
+        (qualified_identifier
+          (symbol
+            (identifier))))
+      pragmas: (pragma
+        (pragma_item
+          (symbol
+            (identifier))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+deref operator
+==================
+
+discard x[]
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))
+                                    (index_suffix)))))))))))))))))))
+
+==================
+concat operator
+==================
+
+discard a & b
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier))))))))
+                          operator: (amp_operator)
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (symbol
+                                        (identifier)))))))))))))))))))))
+
+==================
+pow operator
+==================
+
+discard 2 ^ 3
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (discard_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))
+                                operator: (pow_operator)
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+generic with constraint
+==================
+
+proc foo[T: SomeInteger](x: T) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      generic_params: (generic_params
+        (generic_param
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))

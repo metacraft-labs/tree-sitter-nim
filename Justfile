@@ -6,27 +6,66 @@ default:
 
 # Generate the parser from grammar.js
 generate:
-    npx tree-sitter generate
+    tree-sitter generate
 
-# Run all tests
+# Run tree-sitter tests
 test:
-    npx tree-sitter test
+    tree-sitter test
 
 # Run tests and update expected output
 test-update:
-    npx tree-sitter test --update
+    tree-sitter test --update
+
+# Nim compiler source path (needed for parity tests that use compiler internals)
+# Auto-detect from Nix environment if not set
+nim_compiler_path := `ls -d /nix/store/*-nim-unwrapped-*/nim 2>/dev/null | head -1 || echo ""`
+
+# Run byte-fidelity tests (Nim)
+test-bytes:
+    nim c -r tests/nim/test_byte_fidelity.nim
+
+# Run byte-fidelity tests with verbose output
+test-bytes-verbose:
+    nim c -r tests/nim/test_byte_fidelity.nim --verbose
+
+# Run Nim parity tests (requires Nim compiler sources)
+test-parity:
+    @if [ -z "{{nim_compiler_path}}" ]; then \
+        echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
+        exit 1; \
+    fi
+    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only
+
+# Run Nim parity tests with verbose output
+test-parity-verbose:
+    @if [ -z "{{nim_compiler_path}}" ]; then \
+        echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
+        exit 1; \
+    fi
+    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only --verbose
+
+# Run full test suite (tree-sitter + byte-fidelity + parity)
+test-full:
+    @if [ -z "{{nim_compiler_path}}" ]; then \
+        echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
+        exit 1; \
+    fi
+    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim
+
+# Run all tests (tree-sitter + byte-fidelity)
+test-all: test test-bytes
 
 # Generate parser and run tests
 check: generate test
 
 # Parse a specific file (useful for debugging)
 parse file:
-    npx tree-sitter parse {{file}}
+    tree-sitter parse {{file}}
 
 # Parse from stdin (pipe code to this)
 parse-stdin:
     @echo "Enter Nim code, then Ctrl+D:"
-    @cat > /tmp/nim-parse-tmp.nim && npx tree-sitter parse /tmp/nim-parse-tmp.nim
+    @cat > /tmp/nim-parse-tmp.nim && tree-sitter parse /tmp/nim-parse-tmp.nim
 
 # Lint all files (runs pre-commit hooks)
 lint:
@@ -67,12 +106,12 @@ publish:
 
 # Highlight a file using the grammar
 highlight file:
-    npx tree-sitter highlight {{file}}
+    tree-sitter highlight {{file}}
 
 # Open playground in browser
 playground:
-    npx tree-sitter build --wasm
-    npx tree-sitter playground
+    tree-sitter build --wasm
+    tree-sitter playground
 
 # Show grammar statistics
 stats:

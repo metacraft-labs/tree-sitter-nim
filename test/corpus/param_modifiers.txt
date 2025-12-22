@@ -2,7 +2,7 @@
 var parameter modifier
 ==================
 
-proc f(var x: int) = discard
+proc f(x: var int) = discard
 
 ---
 
@@ -15,13 +15,14 @@ proc f(var x: int) = discard
           (identifier)))
       params: (param_list
         (param_decl
-          modifier: (param_modifier)
           (symbol
             (identifier))
           (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
+            (var_type
+              base: (type_expr
+                (qualified_identifier
+                  (symbol
+                    (identifier))))))))
       body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -30,7 +31,7 @@ proc f(var x: int) = discard
 out parameter modifier
 ==================
 
-proc g(out y: string) = discard
+proc g(y: out string) = discard
 
 ---
 
@@ -43,13 +44,14 @@ proc g(out y: string) = discard
           (identifier)))
       params: (param_list
         (param_decl
-          modifier: (param_modifier)
           (symbol
             (identifier))
           (type_expr
-            (qualified_identifier
-              (symbol
-                (identifier))))))
+            (out_type
+              base: (type_expr
+                (qualified_identifier
+                  (symbol
+                    (identifier))))))))
       body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
@@ -58,7 +60,7 @@ proc g(out y: string) = discard
 sink parameter modifier
 ==================
 
-proc h(sink s: seq[int]) = discard
+proc h(s: sink seq[int]) = discard
 
 ---
 
@@ -71,19 +73,20 @@ proc h(sink s: seq[int]) = discard
           (identifier)))
       params: (param_list
         (param_decl
-          modifier: (param_modifier)
           (symbol
             (identifier))
           (type_expr
-            (generic_type
-              name: (qualified_identifier
-                (symbol
-                  (identifier)))
-              (type_arg
-                (type_expr
-                  (qualified_identifier
+            (sink_type
+              base: (type_expr
+                (generic_type
+                  name: (qualified_identifier
                     (symbol
-                      (identifier)))))))))
+                      (identifier)))
+                  (type_arg
+                    (type_expr
+                      (qualified_identifier
+                        (symbol
+                          (identifier)))))))))))
       body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

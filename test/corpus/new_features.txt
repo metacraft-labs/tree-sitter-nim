@@ -353,133 +353,75 @@ type T = tuple[a: int; b: string]
                     (identifier)))))))))))
 
 ==================
-when inside type section
+when with type sections
 ==================
 
-type
-  when defined(windows):
-    Handle = int
-  else:
-    Handle = cint
+when defined(windows):
+  type Handle = int
+else:
+  type Handle = cint
 
 ---
 
 (source_file
-  (section_stmt
-    (type_section
-      (when_stmt
-        condition: (expression
-          (infix_expression
-            (assign_expr
-              (op2_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (amp_expr
-                          (add_expr
-                            (mul_expr
-                              (pow_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (postfixable_primary
-                                      (symbol
-                                        (identifier)))
-                                    (call_suffix
-                                      (argument
-                                        (expression
-                                          (infix_expression
-                                            (assign_expr
-                                              (op2_expr
-                                                (or_expr
-                                                  (and_expr
-                                                    (cmp_expr
-                                                      (range_expr
-                                                        (amp_expr
-                                                          (add_expr
-                                                            (mul_expr
-                                                              (pow_expr
-                                                                (prefix_expr
-                                                                  (postfix_expr
-                                                                    (postfixable_primary
-                                                                      (symbol
-                                                                        (identifier)))))))))))))))))))))))))))))))))
-        (simple_stmt_line
-          (simple_stmt
-            (expr_stmt
-              (assignment_stmt
-                left: (expression
-                  (infix_expression
-                    (assign_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (symbol
-                                                (identifier)))))))))))))))))
-                right: (expression
-                  (infix_expression
-                    (assign_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (symbol
-                                                (identifier)))))))))))))))))))))
-        (simple_stmt_line
-          (simple_stmt
-            (expr_stmt
-              (assignment_stmt
-                left: (expression
-                  (infix_expression
-                    (assign_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (symbol
-                                                (identifier)))))))))))))))))
-                right: (expression
-                  (infix_expression
-                    (assign_expr
-                      (op2_expr
-                        (or_expr
-                          (and_expr
-                            (cmp_expr
-                              (range_expr
-                                (amp_expr
-                                  (add_expr
-                                    (mul_expr
-                                      (pow_expr
-                                        (prefix_expr
-                                          (postfix_expr
-                                            (postfixable_primary
-                                              (symbol
-                                                (identifier)))))))))))))))))))))))))
+  (compound_stmt
+    (when_stmt
+      condition: (expression
+        (infix_expression
+          (assign_expr
+            (op2_expr
+              (or_expr
+                (and_expr
+                  (cmp_expr
+                    (range_expr
+                      (amp_expr
+                        (add_expr
+                          (mul_expr
+                            (pow_expr
+                              (prefix_expr
+                                (postfix_expr
+                                  (postfixable_primary
+                                    (symbol
+                                      (identifier)))
+                                  (call_suffix
+                                    (argument
+                                      (expression
+                                        (infix_expression
+                                          (assign_expr
+                                            (op2_expr
+                                              (or_expr
+                                                (and_expr
+                                                  (cmp_expr
+                                                    (range_expr
+                                                      (amp_expr
+                                                        (add_expr
+                                                          (mul_expr
+                                                            (pow_expr
+                                                              (prefix_expr
+                                                                (postfix_expr
+                                                                  (postfixable_primary
+                                                                    (symbol
+                                                                      (identifier)))))))))))))))))))))))))))))))))
+      (section_stmt
+        (type_section
+          (type_def
+            name: (exported_symbol
+              (symbol
+                (identifier)))
+            value: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
+      (section_stmt
+        (type_section
+          (type_def
+            name: (exported_symbol
+              (symbol
+                (identifier)))
+            value: (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier))))))))))
 
 ==================
 keyword after dot - if

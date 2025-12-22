@@ -298,10 +298,12 @@ let x = if a: 1 elif b: 2 else: 3
                                                                         (integer_literal)))))))))))))))))))))))))))))))))))))
 
 ==================
-case expression without parentheses
+case expression in parentheses
 ==================
 
-let x = case k of 1: "a" else: "b"
+let x = (case k
+  of 1: "a"
+  else: "b")
 
 ---
 
@@ -326,9 +328,9 @@ let x = case k of 1: "a" else: "b"
                               (pow_expr
                                 (prefix_expr
                                   (postfix_expr
-                                    (expression_form_primary
-                                      (case_expr
-                                        expression: (expression
+                                    (postfixable_primary
+                                      (paren_expr
+                                        (expression
                                           (infix_expression
                                             (assign_expr
                                               (op2_expr
@@ -342,63 +344,79 @@ let x = case k of 1: "a" else: "b"
                                                               (pow_expr
                                                                 (prefix_expr
                                                                   (postfix_expr
-                                                                    (postfixable_primary
-                                                                      (symbol
-                                                                        (identifier)))))))))))))))))
-                                        (case_expr_branch
-                                          (expression_list
-                                            (expression
-                                              (infix_expression
-                                                (assign_expr
-                                                  (op2_expr
-                                                    (or_expr
-                                                      (and_expr
-                                                        (cmp_expr
-                                                          (range_expr
-                                                            (amp_expr
-                                                              (add_expr
-                                                                (mul_expr
-                                                                  (pow_expr
-                                                                    (prefix_expr
-                                                                      (postfix_expr
-                                                                        (postfixable_primary
-                                                                          (literal
-                                                                            (integer_literal))))))))))))))))))
-                                          (expression
-                                            (infix_expression
-                                              (assign_expr
-                                                (op2_expr
-                                                  (or_expr
-                                                    (and_expr
-                                                      (cmp_expr
-                                                        (range_expr
-                                                          (amp_expr
-                                                            (add_expr
-                                                              (mul_expr
-                                                                (pow_expr
-                                                                  (prefix_expr
-                                                                    (postfix_expr
-                                                                      (postfixable_primary
-                                                                        (literal
-                                                                          (string_literal))))))))))))))))))
-                                        (case_expr_branch
-                                          (expression
-                                            (infix_expression
-                                              (assign_expr
-                                                (op2_expr
-                                                  (or_expr
-                                                    (and_expr
-                                                      (cmp_expr
-                                                        (range_expr
-                                                          (amp_expr
-                                                            (add_expr
-                                                              (mul_expr
-                                                                (pow_expr
-                                                                  (prefix_expr
-                                                                    (postfix_expr
-                                                                      (postfixable_primary
-                                                                        (literal
-                                                                          (string_literal))))))))))))))))))))))))))))))))))))))
+                                                                    (expression_form_primary
+                                                                      (case_expr
+                                                                        expression: (expression
+                                                                          (infix_expression
+                                                                            (assign_expr
+                                                                              (op2_expr
+                                                                                (or_expr
+                                                                                  (and_expr
+                                                                                    (cmp_expr
+                                                                                      (range_expr
+                                                                                        (amp_expr
+                                                                                          (add_expr
+                                                                                            (mul_expr
+                                                                                              (pow_expr
+                                                                                                (prefix_expr
+                                                                                                  (postfix_expr
+                                                                                                    (postfixable_primary
+                                                                                                      (symbol
+                                                                                                        (identifier)))))))))))))))))
+                                                                        (case_expr_branch
+                                                                          (expression_list
+                                                                            (expression
+                                                                              (infix_expression
+                                                                                (assign_expr
+                                                                                  (op2_expr
+                                                                                    (or_expr
+                                                                                      (and_expr
+                                                                                        (cmp_expr
+                                                                                          (range_expr
+                                                                                            (amp_expr
+                                                                                              (add_expr
+                                                                                                (mul_expr
+                                                                                                  (pow_expr
+                                                                                                    (prefix_expr
+                                                                                                      (postfix_expr
+                                                                                                        (postfixable_primary
+                                                                                                          (literal
+                                                                                                            (integer_literal))))))))))))))))))
+                                                                          (expression
+                                                                            (infix_expression
+                                                                              (assign_expr
+                                                                                (op2_expr
+                                                                                  (or_expr
+                                                                                    (and_expr
+                                                                                      (cmp_expr
+                                                                                        (range_expr
+                                                                                          (amp_expr
+                                                                                            (add_expr
+                                                                                              (mul_expr
+                                                                                                (pow_expr
+                                                                                                  (prefix_expr
+                                                                                                    (postfix_expr
+                                                                                                      (postfixable_primary
+                                                                                                        (literal
+                                                                                                          (string_literal))))))))))))))))))
+                                                                        (case_expr_branch
+                                                                          (expression
+                                                                            (infix_expression
+                                                                              (assign_expr
+                                                                                (op2_expr
+                                                                                  (or_expr
+                                                                                    (and_expr
+                                                                                      (cmp_expr
+                                                                                        (range_expr
+                                                                                          (amp_expr
+                                                                                            (add_expr
+                                                                                              (mul_expr
+                                                                                                (pow_expr
+                                                                                                  (prefix_expr
+                                                                                                    (postfix_expr
+                                                                                                      (postfixable_primary
+                                                                                                        (literal
+                                                                                                          (string_literal))))))))))))))))))))))))))))))))))))))))))))))))))))))
 
 ==================
 try expression without parentheses

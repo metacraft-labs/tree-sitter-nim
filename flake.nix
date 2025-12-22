@@ -37,8 +37,11 @@
               # Node.js for the Node bindings and dev workflow
               pkgs.nodejs_20
 
-              # tree-sitter CLI
+              # tree-sitter CLI and library
               pkgs.tree-sitter
+
+              # Nim compiler for tests
+              pkgs.nim
 
               # For building native Node modules
               pkgs.python3

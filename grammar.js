@@ -1486,6 +1486,7 @@ module.exports = grammar({
         $.pointer_type,
         $.var_type,
         $.out_type,
+        $.sink_type,
         $.distinct_type,
         $.static_type,
         $.tuple_type,
@@ -1512,6 +1513,9 @@ module.exports = grammar({
 
     // Out type: out T
     out_type: ($) => seq("out", field("base", $.type_expr)),
+
+    // Sink type: sink T
+    sink_type: ($) => seq("sink", field("base", $.type_expr)),
 
     // Distinct type: distinct T
     distinct_type: ($) => seq("distinct", field("base", $.type_expr)),

@@ -1,0 +1,1275 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/metacraft-labs/tree-sitter-nim/ast/schema/ast.schema.json",
+  "title": "Nim Canonical AST Schema",
+  "description": "Schema for the canonical AST representation used by tree-sitter-nim testing",
+
+  "definitions": {
+    "Point": {
+      "type": "object",
+      "properties": {
+        "row": { "type": "integer", "minimum": 0 },
+        "column": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["row", "column"],
+      "additionalProperties": false
+    },
+
+    "Span": {
+      "type": "object",
+      "properties": {
+        "startByte": { "type": "integer", "minimum": 0 },
+        "endByte": { "type": "integer", "minimum": 0 },
+        "startPoint": { "$ref": "#/definitions/Point" },
+        "endPoint": { "$ref": "#/definitions/Point" }
+      },
+      "required": ["startByte", "endByte", "startPoint", "endPoint"],
+      "additionalProperties": false
+    },
+
+    "CstRef": {
+      "description": "Reference back to the original CST node (for debugging)",
+      "type": "object",
+      "properties": {
+        "nodeType": { "type": "string" },
+        "startByte": { "type": "integer", "minimum": 0 },
+        "endByte": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["nodeType", "startByte", "endByte"],
+      "additionalProperties": false
+    },
+
+    "NimRef": {
+      "description": "Reference to original Nim PNode kind (for debugging)",
+      "type": "object",
+      "properties": {
+        "nk": { "type": "string" }
+      },
+      "required": ["nk"],
+      "additionalProperties": false
+    },
+
+    "BaseNode": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string" },
+        "span": { "$ref": "#/definitions/Span" },
+        "cst": { "$ref": "#/definitions/CstRef" },
+        "nim": { "$ref": "#/definitions/NimRef" },
+        "errors": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["kind", "span"]
+    },
+
+    "Ident": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Ident" },
+            "name": { "type": "string" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "Qualified": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Qualified" },
+            "parts": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" },
+              "minItems": 2
+            }
+          },
+          "required": ["parts"]
+        }
+      ]
+    },
+
+    "IntLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "IntLit" },
+            "value": { "type": "string" },
+            "base": { "type": "integer", "enum": [2, 8, 10, 16] },
+            "suffix": { "type": "string" }
+          },
+          "required": ["value"]
+        }
+      ]
+    },
+
+    "FloatLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "FloatLit" },
+            "value": { "type": "string" },
+            "suffix": { "type": "string" }
+          },
+          "required": ["value"]
+        }
+      ]
+    },
+
+    "StringLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "StringLit" },
+            "value": { "type": "string" },
+            "raw": { "type": "boolean" },
+            "triple": { "type": "boolean" }
+          },
+          "required": ["value"]
+        }
+      ]
+    },
+
+    "CharLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "CharLit" },
+            "value": { "type": "string" }
+          },
+          "required": ["value"]
+        }
+      ]
+    },
+
+    "NilLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "NilLit" }
+          }
+        }
+      ]
+    },
+
+    "BoolLit": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "BoolLit" },
+            "value": { "type": "boolean" }
+          },
+          "required": ["value"]
+        }
+      ]
+    },
+
+    "Infix": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Infix" },
+            "operator": { "type": "string" },
+            "left": { "$ref": "#/definitions/AstNode" },
+            "right": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["operator", "left", "right"]
+        }
+      ]
+    },
+
+    "Prefix": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Prefix" },
+            "operator": { "type": "string" },
+            "operand": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["operator", "operand"]
+        }
+      ]
+    },
+
+    "Call": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Call" },
+            "callee": { "$ref": "#/definitions/AstNode" },
+            "args": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["callee", "args"]
+        }
+      ]
+    },
+
+    "Command": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Command" },
+            "callee": { "$ref": "#/definitions/AstNode" },
+            "args": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["callee", "args"]
+        }
+      ]
+    },
+
+    "Index": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Index" },
+            "base": { "$ref": "#/definitions/AstNode" },
+            "indices": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["base", "indices"]
+        }
+      ]
+    },
+
+    "Dot": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Dot" },
+            "base": { "$ref": "#/definitions/AstNode" },
+            "field": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["base", "field"]
+        }
+      ]
+    },
+
+    "IfExpr": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "IfExpr" },
+            "condition": { "$ref": "#/definitions/AstNode" },
+            "consequence": { "$ref": "#/definitions/AstNode" },
+            "elifBranches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "condition": { "$ref": "#/definitions/AstNode" },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["condition", "body"]
+              }
+            },
+            "alternative": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["condition", "consequence", "alternative"]
+        }
+      ]
+    },
+
+    "CaseExpr": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "CaseExpr" },
+            "expr": { "$ref": "#/definitions/AstNode" },
+            "branches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/AstNode" }
+                  },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["patterns", "body"]
+              }
+            },
+            "elseBranch": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["expr", "branches"]
+        }
+      ]
+    },
+
+    "BlockExpr": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "BlockExpr" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["body"]
+        }
+      ]
+    },
+
+    "TryExpr": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TryExpr" },
+            "body": { "$ref": "#/definitions/AstNode" },
+            "excepts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "types": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/AstNode" }
+                  },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["body"]
+              }
+            },
+            "finally": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["body"]
+        }
+      ]
+    },
+
+    "Lambda": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Lambda" },
+            "routineKind": {
+              "type": "string",
+              "enum": ["proc", "func", "iterator"]
+            },
+            "params": { "$ref": "#/definitions/ParamList" },
+            "returnType": { "$ref": "#/definitions/AstNode" },
+            "pragmas": { "$ref": "#/definitions/Pragma" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["routineKind"]
+        }
+      ]
+    },
+
+    "Tuple": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Tuple" },
+            "elements": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["elements"]
+        }
+      ]
+    },
+
+    "Array": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Array" },
+            "elements": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["elements"]
+        }
+      ]
+    },
+
+    "Set": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Set" },
+            "elements": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["elements"]
+        }
+      ]
+    },
+
+    "Range": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Range" },
+            "start": { "$ref": "#/definitions/AstNode" },
+            "stop": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["start", "stop"]
+        }
+      ]
+    },
+
+    "StmtList": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "StmtList" },
+            "stmts": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["stmts"]
+        }
+      ]
+    },
+
+    "Assign": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Assign" },
+            "left": { "$ref": "#/definitions/AstNode" },
+            "right": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["left", "right"]
+        }
+      ]
+    },
+
+    "Return": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Return" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          }
+        }
+      ]
+    },
+
+    "Raise": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Raise" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          }
+        }
+      ]
+    },
+
+    "Yield": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Yield" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          }
+        }
+      ]
+    },
+
+    "Discard": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Discard" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          }
+        }
+      ]
+    },
+
+    "Break": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Break" },
+            "label": { "$ref": "#/definitions/Ident" }
+          }
+        }
+      ]
+    },
+
+    "Continue": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Continue" },
+            "label": { "$ref": "#/definitions/Ident" }
+          }
+        }
+      ]
+    },
+
+    "IfStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "IfStmt" },
+            "branches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "condition": { "$ref": "#/definitions/AstNode" },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["condition", "body"]
+              }
+            },
+            "elseBranch": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["branches"]
+        }
+      ]
+    },
+
+    "WhenStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "WhenStmt" },
+            "branches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "condition": { "$ref": "#/definitions/AstNode" },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["condition", "body"]
+              }
+            },
+            "elseBranch": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["branches"]
+        }
+      ]
+    },
+
+    "CaseStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "CaseStmt" },
+            "expr": { "$ref": "#/definitions/AstNode" },
+            "branches": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "patterns": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/AstNode" }
+                  },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["patterns", "body"]
+              }
+            },
+            "elseBranch": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["expr", "branches"]
+        }
+      ]
+    },
+
+    "WhileStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "WhileStmt" },
+            "condition": { "$ref": "#/definitions/AstNode" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["condition", "body"]
+        }
+      ]
+    },
+
+    "ForStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ForStmt" },
+            "vars": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" }
+            },
+            "iter": { "$ref": "#/definitions/AstNode" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["vars", "iter", "body"]
+        }
+      ]
+    },
+
+    "TryStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TryStmt" },
+            "body": { "$ref": "#/definitions/AstNode" },
+            "excepts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "types": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/AstNode" }
+                  },
+                  "body": { "$ref": "#/definitions/AstNode" }
+                },
+                "required": ["body"]
+              }
+            },
+            "finally": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["body"]
+        }
+      ]
+    },
+
+    "BlockStmt": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "BlockStmt" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["body"]
+        }
+      ]
+    },
+
+    "Import": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Import" },
+            "paths": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            },
+            "except": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" }
+            }
+          },
+          "required": ["paths"]
+        }
+      ]
+    },
+
+    "Export": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Export" },
+            "paths": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            },
+            "except": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" }
+            }
+          },
+          "required": ["paths"]
+        }
+      ]
+    },
+
+    "FromImport": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "FromImport" },
+            "module": { "$ref": "#/definitions/AstNode" },
+            "symbols": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["module", "symbols"]
+        }
+      ]
+    },
+
+    "ParamList": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ParamList" },
+            "params": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/ParamDef" }
+            }
+          },
+          "required": ["params"]
+        }
+      ]
+    },
+
+    "ParamDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ParamDef" },
+            "names": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" }
+            },
+            "type": { "$ref": "#/definitions/AstNode" },
+            "default": { "$ref": "#/definitions/AstNode" },
+            "modifier": {
+              "type": "string",
+              "enum": ["var", "out", "sink", "lent"]
+            }
+          },
+          "required": ["names"]
+        }
+      ]
+    },
+
+    "Pragma": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "Pragma" },
+            "items": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/PragmaItem" }
+            }
+          },
+          "required": ["items"]
+        }
+      ]
+    },
+
+    "PragmaItem": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "PragmaItem" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "ConstSection": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ConstSection" },
+            "defs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/ConstDef" }
+            }
+          },
+          "required": ["defs"]
+        }
+      ]
+    },
+
+    "ConstDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ConstDef" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "type": { "$ref": "#/definitions/AstNode" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name", "value"]
+        }
+      ]
+    },
+
+    "LetSection": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "LetSection" },
+            "defs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/LetDef" }
+            }
+          },
+          "required": ["defs"]
+        }
+      ]
+    },
+
+    "LetDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "LetDef" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "type": { "$ref": "#/definitions/AstNode" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "VarSection": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "VarSection" },
+            "defs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/VarDef" }
+            }
+          },
+          "required": ["defs"]
+        }
+      ]
+    },
+
+    "VarDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "VarDef" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "type": { "$ref": "#/definitions/AstNode" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "TypeSection": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TypeSection" },
+            "defs": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/TypeDef" }
+            }
+          },
+          "required": ["defs"]
+        }
+      ]
+    },
+
+    "TypeDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TypeDef" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "genericParams": { "$ref": "#/definitions/GenericParams" },
+            "pragmas": { "$ref": "#/definitions/Pragma" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name", "value"]
+        }
+      ]
+    },
+
+    "GenericParams": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "GenericParams" },
+            "params": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/GenericParam" }
+            }
+          },
+          "required": ["params"]
+        }
+      ]
+    },
+
+    "GenericParam": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "GenericParam" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "constraint": { "$ref": "#/definitions/AstNode" },
+            "default": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "RoutineDef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "RoutineDef" },
+            "routineKind": {
+              "type": "string",
+              "enum": [
+                "proc",
+                "func",
+                "iterator",
+                "method",
+                "macro",
+                "template",
+                "converter"
+              ]
+            },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "genericParams": { "$ref": "#/definitions/GenericParams" },
+            "params": { "$ref": "#/definitions/ParamList" },
+            "returnType": { "$ref": "#/definitions/AstNode" },
+            "pragmas": { "$ref": "#/definitions/Pragma" },
+            "body": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["routineKind", "name"]
+        }
+      ]
+    },
+
+    "TypeRef": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TypeRef" },
+            "name": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "GenericType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "GenericType" },
+            "name": { "$ref": "#/definitions/AstNode" },
+            "args": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["name", "args"]
+        }
+      ]
+    },
+
+    "RefType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "RefType" },
+            "base": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["base"]
+        }
+      ]
+    },
+
+    "PtrType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "PtrType" },
+            "base": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["base"]
+        }
+      ]
+    },
+
+    "VarType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "VarType" },
+            "base": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["base"]
+        }
+      ]
+    },
+
+    "DistinctType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "DistinctType" },
+            "base": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["base"]
+        }
+      ]
+    },
+
+    "ProcType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ProcType" },
+            "params": { "$ref": "#/definitions/ParamList" },
+            "returnType": { "$ref": "#/definitions/AstNode" },
+            "pragmas": { "$ref": "#/definitions/Pragma" }
+          }
+        }
+      ]
+    },
+
+    "TupleType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "TupleType" },
+            "fields": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          },
+          "required": ["fields"]
+        }
+      ]
+    },
+
+    "ObjectType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ObjectType" },
+            "isRef": { "type": "boolean" },
+            "isPtr": { "type": "boolean" },
+            "parent": { "$ref": "#/definitions/AstNode" },
+            "fields": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/AstNode" }
+            }
+          }
+        }
+      ]
+    },
+
+    "EnumType": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "EnumType" },
+            "fields": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/EnumField" }
+            }
+          },
+          "required": ["fields"]
+        }
+      ]
+    },
+
+    "EnumField": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "EnumField" },
+            "name": { "$ref": "#/definitions/Ident" },
+            "exported": { "type": "boolean" },
+            "value": { "$ref": "#/definitions/AstNode" }
+          },
+          "required": ["name"]
+        }
+      ]
+    },
+
+    "ObjectField": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseNode" },
+        {
+          "properties": {
+            "kind": { "const": "ObjectField" },
+            "names": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Ident" }
+            },
+            "exported": { "type": "boolean" },
+            "type": { "$ref": "#/definitions/AstNode" },
+            "default": { "$ref": "#/definitions/AstNode" },
+            "pragmas": { "$ref": "#/definitions/Pragma" }
+          },
+          "required": ["names", "type"]
+        }
+      ]
+    },
+
+    "AstNode": {
+      "oneOf": [
+        { "$ref": "#/definitions/Ident" },
+        { "$ref": "#/definitions/Qualified" },
+        { "$ref": "#/definitions/IntLit" },
+        { "$ref": "#/definitions/FloatLit" },
+        { "$ref": "#/definitions/StringLit" },
+        { "$ref": "#/definitions/CharLit" },
+        { "$ref": "#/definitions/NilLit" },
+        { "$ref": "#/definitions/BoolLit" },
+        { "$ref": "#/definitions/Infix" },
+        { "$ref": "#/definitions/Prefix" },
+        { "$ref": "#/definitions/Call" },
+        { "$ref": "#/definitions/Command" },
+        { "$ref": "#/definitions/Index" },
+        { "$ref": "#/definitions/Dot" },
+        { "$ref": "#/definitions/IfExpr" },
+        { "$ref": "#/definitions/CaseExpr" },
+        { "$ref": "#/definitions/BlockExpr" },
+        { "$ref": "#/definitions/TryExpr" },
+        { "$ref": "#/definitions/Lambda" },
+        { "$ref": "#/definitions/Tuple" },
+        { "$ref": "#/definitions/Array" },
+        { "$ref": "#/definitions/Set" },
+        { "$ref": "#/definitions/Range" },
+        { "$ref": "#/definitions/StmtList" },
+        { "$ref": "#/definitions/Assign" },
+        { "$ref": "#/definitions/Return" },
+        { "$ref": "#/definitions/Raise" },
+        { "$ref": "#/definitions/Yield" },
+        { "$ref": "#/definitions/Discard" },
+        { "$ref": "#/definitions/Break" },
+        { "$ref": "#/definitions/Continue" },
+        { "$ref": "#/definitions/IfStmt" },
+        { "$ref": "#/definitions/WhenStmt" },
+        { "$ref": "#/definitions/CaseStmt" },
+        { "$ref": "#/definitions/WhileStmt" },
+        { "$ref": "#/definitions/ForStmt" },
+        { "$ref": "#/definitions/TryStmt" },
+        { "$ref": "#/definitions/BlockStmt" },
+        { "$ref": "#/definitions/Import" },
+        { "$ref": "#/definitions/Export" },
+        { "$ref": "#/definitions/FromImport" },
+        { "$ref": "#/definitions/ParamList" },
+        { "$ref": "#/definitions/ParamDef" },
+        { "$ref": "#/definitions/Pragma" },
+        { "$ref": "#/definitions/PragmaItem" },
+        { "$ref": "#/definitions/ConstSection" },
+        { "$ref": "#/definitions/ConstDef" },
+        { "$ref": "#/definitions/LetSection" },
+        { "$ref": "#/definitions/LetDef" },
+        { "$ref": "#/definitions/VarSection" },
+        { "$ref": "#/definitions/VarDef" },
+        { "$ref": "#/definitions/TypeSection" },
+        { "$ref": "#/definitions/TypeDef" },
+        { "$ref": "#/definitions/GenericParams" },
+        { "$ref": "#/definitions/GenericParam" },
+        { "$ref": "#/definitions/RoutineDef" },
+        { "$ref": "#/definitions/TypeRef" },
+        { "$ref": "#/definitions/GenericType" },
+        { "$ref": "#/definitions/RefType" },
+        { "$ref": "#/definitions/PtrType" },
+        { "$ref": "#/definitions/VarType" },
+        { "$ref": "#/definitions/DistinctType" },
+        { "$ref": "#/definitions/ProcType" },
+        { "$ref": "#/definitions/TupleType" },
+        { "$ref": "#/definitions/ObjectType" },
+        { "$ref": "#/definitions/EnumType" },
+        { "$ref": "#/definitions/EnumField" },
+        { "$ref": "#/definitions/ObjectField" }
+      ]
+    }
+  },
+
+  "type": "object",
+  "$ref": "#/definitions/AstNode"
+}
