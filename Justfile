@@ -167,4 +167,4 @@ bump-major-version:
 # Generate a repomix bundle for expert review
 # Includes all essential hand-written files, excludes generated code
 repomix:
-    repomix --include "README.md,CLAUDE.md,Grammar-Design-Goals.md,Testing-Strategy-Spec.md,grammar.js,src/scanner.c,ast/README.md,ast/schema/ast.schema.json,ast/nim/*.nim,tests/nim/*.nim,test/corpus/*.txt,queries/*.scm,package.json,tree-sitter.json,tree_sitter_nim.nimble,Justfile,flake.nix"
+    repomix --include "README.md,CLAUDE.md,Grammar-Design-Goals.md,Testing-Strategy-Spec.md,grammar.js,src/scanner.c,ast/README.md,ast/schema/ast.schema.json,ast/nim/*.nim,tests/nim/*.nim,test/corpus/*.txt,test/highlight/*.nim,queries/*.scm,package.json,tree-sitter.json,tree_sitter_nim.nimble,Justfile,flake.nix"
