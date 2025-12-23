@@ -1,0 +1,163 @@
+==================
+union type in param position
+==================
+
+proc f(x: int | string) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (type_or_constraint
+              (qualified_identifier
+                (symbol
+                  (identifier)))
+              operator: (type_union_operator)
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+except branch binding name
+==================
+
+try:
+  discard
+except IOError as e:
+  discard
+
+---
+
+(source_file
+  (compound_stmt
+    (try_stmt
+      (simple_stmt_line
+        (simple_stmt
+          (discard_stmt)))
+      (except_branch
+        (expression_list
+          (expression
+            (infix_expression
+              (assign_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (symbol
+                                          (identifier))))))))))))))))))
+        name: (symbol
+          (identifier))
+        (simple_stmt_line
+          (simple_stmt
+            (discard_stmt)))))))
+==================
+leading underscore identifier
+==================
+
+# tsnimtest: skip-nim
+let _x = 1
+
+---
+
+(source_file
+  (comment)
+  (section_stmt
+    (let_section
+      (ERROR
+        (symbol))
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+per-declaration pragma
+==================
+
+var x {.volatile.}: int
+
+---
+
+(source_file
+  (section_stmt
+    (var_section
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (pragma
+          (pragma_item
+            (symbol
+              (identifier))))
+        (type_expr
+          (qualified_identifier
+            (symbol
+              (identifier))))))))
+
+==================
+generalized string as call suffix
+==================
+
+re"^foo$"
+
+---
+
+(source_file
+  (simple_stmt_line
+    (simple_stmt
+      (expr_stmt
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (generalized_string)))))))))))))))))))))

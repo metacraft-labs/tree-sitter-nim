@@ -129,14 +129,20 @@ proc canonicalizeQualifiedIdent(node: Node, source: string, profile: CanonProfil
     if child.nodeType in ["symbol", "identifier"]:
       parts.add canonicalize(child, source, profile)
 
-  if parts.len == 1:
+  if parts.len == 0:
+    result = %*{"kind": "Empty", "span": newSpan(node)}
+  elif parts.len == 1:
     result = parts[0]
   else:
-    result = %*{
-      "kind": "Qualified",
-      "parts": parts,
-      "span": newSpan(node)
-    }
+    # Build a dotted chain (Dot(Dot(a, b), c)) to mirror Nim's nkDotExpr
+    result = parts[0]
+    for i in 1 ..< parts.len:
+      result = %*{
+        "kind": "Dot",
+        "base": result,
+        "field": parts[i],
+        "span": newSpan(node)
+      }
     result.addCstRef(node, profile)
 
 proc stripTypeSuffix(text: string): string =
@@ -808,11 +814,34 @@ proc canonicalizeTry(node: Node, source: string, profile: CanonProfile): JsonNod
       # Structure:
       # - With types: expression_list (types), then expression (body)
       # - Without types: just expression (body)
-      for branchChild in child.namedChildren:
+      for i in 0 ..< child.childCount:
+        let branchChild = child.child(i)
+        let fieldName = child.fieldNameForChild(i)
+
         if branchChild.nodeType == "expression_list":
           for expr in branchChild.namedChildren:
             types.add canonicalize(expr, source, profile)
-        elif branchChild.nodeType in ["expression", "inline_stmt_list", "suite", "simple_stmt_line"]:
+        elif fieldName == "name":
+          # Binding name: Nim's parser produces `type as name` as an infix node.
+          let nameNode = canonicalize(branchChild, source, profile)
+          if types.len == 0:
+            types.add %*{
+              "kind": "Infix",
+              "operator": "as",
+              "left": %*{"kind": "Ident", "name": "", "span": newSpan(branchChild)},
+              "right": nameNode,
+              "span": newSpan(branchChild)
+            }
+          else:
+            let base = types[^1]
+            types[^1] = %*{
+              "kind": "Infix",
+              "operator": "as",
+              "left": base,
+              "right": nameNode,
+              "span": newSpan(branchChild)
+            }
+        elif branchChild.isNamed and branchChild.nodeType in ["expression", "inline_stmt_list", "suite", "simple_stmt_line"]:
           # The last expression/stmt_list is always the body
           let bodyCanon = canonicalize(branchChild, source, profile)
           exceptBody = if bodyCanon["kind"].getStr == "StmtList": bodyCanon

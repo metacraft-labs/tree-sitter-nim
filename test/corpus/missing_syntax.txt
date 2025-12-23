@@ -667,16 +667,13 @@ proc f[T: int | string]() = discard
             (identifier))
           (type_constraint
             (type_or_constraint
-              (type_constraint
-                (type_expr
-                  (qualified_identifier
-                    (symbol
-                      (identifier)))))
-              (type_constraint
-                (type_expr
-                  (qualified_identifier
-                    (symbol
-                      (identifier)))))))))
+              (qualified_identifier
+                (symbol
+                  (identifier)))
+              operator: (type_union_operator)
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
       params: (param_list)
       body: (inline_stmt_list
         (simple_stmt
@@ -703,16 +700,13 @@ proc f[T: int or string]() = discard
             (identifier))
           (type_constraint
             (type_or_constraint
-              (type_constraint
-                (type_expr
-                  (qualified_identifier
-                    (symbol
-                      (identifier)))))
-              (type_constraint
-                (type_expr
-                  (qualified_identifier
-                    (symbol
-                      (identifier)))))))))
+              (qualified_identifier
+                (symbol
+                  (identifier)))
+              operator: (type_union_operator)
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
       params: (param_list)
       body: (inline_stmt_list
         (simple_stmt
@@ -738,13 +732,195 @@ proc f[T: not SomeInteger]() = discard
           (symbol
             (identifier))
           (type_constraint
-            (type_not_constraint
-              (type_constraint
-                (type_expr
-                  (qualified_identifier
-                    (symbol
-                      (identifier)))))))))
+            (type_expr
+              (qualified_identifier
+                (symbol
+                  (identifier)))))))
       params: (param_list)
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+dot type path
+==================
+
+var x: Collection.Index = 1
+
+---
+
+(source_file
+  (section_stmt
+    (var_section
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (type_expr
+          (qualified_identifier
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))))
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+template call in type position
+==================
+
+proc foo[T](x: T): ElementType(T) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      generic_params: (generic_params
+        (generic_param
+          (symbol
+            (identifier))))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      return_type: (type_expr
+        (type_call
+          name: (qualified_identifier
+            (symbol
+              (identifier)))
+          (expression
+            (infix_expression
+              (assign_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (symbol
+                                          (identifier)))))))))))))))))))
+      body: (inline_stmt_list
+        (simple_stmt
+          (discard_stmt))))))
+
+==================
+dot type path
+==================
+
+var x: Collection.Index = 1
+
+---
+
+(source_file
+  (section_stmt
+    (var_section
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (type_expr
+          (qualified_identifier
+            (symbol
+              (identifier))
+            (symbol
+              (identifier))))
+        (expression
+          (infix_expression
+            (assign_expr
+              (op2_expr
+                (or_expr
+                  (and_expr
+                    (cmp_expr
+                      (range_expr
+                        (amp_expr
+                          (add_expr
+                            (mul_expr
+                              (pow_expr
+                                (prefix_expr
+                                  (postfix_expr
+                                    (postfixable_primary
+                                      (literal
+                                        (integer_literal)))))))))))))))))))))
+
+==================
+template call in type position
+==================
+
+proc foo[T](x: T): ElementType(T) = discard
+
+---
+
+(source_file
+  (compound_stmt
+    (routine_definition
+      kind: (routine_kind)
+      name: (exported_symbol
+        (symbol
+          (identifier)))
+      generic_params: (generic_params
+        (generic_param
+          (symbol
+            (identifier))))
+      params: (param_list
+        (param_decl
+          (symbol
+            (identifier))
+          (type_expr
+            (qualified_identifier
+              (symbol
+                (identifier))))))
+      return_type: (type_expr
+        (type_call
+          name: (qualified_identifier
+            (symbol
+              (identifier)))
+          (expression
+            (infix_expression
+              (assign_expr
+                (op2_expr
+                  (or_expr
+                    (and_expr
+                      (cmp_expr
+                        (range_expr
+                          (amp_expr
+                            (add_expr
+                              (mul_expr
+                                (pow_expr
+                                  (prefix_expr
+                                    (postfix_expr
+                                      (postfixable_primary
+                                        (symbol
+                                          (identifier)))))))))))))))))))
       body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))

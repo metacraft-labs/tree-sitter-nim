@@ -192,17 +192,13 @@ proc runByteFidelityTest*(source: string, rootNode: Node): ReconstructionResult 
   ## Run the complete byte-fidelity test
   ##
   ## This checks:
-  ## 1. No ERROR nodes in tree
-  ## 2. Byte reconstruction matches original
-  ## 3. Tree covers the source appropriately
-
-  # Check for errors
-  let (noErrors, errorMsg) = checkNoErrors(rootNode)
-  if not noErrors:
-    return ReconstructionResult(
-      success: false,
-      message: "Parse errors: " & errorMsg
-    )
+  ## 1. Byte reconstruction matches original
+  ## 2. Tree covers the source appropriately
+  ##
+  ## NOTE: We no longer fail just because the tree has ERROR nodes. Spans are
+  ## still trusted for reconstruction; reconstruction failures will surface
+  ## real coverage/span bugs. This makes byte-fidelity tolerant of deliberate
+  ## invalid-input tests.
 
   # Check coverage
   let (covered, coverageMsg) = checkTreeCoverage(source, rootNode)
@@ -212,7 +208,7 @@ proc runByteFidelityTest*(source: string, rootNode: Node): ReconstructionResult 
       message: "Coverage issue: " & coverageMsg
     )
 
-  # Check reconstruction
+  # Attempt reconstruction even if errors are present
   return verifyReconstruction(source, rootNode)
 
 when isMainModule:

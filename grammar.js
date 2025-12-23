@@ -74,6 +74,8 @@ function paramSep1(rule) {
 module.exports = grammar({
   name: "nim",
 
+  inline: (_$) => [],
+
   externals: ($) => [
     $._indent,
     $._dedent,
@@ -100,6 +102,9 @@ module.exports = grammar({
   conflicts: ($) => [
     [$.routine_definition],
     [$.type_expr, $.generic_type],
+    [$._type_term, $.generic_type],
+    [$.type_constraint, $.type_expr],
+    [$.type_expr, $._type_term],
     [$.postfixable_primary, $.qualified_identifier], // symbol vs qualified path
     [$.postfixable_primary, $.named_tuple_element], // symbol: could be colon block or named tuple
     [$.postfixable_primary, $.argument], // symbol: could be colon block or named argument
@@ -109,6 +114,11 @@ module.exports = grammar({
     [$.command_first_arg, $.postfixable_primary], // symbol can be named arg or expression
     [$.command_arg, $.postfixable_primary], // symbol can be named arg or expression
     [$.import_symbol, $.qualified_identifier],
+    [$.exported_symbol, $.qualified_identifier],
+    [$.unary_operator, $._type_term],
+    [$.postfixable_primary, $.exported_symbol],
+    [$.postfix_expr, $.type_postfix],
+    [$.postfixable_primary, $.qualified_identifier, $.exported_symbol],
     [$.object_def],
     [$.object_def, $.object_type],
     [$.proc_type],
@@ -120,9 +130,13 @@ module.exports = grammar({
     [$.assignment_stmt, $._expr_body],
     [$._suite, $._expr_body],
     [$.tuple_field, $.qualified_identifier],
+    [$.tuple_field, $.postfixable_primary],
+    [$.postfixable_primary, $.tuple_field, $.qualified_identifier],
     [$.routine_header, $.exported_symbol],
     [$.expr_stmt, $._paren_stmt],
     [$.tuple_expr, $.tuple_element],
+    [$.tuple_type, $.qualified_identifier],
+    [$.decl_def],
   ],
 
   word: ($) => $.identifier,
@@ -344,7 +358,13 @@ module.exports = grammar({
       ),
 
     except_branch: ($) =>
-      seq("except", optional($.expression_list), $._colon_suite),
+      seq(
+        "except",
+        optional(
+          seq($.expression_list, optional(seq("as", field("name", $.symbol)))),
+        ),
+        $._colon_suite,
+      ),
 
     finally_branch: ($) => seq("finally", $._colon_suite),
 
@@ -686,8 +706,13 @@ module.exports = grammar({
     decl_def: ($) =>
       seq(
         sep1($.exported_symbol, ","),
-        optional(seq(":", $.type_expr)),
-        optional(seq("=", $.expression)),
+        optional($.pragma),
+        choice(
+          // With type (optionally with initializer)
+          seq(":", $.type_expr, optional(seq("=", $.expression))),
+          // With initializer only (type inferred)
+          seq("=", $.expression),
+        ),
       ),
 
     // Tuple unpacking in variable declarations: let (a, b) = getTuple()
@@ -711,7 +736,7 @@ module.exports = grammar({
         field("kind", $.routine_kind),
         field("name", $.exported_symbol),
         optional(field("generic_params", $.generic_params)),
-        optional(field("params", $.param_list)),
+        field("params", $.param_list), // parens are mandatory in Nim routine defs
         optional(seq(":", field("return_type", $.type_expr))),
         optional(field("pragmas", $.pragma)),
         // Nim routines only use = for body, not :
@@ -1509,8 +1534,27 @@ module.exports = grammar({
     // -------------------------------
     // Types - each type form has its own named node for better AST structure
     // -------------------------------
-    type_expr: ($) =>
+    // Type expressions with lightweight union/intersection support.
+    type_expr: ($) => choice($.type_or_constraint, $._type_term),
+
+    type_union_operator: (_) => choice("|", "or"),
+
+    // Type expressions with explicit union node and type-only terms.
+    type_expr: ($) => choice($.type_or_constraint, $._type_term),
+
+    type_or_constraint: ($) =>
+      prec.left(
+        PREC.ADD,
+        seq(
+          $._type_term,
+          repeat1(seq(field("operator", $.type_union_operator), $._type_term)),
+        ),
+      ),
+
+    // Type terms: includes type prefixes plus postfix expressions with at least one suffix
+    _type_term: ($) =>
       choice(
+        seq("not", $._type_term),
         $.ref_type,
         $.ptr_type,
         $.pointer_type,
@@ -1526,7 +1570,26 @@ module.exports = grammar({
         $.object_type,
         $.generic_type,
         $.type_call, // typeof(x), type(x), etc.
-        $.qualified_identifier, // Simple type name (must be last to avoid conflicts)
+        $.type_postfix,
+        $.qualified_identifier, // Simple type name
+        seq("(", $.type_expr, ")"),
+      ),
+
+    // Postfix type forms: allow dot/call/index/brace/generalized string suffixes
+    type_postfix: ($) =>
+      prec(
+        PREC.CALL,
+        seq(
+          $.postfixable_primary,
+          repeat1(
+            choice(
+              $.call_suffix,
+              $.dot_suffix,
+              $.brace_suffix,
+              $.generalized_string_suffix,
+            ),
+          ),
+        ),
       ),
 
     // Reference type: ref T
@@ -1595,12 +1658,15 @@ module.exports = grammar({
     // Generic type instantiation: Foo[T, U] or array[0..10, int]
     // Type arguments can be types or expressions (e.g., range literals)
     generic_type: ($) =>
-      seq(
-        field("name", $.qualified_identifier),
-        "[",
-        commaSep1($.type_arg),
-        optional(","),
-        "]",
+      prec.left(
+        PREC.CALL + 2,
+        seq(
+          field("name", $.qualified_identifier),
+          "[",
+          commaSep1($.type_arg),
+          optional(","),
+          "]",
+        ),
       ),
 
     // Type call: typeof(x), type(x), typedesc(T), etc.
@@ -1635,9 +1701,15 @@ module.exports = grammar({
     // -------------------------------
     // Identifiers / literals
     // -------------------------------
-    identifier: (_) => /[A-Za-z\u0080-\u00FF][A-Za-z0-9\u0080-\u00FF_]*/,
+    // Identifiers: must start with letter/Unicode ident char (no leading underscore).
+    // Underscores must be followed by another ident char (no trailing or doubled underscores).
+    // A lone "_" is handled as a discard symbol via `symbol`.
+    identifier: (_) =>
+      token(
+        /[A-Za-z\u0080-\u00FF](?:[A-Za-z0-9\u0080-\u00FF]|_[A-Za-z0-9\u0080-\u00FF])*/,
+      ),
     quoted_identifier: (_) => /`[^`\r\n]+`/,
-    symbol: ($) => choice($.identifier, $.quoted_identifier),
+    symbol: ($) => choice(token("_"), $.identifier, $.quoted_identifier),
     // Exported symbol with visibility marker * (e.g., proc foo*(), type Bar*)
     exported_symbol: ($) => seq($.symbol, optional(field("exported", "*"))),
     qualified_identifier: ($) => seq($.symbol, repeat(seq(".", $.symbol))),
@@ -1652,15 +1724,12 @@ module.exports = grammar({
         $.triple_string_literal,
         $.char_literal,
         $.nil_literal,
-        // Generalized strings like re"pattern" are kept as literals for direct use.
-        // For chained cases like x.re"pattern", generalized_string_suffix is used.
         $.generalized_string,
       ),
 
     // Generalized string literals: ident"string" or ident"""string"""
     // Examples: re"^pattern$", fmt"hello {name}", sql"SELECT * FROM ..."
     // The identifier is immediately followed by the string (no space)
-    // Uses a single token to ensure no whitespace between identifier and string
     // Note: This produces a call-like construct (nkCallStrLit in Nim's AST)
     generalized_string: (_) =>
       token(

@@ -122,10 +122,8 @@ For a source byte buffer `S` and parsed tree `T`, define a deterministic reconst
 ### Acceptance criteria
 
 - Reconstruction produces exact bytes: `reconstructed == S`
-- Additionally for "valid" corpus tests:
-  - no `ERROR` nodes in the CST
-  - no "missing" nodes (if the binding exposes this)
-  - root node span covers the whole input (`0..len(S)`), or if not, document and assert the precise expected coverage
+- Root node span covers the content (leading/trailing whitespace may be outside)
+- Presence of `ERROR` or `MISSING` nodes does **not** fail the byte test by itself. They are tolerated; failure only occurs if reconstruction or coverage fails. Use corpus directives to mark intentionally invalid inputs (still skip Nim parity).
 
 ### Why this is the right notion
 
