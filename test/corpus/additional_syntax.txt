@@ -50,41 +50,28 @@ discard addr(x)
     (simple_stmt
       (discard_stmt
         (expression
-          (infix_expression
-            (assign_expr
-              (op2_expr
-                (or_expr
-                  (and_expr
-                    (cmp_expr
-                      (range_expr
-                        (amp_expr
-                          (add_expr
-                            (mul_expr
-                              (pow_expr
-                                (prefix_expr
-                                  (postfix_expr
-                                    (postfixable_primary
-                                      (symbol
-                                        (identifier)))
-                                    (call_suffix
-                                      (argument
-                                        (expression
-                                          (infix_expression
-                                            (assign_expr
-                                              (op2_expr
-                                                (or_expr
-                                                  (and_expr
-                                                    (cmp_expr
-                                                      (range_expr
-                                                        (amp_expr
-                                                          (add_expr
-                                                            (mul_expr
-                                                              (pow_expr
-                                                                (prefix_expr
-                                                                  (postfix_expr
-                                                                    (postfixable_primary
-                                                                      (symbol
-                                                                        (identifier)))))))))))))))))))))))))))))))))))))
+          (addr_prefix_expr
+            (prefix_expr
+              (postfix_expr
+                (postfixable_primary
+                  (paren_expr
+                    (expression
+                      (infix_expression
+                        (assign_expr
+                          (op2_expr
+                            (or_expr
+                              (and_expr
+                                (cmp_expr
+                                  (range_expr
+                                    (amp_expr
+                                      (add_expr
+                                        (mul_expr
+                                          (pow_expr
+                                            (prefix_expr
+                                              (postfix_expr
+                                                (postfixable_primary
+                                                  (symbol
+                                                    (identifier)))))))))))))))))))))))))))
 
 ==================
 object constructor
@@ -433,3 +420,26 @@ proc foo[T: SomeInteger](x: T) = discard
       body: (inline_stmt_list
         (simple_stmt
           (discard_stmt))))))
+
+==================
+addr prefix
+==================
+
+let p = addr x
+
+---
+
+(source_file
+  (section_stmt
+    (let_section
+      (decl_def
+        (exported_symbol
+          (symbol
+            (identifier)))
+        (expression
+          (addr_prefix_expr
+            (prefix_expr
+              (postfix_expr
+                (postfixable_primary
+                  (symbol
+                    (identifier)))))))))))

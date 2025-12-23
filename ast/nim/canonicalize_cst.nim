@@ -1152,6 +1152,31 @@ proc canonicalize*(node: Node, source: string, profile: CanonProfile = cpNim): J
   of "prefix_expr":
     result = canonicalizePrefix(node, source, profile)
 
+  of "addr_prefix_expr":
+    # Nim treats `addr expr` as command-call (no parens) and `addr(expr)` as call
+    let operandField = node.childByFieldName("operand")
+    let operandNode = if operandField.isSome: operandField.get else: node
+    let operandCanon = if operandField.isSome: canonicalize(operandNode, source, profile)
+                       else: %*{"kind": "Empty", "span": newSpan(node)}
+    var callSyntax = false
+    if source.len > 0:
+      let opEnd = node.startByte + 4 # "addr".len
+      var i = opEnd
+      while i < operandNode.startByte and i < source.len and source[i].isSpaceAscii:
+        inc i
+      if i < source.len and source[i] == '(':
+        callSyntax = true
+      elif operandNode.startByte < source.len and source[operandNode.startByte] == '(':
+        callSyntax = true
+    let kind = if callSyntax: "Call" else: "Command"
+    result = %*{
+      "kind": kind,
+      "callee": %*{"kind": "Ident", "name": "addr", "span": newSpan(node)},
+      "args": [operandCanon],
+      "span": newSpan(node)
+    }
+    result.addCstRef(node, profile)
+
   of "postfix_expr":
     # Check for call/index/dot suffixes
     var hasSuffix = false
@@ -2425,6 +2450,31 @@ proc canonicalize*(node: Node, source: string, profile: CanonProfile = cpNim): J
     result = %*{
       "kind": "Pragma",
       "items": items,
+      "span": newSpan(node)
+    }
+    result.addCstRef(node, profile)
+
+  of "pragma_block":
+    # First child is pragma, remaining named children form the body suite
+    var bodyStmts: seq[JsonNode] = @[]
+    if node.namedChildCount > 1:
+      for i in 1 ..< node.namedChildCount:
+        let b = canonicalize(node.namedChild(i), source, profile)
+        if b["kind"].getStr == "StmtList":
+          for s in b["stmts"]:
+            bodyStmts.add s
+        else:
+          bodyStmts.add b
+    let bodyNode =
+      if bodyStmts.len == 0:
+        %*{"kind": "StmtList", "stmts": @[], "span": newSpan(node)}
+      else:
+        %*{"kind": "StmtList", "stmts": bodyStmts, "span": newSpan(node.namedChild(1))}
+    result = %*{
+      "kind": "PragmaBlock",
+      "pragma": if node.namedChildCount > 0: canonicalize(node.namedChild(0), source, profile)
+                else: %*{"kind": "Empty"},
+      "body": bodyNode,
       "span": newSpan(node)
     }
     result.addCstRef(node, profile)

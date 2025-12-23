@@ -148,7 +148,7 @@ module.exports = grammar({
     _ws: (_) => token(/[ \t\f\r]+/),
 
     _statement: ($) =>
-      choice($.simple_stmt_line, $.compound_stmt, $.section_stmt, $._newline),
+      choice($.compound_stmt, $.section_stmt, $.simple_stmt_line, $._newline),
 
     // -------------------------------
     // Simple statements (line-terminated)
@@ -169,12 +169,13 @@ module.exports = grammar({
         $.from_import_stmt,
         $.bind_stmt,
         $.mixin_stmt,
-        $.pragma_stmt,
         $.expr_stmt,
       ),
 
-    // Standalone pragma statement: {.push warnings: off.}, {.pop.}
-    pragma_stmt: ($) => $.pragma,
+    // Pragma statement (optionally with block body)
+    // {.push inline.}              -> nkPragma
+    // {.push inline.}: discard     -> nkPragmaBlock
+    pragma_block: ($) => seq($.pragma, optional(seq(":", $._suite))),
 
     return_stmt: ($) => seq("return", optional($.expression)),
     raise_stmt: ($) => seq("raise", optional($.expression)),
@@ -255,6 +256,7 @@ module.exports = grammar({
     // -------------------------------
     compound_stmt: ($) =>
       choice(
+        $.pragma_block,
         $.if_stmt,
         $.when_stmt,
         $.while_stmt,
@@ -827,7 +829,19 @@ module.exports = grammar({
     // Expression hierarchy follows Nim's precedence from lexer.nim:getPrecedence
     // Arrow operators are the lowest precedence (0), then or/xor (3), and (4), etc.
     expression: ($) =>
-      choice($.command_expr, prec(PREC.CALL, $.infix_expression)),
+      choice(
+        $.addr_prefix_expr,
+        $.command_expr,
+        prec(PREC.CALL, $.infix_expression),
+      ),
+
+    // addr is a keyword unary operator in Nim (nkAddr) and should not be parsed
+    // as a command-style call. Put it ahead of command_expr to force unary shape.
+    addr_prefix_expr: ($) =>
+      prec.right(
+        PREC.PREFIX + 1,
+        seq(field("operator", "addr"), field("operand", $.prefix_expr)),
+      ),
 
     // Command call syntax: echo "hello", foo a, b, foo a + b
     // Strong spaces are enforced via token.immediate on suffixes:
@@ -1087,6 +1101,7 @@ module.exports = grammar({
         "not",
         "~",
         "@",
+        "addr",
         "$",
         "^",
         // Single-char operators commonly used as prefixes
@@ -1539,9 +1554,6 @@ module.exports = grammar({
 
     type_union_operator: (_) => choice("|", "or"),
 
-    // Type expressions with explicit union node and type-only terms.
-    type_expr: ($) => choice($.type_or_constraint, $._type_term),
-
     type_or_constraint: ($) =>
       prec.left(
         PREC.ADD,
@@ -1691,7 +1703,12 @@ module.exports = grammar({
     // -------------------------------
     // Nim's parser accepts both .} and } as pragma closers
     pragma: ($) =>
-      seq("{.", commaSep($.pragma_item), optional(","), choice(".}", "}")),
+      seq(
+        "{.",
+        optional(seq($.pragma_item, repeat(seq(optional(","), $.pragma_item)))),
+        optional(","),
+        choice(".}", "}"),
+      ),
     pragma_item: ($) =>
       seq(
         $.symbol,

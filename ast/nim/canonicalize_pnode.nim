@@ -512,6 +512,18 @@ proc canonicalize*(node: PNode, profile: CanonProfile = cpNim): JsonNode =
     result = canonicalizeInfix(node, profile)
   of nkPrefix:
     result = canonicalizePrefix(node, profile)
+  of nkAddr, nkHiddenAddr:
+    # Nim canonical form: treat addr as builtin call
+    let argNode = if node.safeLen > 0: canonicalize(node[0], profile)
+                  else: %*{"kind": "Empty", "span": newSpan(node)}
+    result = %*{
+      "kind": "Call",
+      "callee": %*{"kind": "Ident", "name": "addr", "span": newSpan(node)},
+      "args": [argNode],
+      "span": newSpan(node)
+    }
+    if profile == cpLossless:
+      result.addNimRef(node)
   of nkCall, nkCallStrLit, nkCommand:
     result = canonicalizeCall(node, profile)
   of nkDotExpr:
@@ -530,6 +542,32 @@ proc canonicalize*(node: PNode, profile: CanonProfile = cpNim): JsonNode =
     result = canonicalizeTry(node, profile)
   of nkBlockExpr, nkBlockStmt:
     result = canonicalizeBlock(node, profile)
+  of nkPragma:
+    var items: seq[JsonNode] = @[]
+    for i in 0 ..< node.safeLen:
+      if node[i] != nil:
+        items.add canonicalize(node[i], profile)
+    result = %*{
+      "kind": "Pragma",
+      "items": items,
+      "span": newSpan(node)
+    }
+    if profile == cpLossless:
+      result.addNimRef(node)
+  of nkPragmaBlock:
+    let pragmaNode = if node.safeLen > 0 and node[0] != nil: canonicalize(node[0], profile)
+                     else: %*{"kind": "Empty", "span": newSpan(node)}
+    let bodyNode = if node.safeLen > 1 and node[1] != nil: canonicalize(node[1], profile)
+                   else: %*{"kind": "StmtList", "stmts": @[], "span": newSpan(node)}
+    result = %*{
+      "kind": "PragmaBlock",
+      "pragma": pragmaNode,
+      "body": if bodyNode["kind"].getStr == "StmtList": bodyNode
+              else: %*{"kind": "StmtList", "stmts": [bodyNode], "span": bodyNode["span"]},
+      "span": newSpan(node)
+    }
+    if profile == cpLossless:
+      result.addNimRef(node)
   of nkStmtList, nkStmtListExpr:
     result = canonicalizeStmtList(node, profile)
   of nkProcDef, nkFuncDef, nkMethodDef, nkIteratorDef,
@@ -657,17 +695,6 @@ proc canonicalize*(node: PNode, profile: CanonProfile = cpNim): JsonNode =
       "kind": "Empty",
       "span": newSpan(node)
     }
-  of nkPragma:
-    var items: seq[JsonNode] = @[]
-    for child in node:
-      items.add canonicalize(child, profile)
-    result = %*{
-      "kind": "Pragma",
-      "items": items,
-      "span": newSpan(node)
-    }
-    if profile == cpLossless:
-      result.addNimRef(node)
   of nkFormalParams:
     var params: seq[JsonNode] = @[]
     # [0] = return type, [1..n] = params

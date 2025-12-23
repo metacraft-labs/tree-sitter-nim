@@ -22,15 +22,15 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "simple_stmt_line"
-        },
-        {
-          "type": "SYMBOL",
           "name": "compound_stmt"
         },
         {
           "type": "SYMBOL",
           "name": "section_stmt"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "simple_stmt_line"
         },
         {
           "type": "SYMBOL",
@@ -125,17 +125,39 @@
         },
         {
           "type": "SYMBOL",
-          "name": "pragma_stmt"
-        },
-        {
-          "type": "SYMBOL",
           "name": "expr_stmt"
         }
       ]
     },
-    "pragma_stmt": {
-      "type": "SYMBOL",
-      "name": "pragma"
+    "pragma_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pragma"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_suite"
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "return_stmt": {
       "type": "SEQ",
@@ -819,6 +841,10 @@
     "compound_stmt": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "pragma_block"
+        },
         {
           "type": "SYMBOL",
           "name": "if_stmt"
@@ -3752,6 +3778,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "addr_prefix_expr"
+        },
+        {
+          "type": "SYMBOL",
           "name": "command_expr"
         },
         {
@@ -3763,6 +3793,31 @@
           }
         }
       ]
+    },
+    "addr_prefix_expr": {
+      "type": "PREC_RIGHT",
+      "value": 12,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "operator",
+            "content": {
+              "type": "STRING",
+              "value": "addr"
+            }
+          },
+          {
+            "type": "FIELD",
+            "name": "operand",
+            "content": {
+              "type": "SYMBOL",
+              "name": "prefix_expr"
+            }
+          }
+        ]
+      }
     },
     "command_expr": {
       "type": "PREC_LEFT",
@@ -4561,6 +4616,10 @@
         {
           "type": "STRING",
           "value": "@"
+        },
+        {
+          "type": "STRING",
+          "value": "addr"
         },
         {
           "type": "STRING",
@@ -7135,8 +7194,16 @@
                     "type": "SEQ",
                     "members": [
                       {
-                        "type": "STRING",
-                        "value": ","
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ","
+                          },
+                          {
+                            "type": "BLANK"
+                          }
+                        ]
                       },
                       {
                         "type": "SYMBOL",
