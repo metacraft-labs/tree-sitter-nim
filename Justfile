@@ -8,9 +8,25 @@ default:
 generate:
     tree-sitter generate
 
-# Run tree-sitter tests
+# Run all tests (tree-sitter grammar/highlight + byte-fidelity + parity)
 test:
-    tree-sitter test
+    @echo "=== Tree-sitter Tests (grammar + highlighting) ==="
+    @script -q -c "tree-sitter test" /dev/null
+    @echo ""
+    @echo "=== Byte-Fidelity Tests ==="
+    @nim c -f -r --hints:off tests/nim/test_byte_fidelity.nim
+    @echo ""
+    @echo "=== Parity Tests (CST-to-AST vs Nim compiler) ==="
+    @if [ -z "{{nim_compiler_path}}" ]; then \
+        echo "Warning: Cannot find Nim compiler sources. Skipping parity tests."; \
+        echo "Use 'nix develop' or set NIM_COMPILER_PATH for full test suite."; \
+    else \
+        nim c -f -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only; \
+    fi
+
+# Run only tree-sitter tests (grammar + highlighting)
+test-grammar:
+    @script -q -c "tree-sitter test" /dev/null
 
 # Run tests and update expected output
 test-update:
@@ -22,11 +38,11 @@ nim_compiler_path := `ls -d /nix/store/*-nim-unwrapped-*/nim 2>/dev/null | head 
 
 # Run byte-fidelity tests (Nim)
 test-bytes:
-    nim c -r tests/nim/test_byte_fidelity.nim
+    nim c -f -r tests/nim/test_byte_fidelity.nim
 
 # Run byte-fidelity tests with verbose output
 test-bytes-verbose:
-    nim c -r tests/nim/test_byte_fidelity.nim --verbose
+    nim c -f -r tests/nim/test_byte_fidelity.nim --verbose
 
 # Run Nim parity tests (requires Nim compiler sources)
 test-parity:
@@ -34,7 +50,7 @@ test-parity:
         echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
         exit 1; \
     fi
-    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only
+    nim c -f -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only
 
 # Run Nim parity tests with verbose output
 test-parity-verbose:
@@ -42,7 +58,7 @@ test-parity-verbose:
         echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
         exit 1; \
     fi
-    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only --verbose
+    nim c -f -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim --nim-only --verbose
 
 # Run full test suite (tree-sitter + byte-fidelity + parity)
 test-full:
@@ -50,10 +66,10 @@ test-full:
         echo "Error: Cannot find Nim compiler sources. Set NIM_COMPILER_PATH or use nix develop."; \
         exit 1; \
     fi
-    nim c -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim
+    nim c -f -r --hints:off --path:{{nim_compiler_path}} tests/nim/test_runner.nim
 
-# Run all tests (tree-sitter + byte-fidelity)
-test-all: test test-bytes
+# Alias for 'test' (runs all tests)
+test-all: test
 
 # Generate parser and run tests
 check: generate test
