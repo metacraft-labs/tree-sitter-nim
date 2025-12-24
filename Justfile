@@ -4,8 +4,22 @@
 default:
     @just --list
 
-# Generate the parser from grammar.js
+# Generate parser only if needed (grammar.js newer than parser.c or parser.c missing)
 generate:
+    #!/usr/bin/env bash
+    set -e
+    if [ ! -f "src/parser.c" ]; then
+        echo "parser.c doesn't exist, generating..."
+        tree-sitter generate
+    elif [ "grammar.js" -nt "src/parser.c" ]; then
+        echo "grammar.js is newer than parser.c, regenerating..."
+        tree-sitter generate
+    else
+        echo "parser.c is up to date"
+    fi
+
+# Force regenerate parser (ignores cache)
+generate-force:
     tree-sitter generate
 
 # Run all tests (tree-sitter grammar/highlight + byte-fidelity + parity)
