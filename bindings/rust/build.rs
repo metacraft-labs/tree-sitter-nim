@@ -15,7 +15,16 @@ fn main() {
 
     build.compile("tree-sitter-nim");
 
-    println!("cargo:rerun-if-changed={}", src_dir.join("../grammar.js").display());
-    println!("cargo:rerun-if-changed={}", src_dir.join("scanner.c").display());
-    println!("cargo:rerun-if-changed={}", src_dir.join("parser.c").display());
+    println!(
+        "cargo:rerun-if-changed={}",
+        src_dir.join("../grammar.js").display()
+    );
+    println!(
+        "cargo:rerun-if-changed={}",
+        src_dir.join("scanner.c").display()
+    );
+    println!(
+        "cargo:rerun-if-changed={}",
+        src_dir.join("parser.c").display()
+    );
 }
