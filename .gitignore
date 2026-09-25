@@ -28,3 +28,6 @@ tests/nim/test_runner
 tests/nim/test_byte_fidelity
 tests/nim/nim_parser_bridge
 ast/nim/dump_pnode
+
+# Repro development environment cache
+.repro/
