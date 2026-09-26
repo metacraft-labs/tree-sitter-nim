@@ -27,7 +27,11 @@ debug_*
 tests/nim/test_runner
 tests/nim/test_byte_fidelity
 tests/nim/nim_parser_bridge
+tests/nim/test_nimcache_is_worktree_local
 ast/nim/dump_pnode
 
 # Repro development environment cache
 .repro/
+# Per-checkout nimcache (config.nims): every Nim compile in this checkout
+# keeps its intermediate files here, never in the shared ~/.cache/nim.
+.nimcache/

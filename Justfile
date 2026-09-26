@@ -29,6 +29,7 @@ test:
     @echo ""
     @echo "=== Byte-Fidelity Tests ==="
     @nim c -f -r --hints:off tests/nim/test_byte_fidelity.nim
+    @nim c -r --hints:off tests/nim/test_nimcache_is_worktree_local.nim
     @echo ""
     @echo "=== Parity Tests (CST-to-AST vs Nim compiler) ==="
     @if [ -z "{{nim_compiler_path}}" ]; then \
