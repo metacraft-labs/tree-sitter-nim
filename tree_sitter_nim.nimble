@@ -14,6 +14,7 @@ requires "nim >= 2.0.0"
 # Tasks
 
 task test, "Run byte-fidelity and meaning-fidelity tests":
+  exec "nim c -r --hints:off tests/nim/test_nimcache_is_worktree_local.nim"
   exec "nim c -r tests/nim/test_runner"
 
 task testBytes, "Run only byte-fidelity tests":
